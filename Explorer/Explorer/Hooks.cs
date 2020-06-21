@@ -103,6 +103,19 @@ namespace Explorer
             { "EmercarDungeonsSmall", "Enmerkar Misc. Dungeons" },
             { "EmercarDungeonsBosses", "Unknown Arena" },
             { "DreamWorld", "In Between" },
+            { "Harmattan",                          "Harmattan" },
+            { "AntiqueField",                       "Antique Plateau" },
+            { "AntiqueField_Dungeon1",              "Abandoned Living Quarters" },
+            { "AntiqueField_Dungeon2",              "Forgotten Research Laboratory" },
+            { "AntiqueField_Dungeon3",              "Ancient Foundry" },
+            { "AntiqueField_Dungeon4",              "Ruined Warehouse" },
+            { "AntiqueField_Dungeon5",              "Lost Golem Manufacturing Facility" },
+            { "AntiqueField_Dungeon6",              "Crumbling Loading Docks" },
+            { "AntiqueField_Dungeon7",              "Destroyed Test Chambers" },
+            { "AntiqueField_Dungeon8",              "Compromised Mana Transfer Station" },
+            { "AntiqueField_Dungeon9",              "Old Harmattan" },
+            { "AntiqueFieldDungeonsBosses",         "Unknown Arena" },
+            { "AntiqueFieldDungeonsSmall",          "Harmattan Misc. Dungeons" },
         };
 
         // ****************** SKIP LOGOS HOOK ********************** //

@@ -96,8 +96,8 @@ namespace MixedGrip
 
         private void UpdateCharacterSlots(CharacterInfo charInfo, Character c)
         {
-            // bows not supported currently
-            if (c.CurrentWeapon != null && c.CurrentWeapon.Type == Weapon.WeaponType.Bow)
+            // bows and fist not supported currently
+            if (c.CurrentWeapon != null && c.CurrentWeapon.Type == Weapon.WeaponType.Bow && c.CurrentWeapon.Type != Weapon.WeaponType.FistW_2H)
             {
                 if (charInfo.LastOffhandUID != "") { charInfo.LastOffhandUID = ""; }
                 return;
@@ -130,7 +130,7 @@ namespace MixedGrip
 
         private void ToggleGripHotkey(CharacterInfo charInfo, Character c)
         {
-            if (c.CurrentWeapon == null || c.CurrentWeapon.IsSummonedEquipment || c.CurrentWeapon.Type == Weapon.WeaponType.Bow)
+            if (c.CurrentWeapon == null || c.CurrentWeapon.IsSummonedEquipment || c.CurrentWeapon.Type == Weapon.WeaponType.Bow || c.CurrentWeapon.Type == Weapon.WeaponType.FistW_2H)
             {
                 return;
             }
@@ -351,8 +351,8 @@ namespace MixedGrip
             Character c = At.GetValue(typeof(CharacterEquipment), self, "m_character") as Character;
 
             if (!(bool)MixedGrip.config.GetValue(Settings.Swap_On_Equip_And_Unequip)
-                || (_itemToEquip is Weapon weapon && (weapon.Type == Weapon.WeaponType.Bow || weapon.IsSummonedEquipment))
-                || (c.CurrentWeapon != null && (c.CurrentWeapon.Type == Weapon.WeaponType.Bow || c.CurrentWeapon.IsSummonedEquipment)))
+                || (_itemToEquip is Weapon weapon && (weapon.Type == Weapon.WeaponType.Bow || weapon.Type == Weapon.WeaponType.FistW_2H || weapon.IsSummonedEquipment))
+                || (c.CurrentWeapon != null && (c.CurrentWeapon.Type == Weapon.WeaponType.Bow || c.CurrentWeapon.Type == Weapon.WeaponType.FistW_2H || c.CurrentWeapon.IsSummonedEquipment)))
             {
                 return true;
             }

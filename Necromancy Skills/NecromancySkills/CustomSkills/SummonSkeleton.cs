@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.IO;
+using SideLoader;
 
 namespace NecromancySkills
 {
@@ -25,13 +26,14 @@ namespace NecromancySkills
 
 			// setup custom blade visuals
 			var blade = ResourcesPrefabManager.Instance.GetItemPrefab(2598500) as Weapon;
-			if (blade.VisualPrefab.transform.Find("Weapon3DVisual").GetComponent<MeshRenderer>() is MeshRenderer mesh)
-			{
-				mesh.material.color = new Color(-0.5f, 1.5f, -0.5f);
-			}
+			var bladeVisuals = CustomItemVisuals.GetOrAddVisualLink(blade).ItemVisuals;
+            if (bladeVisuals.transform.Find("Weapon3DVisual").GetComponent<MeshRenderer>() is MeshRenderer mesh)
+            {
+                mesh.material.color = new Color(-0.5f, 1.5f, -0.5f);
+            }
 
-			// make sure the config is applied from the save
-			SummonManager.Skeleton.Health = NecromancyBase.settings.Summon_MaxHealth;
+            // make sure the config is applied from the save
+            SummonManager.Skeleton.Health = NecromancyBase.settings.Summon_MaxHealth;
 			SummonManager.Skeleton.HealthRegen = NecromancyBase.settings.Summon_HealthLoss;
 			SummonManager.Ghost.Health = NecromancyBase.settings.StrongSummon_MaxHealth;
 			SummonManager.Ghost.HealthRegen = NecromancyBase.settings.StrongSummon_HealthLoss;

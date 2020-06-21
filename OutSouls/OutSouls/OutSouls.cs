@@ -17,7 +17,7 @@ namespace OutSoulsMod
     public class OutSouls : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.outsouls";
-        public const string VERSION = "2.1";
+        public const string VERSION = "2.2";
         public const string NAME = "OutSouls";
 
         public static OutSouls Instance;

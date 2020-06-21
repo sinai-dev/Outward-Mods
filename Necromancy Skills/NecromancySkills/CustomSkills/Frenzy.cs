@@ -44,9 +44,9 @@ namespace NecromancySkills
                 summonChar.Stats.AffectHealth(summonChar.ActiveMaxHealth * healSummon);
 
                 // add status effects
-                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Rage"));
-                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Possessed"));
-                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Speed Up"));
+                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Rage"), null);
+                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Possessed"), null);
+                summonChar.StatusEffectMngr.AddStatusEffect(ResourcesPrefabManager.Instance.GetStatusEffectPrefab("Speed Up"), null);
 
                 if (insideSigil)
                 {

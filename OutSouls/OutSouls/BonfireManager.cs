@@ -7,6 +7,7 @@ using System.Reflection;
 using System.IO;
 using UnityEngine.Events;
 using HarmonyLib;
+using SideLoader;
 
 namespace OutSoulsMod
 {
@@ -147,17 +148,17 @@ namespace OutSoulsMod
             var bonfire = new GameObject("Bonfire_" + uid);
             bonfire.transform.position = position;
 
-            var activatedCampfire = ResourcesPrefabManager.Instance.GetItemPrefab(5000101).GetComponent<Deployable>().DeployedStateItemPrefab.VisualPrefab;
+            var activatedCampfire = CustomItemVisuals.GetOrigItemVisuals(ResourcesPrefabManager.Instance.GetItemPrefab(5000101).GetComponent<Deployable>().DeployedStateItemPrefab, VisualPrefabType.VisualPrefab);
             var fireVisuals = Instantiate(activatedCampfire.gameObject);
             fireVisuals.transform.parent = bonfire.transform;
             fireVisuals.transform.position = bonfire.transform.position;
 
-            var swordVisuals = Instantiate(ResourcesPrefabManager.Instance.GetItemPrefab(2000151).VisualPrefab.gameObject);
+            var swordVisuals = Instantiate(CustomItemVisuals.GetOrigItemVisuals(ResourcesPrefabManager.Instance.GetItemPrefab(2000151), VisualPrefabType.VisualPrefab).gameObject);
             swordVisuals.transform.parent = bonfire.transform;
             swordVisuals.transform.position = bonfire.transform.position + Vector3.up;
             swordVisuals.transform.rotation = Quaternion.Euler(0, 0, 90);
 
-            var sigilVisuals = Instantiate(ResourcesPrefabManager.Instance.GetItemPrefab(8000010).VisualPrefab.gameObject);
+            var sigilVisuals = Instantiate(CustomItemVisuals.GetOrigItemVisuals(ResourcesPrefabManager.Instance.GetItemPrefab(8000010), VisualPrefabType.VisualPrefab).gameObject);
             sigilVisuals.transform.parent = bonfire.transform;
             sigilVisuals.transform.position = bonfire.transform.position;
 

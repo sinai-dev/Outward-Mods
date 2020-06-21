@@ -17,7 +17,7 @@ namespace MoreMapDetails
     {
         const string GUID = "com.sinai.moremapdetails";
         const string NAME = "More Map Details";
-        const string VERSION = "1.1.1";
+        const string VERSION = "1.2";
 
         public static MoreMapDetails Instance;
 
@@ -463,107 +463,66 @@ namespace MoreMapDetails
                     MarkerScale = new Vector2(0.5f, 0.5f),
                     Rotation = 0f
                 }
+            },
+            {
+                9, // Antique Plateau
+                new MapConfig
+                {
+                    MarkerOffset = new Vector2(-495f, -491f),
+                    MarkerScale = new Vector2(0.49f, 0.49f),
+                    Rotation = 0f
+                }
             }
         };
 
-        ///*
-        // * TEMP DEBUG
-        // * I used this to align the map offsets for the exterior regions more accurately. 
-        // * F5 (-) and F6 (+) adjust the scale.
-        // * F8 (-) and F9 (+) adjust the Y offsets.
-        // * F10 (-) and F11 (+) adjust the X offsets.
-        // * It will print the value (after changes) with Debug.Log()
-        //*/
+
+
+        /*
+         * TEMP DEBUG
+         * I used this to align the map offsets for the exterior regions more accurately. 
+         * PgDown (-) and PgDown (+) adjust the scale.
+         * Arrow keys adjust the X/Y offset.
+         * It will print the value (after changes) with Debug.Log()
+        */
 
         //internal void Update()
         //{
         //    // adjust scale
-        //    if (Input.GetKey(KeyCode.F5))
+        //    if (Input.GetKey(KeyCode.PageUp))
         //    {
         //        AdjustConfig(Vector2.zero, Vector2.one * -0.001f);
         //    }
-        //    if (Input.GetKey(KeyCode.F6))
+        //    if (Input.GetKey(KeyCode.PageDown))
         //    {
         //        AdjustConfig(Vector2.zero, Vector2.one * 0.001f);
         //    }
 
         //    // adjust offsets
-        //    if (Input.GetKey(KeyCode.F8))
+        //    if (Input.GetKey(KeyCode.DownArrow))
         //    {
         //        AdjustConfig(new Vector2(0, -1), Vector2.zero);
         //    }
-        //    if (Input.GetKey(KeyCode.F9))
+        //    if (Input.GetKey(KeyCode.UpArrow))
         //    {
         //        AdjustConfig(new Vector2(0, 1), Vector2.zero);
         //    }
-        //    if (Input.GetKey(KeyCode.F10))
+        //    if (Input.GetKey(KeyCode.LeftArrow))
         //    {
         //        AdjustConfig(new Vector2(1, 0), Vector2.zero);
         //    }
-        //    if (Input.GetKey(KeyCode.F11))
+        //    if (Input.GetKey(KeyCode.RightArrow))
         //    {
         //        AdjustConfig(new Vector2(-1, 0), Vector2.zero);
         //    }
         //}
 
-        //private void AdjustConfig(Vector2 offset, Vector2 scale)
+        //private void AdjustConfig(Vector2 _offset, Vector2 scale)
         //{
-        //    var offset = m_currentMap.CurrentMapScene.MarkerOffset;
-        //    MapDisplay.Instance.CurrentMapScene.MarkerOffset += offset;
+        //    MapDisplay.Instance.CurrentMapScene.MarkerOffset += _offset;
         //    MapDisplay.Instance.CurrentMapScene.MarkerScale += scale;
         //    MapConfigs[m_mapID].MarkerOffset = MapDisplay.Instance.CurrentMapScene.MarkerOffset;
         //    MapConfigs[m_mapID].MarkerScale = MapDisplay.Instance.CurrentMapScene.MarkerScale;
         //    Debug.Log("Offset: " + MapDisplay.Instance.CurrentMapScene.MarkerOffset + ", Scale: " + MapDisplay.Instance.CurrentMapScene.MarkerScale.ToString("0.000"));
-        //}
-
-
-
-
-
-        // ========== no idea what these are for but i'll leave them ==========
-
-
-        //public void AddIconMarker(GameObject MapPositioner, string name)
-        //{
-        //    var staticMarkers = At.GetValue(typeof(MapDisplay), MapDisplay.Instance, "m_staticMarkerHolder") as StaticMapMarkerHolder;
-        //    var origMarker = staticMarkers.GetComponentInChildren<MapMarkerSimpleDisplay>().gameObject;
-
-        //    var newMarker = Instantiate(origMarker).GetComponent<MapMarkerSimpleDisplay>();
-        //    newMarker.transform.SetParent(m_iconHolder, false);
-        //    newMarker.RectTransform.position = CalculateMapPosition(MapPositioner, MapConfigs[m_mapID]);
-        //    newMarker.transform.localScale = Vector3.one;
-
-        //    newMarker.Text.text = name;
-
-        //}
-
-        //private List<GameObject> FindDisabledGameObjectsByName(List<string> ObjectsToFind)
-        //{
-        //    var list = Resources.FindObjectsOfTypeAll<GameObject>()
-        //        .Where(x => ObjectsToFind.Contains(x.name))
-        //        .ToList();
-
-        //    return list;
-        //}
-
-        //private Vector2 CalculateMapPosition(GameObject worldObject, MapConfig _sceneSettings)
-        //{
-        //    Vector2 vector = worldObject.transform.position.xz();
-
-        //    vector.x = vector.x * _sceneSettings.MarkerScale.x + _sceneSettings.MarkerOffset.x;
-        //    vector.y = vector.y * _sceneSettings.MarkerScale.y + _sceneSettings.MarkerOffset.y;
-
-        //    float zoom = 1.0351562f * (float)At.GetValue(typeof(MapDisplay), MapDisplay.Instance, "m_zoomLevelSmooth");
-        //    vector *= zoom;
-
-        //    if (_sceneSettings.Rotation != 0f)
-        //    {
-        //        vector = (Quaternion.Euler(0f, _sceneSettings.Rotation, 0f) * new Vector3(vector.x, 0f, vector.y)).xz();
-        //    }
-
-        //    Debug.Log("Calculated map position: " + vector.ToString());
-
-        //    return vector;
         //}
     }
 

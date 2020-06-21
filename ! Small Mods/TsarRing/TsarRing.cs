@@ -34,9 +34,9 @@ namespace TsarRing
             var ringItem = new SL_Equipment
             {
                 Target_ItemID = 5100500,
-                New_ItemID = TSAR_RING_ITEMID,              
+                New_ItemID = TSAR_RING_ITEMID,
                 Name = "Tsar Ring",
-                Description = "An ornately-decorated ring, jeweled with an impressive Tsar.\n\nSome say this ring was summoned by the Creator of Aurai itself.", 
+                Description = "An ornately-decorated ring, jeweled with an impressive Tsar.\n\nSome say this ring was summoned by the Creator of Aurai itself.",
                 IKType = Equipment.IKMode.None,
                 EquipSlot = EquipmentSlot.EquipmentSlotIDs.LeftHand,
                 Tags = new List<string> { "Ring" },
@@ -51,11 +51,16 @@ namespace TsarRing
 
                 SLPackName = "TsarRing",
                 SubfolderName = "TsarRing",
-                AssetBundleName = "tsarring",
-                ItemVisuals_PrefabName = "mdl_itm_Tsar_Ring_v",
-
-                ItemVisuals_PositionOffset = new Vector3(0.03f, 0.09f, 0.05f),
-                ItemVisuals_RotationOffset = new Vector3(180f, 10f, -90f)
+                
+                ItemVisuals = new SL_ItemVisual
+                {
+                    Prefab_SLPack = "TsarRing",
+                    Prefab_AssetBundle = "tsarring",
+                    Prefab_Name = "mdl_itm_Tsar_Ring_v",
+                    
+                    Position = new Vector3(-0.018f, 0.011f, 0.037f),
+                    Rotation = new Vector3(347.014f, 357.770f, 0f),
+                },
             };
 
             CustomItems.CreateCustomItem(ringItem);

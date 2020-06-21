@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SideLoader;
 using UnityEngine;
 //using SinAPI;
 //using OModAPI;
@@ -37,8 +38,8 @@ namespace NecromancySkills
             Destroy(origSummon);
 
             // ======== set summoned prefab to our custom activated item (loaded with sideloader) ========
-            plagueAuraComp.SummonedPrefab = ResourcesPrefabManager.Instance.GetItemPrefab(8999050).transform;
-            var plagueStone = plagueAuraComp.SummonedPrefab;
+            var plagueStone = ResourcesPrefabManager.Instance.GetItemPrefab(8999050);
+            plagueAuraComp.SummonedPrefab = plagueStone.transform;            
 
             var ephemeral = plagueStone.GetComponent<Ephemeral>();
             ephemeral.LifeSpan = NecromancyBase.settings.PlagueAura_SigilLifespan;
@@ -49,7 +50,7 @@ namespace NecromancySkills
             //var newVisuals = Instantiate(origVisuals.gameObject);
             //DontDestroyOnLoad(newVisuals);
             //origVisuals.gameObject.SetActive(true);
-            var newVisuals = plagueStone.GetComponent<Item>().VisualPrefab;
+            var newVisuals = CustomItemVisuals.GetOrAddVisualLink(plagueStone).ItemVisuals;
 
             var magiccircle = newVisuals.transform.Find("mdl_fx_magicCircle");
             // destroy rotating bolt fx

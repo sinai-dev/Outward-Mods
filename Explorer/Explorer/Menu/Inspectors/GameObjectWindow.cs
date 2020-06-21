@@ -355,8 +355,8 @@ namespace Explorer
             Vector3 vector = Vector3.zero;
             switch (mode)
             {
-                case TranslateType.Position: vector = transform.position; break;
-                case TranslateType.Rotation: vector = transform.rotation.eulerAngles; break;
+                case TranslateType.Position: vector = transform.localPosition; break;
+                case TranslateType.Rotation: vector = transform.localRotation.eulerAngles; break;
                 case TranslateType.Scale:    vector = transform.localScale; break;
             }
             GUILayout.Label(vector.ToString(), GUILayout.Width(250));
@@ -376,13 +376,13 @@ namespace Explorer
 
             switch (mode)
             {
-                case TranslateType.Position: transform.position = vector; break;
-                case TranslateType.Rotation: transform.rotation = Quaternion.Euler(vector); break;
+                case TranslateType.Position: transform.localPosition = vector; break;
+                case TranslateType.Rotation: transform.localRotation = Quaternion.Euler(vector); break;
                 case TranslateType.Scale:    transform.localScale = vector; break;
             }
 
             GUILayout.Label("+/-:", GUILayout.Width(30));
-            var input = amount.ToString();
+            var input = amount.ToString("F3");
             input = GUILayout.TextField(input, GUILayout.Width(40));
             if (float.TryParse(input, out float f))
             {
@@ -395,7 +395,7 @@ namespace Explorer
 
         private void PlusMinusFloat(ref float f, float amount, bool multByTime)
         {
-            string s = f.ToString();
+            string s = f.ToString("F3");
             s = GUILayout.TextField(s, GUILayout.Width(60));
             if (float.TryParse(s, out float f2))
             {
