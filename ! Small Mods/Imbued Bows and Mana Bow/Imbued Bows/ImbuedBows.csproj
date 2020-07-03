@@ -175,7 +175,6 @@
     <Compile Include="util\SinAPI.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\PartialityWrapper\HOOKS-Assembly-CSharp.dll" />
     <Analyzer Include="..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SideLoader.dll" />
     <Analyzer Include="..\..\..\..\PartialityWrapper\Release\BepInEx\plugins\PartialityWrapper\Partiality.dll" />
   </ItemGroup>

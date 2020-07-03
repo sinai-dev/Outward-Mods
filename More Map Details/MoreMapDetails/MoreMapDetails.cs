@@ -468,8 +468,8 @@ namespace MoreMapDetails
                 9, // Antique Plateau
                 new MapConfig
                 {
-                    MarkerOffset = new Vector2(-495f, -491f),
-                    MarkerScale = new Vector2(0.49f, 0.49f),
+                    MarkerOffset = new Vector2(-504f, -505f),
+                    MarkerScale = new Vector2(0.50f, 0.50f),
                     Rotation = 0f
                 }
             }
@@ -477,13 +477,13 @@ namespace MoreMapDetails
 
 
 
-        /*
-         * TEMP DEBUG
-         * I used this to align the map offsets for the exterior regions more accurately. 
-         * PgDown (-) and PgDown (+) adjust the scale.
-         * Arrow keys adjust the X/Y offset.
-         * It will print the value (after changes) with Debug.Log()
-        */
+        ///*
+        // * TEMP DEBUG
+        // * I used this to align the map offsets for the exterior regions more accurately. 
+        // * PgDown (-) and PgDown (+) adjust the scale.
+        // * Arrow keys adjust the X/Y offset.
+        // * It will print the value (after changes) with Debug.Log()
+        //*/
 
         //internal void Update()
         //{
@@ -506,11 +506,11 @@ namespace MoreMapDetails
         //    {
         //        AdjustConfig(new Vector2(0, 1), Vector2.zero);
         //    }
-        //    if (Input.GetKey(KeyCode.LeftArrow))
+        //    if (Input.GetKey(KeyCode.RightArrow))
         //    {
         //        AdjustConfig(new Vector2(1, 0), Vector2.zero);
         //    }
-        //    if (Input.GetKey(KeyCode.RightArrow))
+        //    if (Input.GetKey(KeyCode.LeftArrow))
         //    {
         //        AdjustConfig(new Vector2(-1, 0), Vector2.zero);
         //    }

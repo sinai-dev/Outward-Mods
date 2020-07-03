@@ -30,19 +30,30 @@ namespace ImbuedBows
 
         private void Setup()
         {
+            // yield the OnPacksLoaded call (and wait a second just in case) so we can be sure other mods have loaded.
+            StartCoroutine(LateFix());
+        }
+
+        private IEnumerator LateFix()
+        {
+            yield return new WaitForSeconds(1f);
+
             // =============== setup infuse skills ===============
             var list = new List<int>
             {
                 8200100, // infuse light
                 8200101, // infuse wind
                 8200102, // infuse frost
-                8200103 // infuse fire
+                8200103, // infuse fire
+                2502001, // infuse burst of light (templar)
             };
 
             foreach (int id in list)
             {
-                var skill = ResourcesPrefabManager.Instance.GetItemPrefab(id) as AttackSkill;
-                skill.RequiredWeaponTypes.Add(Weapon.WeaponType.Bow);
+                if (ResourcesPrefabManager.Instance.GetItemPrefab(id) is AttackSkill skill)
+                {
+                    skill.RequiredWeaponTypes.Add(Weapon.WeaponType.Bow);
+                }
             }
         }
 

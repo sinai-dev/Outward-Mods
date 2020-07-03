@@ -44,6 +44,8 @@ namespace NecromancySkills
             var orig = ResourcesPrefabManager.Instance.GetItemPrefab(8300292).transform.Find("Effects").GetComponent<ShootProjectile>();
             At.InheritBaseValues(shootTendrils, orig);
 
+            shootTendrils.SyncType = SyncTypes.Everyone;
+
             // disable clone target before cloning it
             var origProjectile = shootTendrils.BaseProjectile.gameObject;
             origProjectile.SetActive(false);

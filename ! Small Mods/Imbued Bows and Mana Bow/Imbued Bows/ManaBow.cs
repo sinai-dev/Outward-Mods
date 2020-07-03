@@ -29,7 +29,7 @@ namespace ImbuedBows
             // setup bow
             var bow = ResourcesPrefabManager.Instance.GetItemPrefab(ManaBowID) as ProjectileWeapon;
 
-            if (bow != null && bow.VisualPrefab is Transform bowVisuals)
+            if (bow != null && bow.GetItemVisual() is Transform bowVisuals)
             {
                 skinnedMesh = bowVisuals.GetComponentInChildren<SkinnedMeshRenderer>();
                 if (skinnedMesh)
@@ -49,7 +49,7 @@ namespace ImbuedBows
 
             var newFX = Instantiate(fx.gameObject);
             DontDestroyOnLoad(newFX.gameObject);
-            newFX.transform.parent = bow.VisualPrefab;
+            newFX.transform.parent = bow.GetItemVisual();
 
             foreach (var ps in newFX.GetComponentsInChildren<ParticleSystem>())
             {
@@ -76,12 +76,8 @@ namespace ImbuedBows
             projBehaviour.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.Destroyed;
 
             // custom arrow visuals
-            var origVisuals = manaArrow.VisualPrefab;
-            origVisuals.gameObject.SetActive(false);
-            var newVisuals = Instantiate(origVisuals).gameObject;
-            manaArrow.VisualPrefab = newVisuals.transform;
-            DontDestroyOnLoad(newVisuals);
-            foreach (MeshRenderer mesh in newVisuals.GetComponentsInChildren<MeshRenderer>())
+            var arrowVisuals = manaArrow.GetItemVisual();
+            foreach (MeshRenderer mesh in arrowVisuals.GetComponentsInChildren<MeshRenderer>())
             {
                 if (mesh.GetComponent<BoxCollider>())
                 {

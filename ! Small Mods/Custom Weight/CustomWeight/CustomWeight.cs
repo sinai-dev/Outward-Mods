@@ -16,7 +16,7 @@ namespace CustomWeight
     {
         const string GUID = "com.sinai.customweight";
         const string NAME = "Custom Weight";
-        const string VERSION = "2.1";
+        const string VERSION = "2.2";
 
         public static CustomWeight Instance;
         public ModConfig config;

@@ -183,14 +183,14 @@ namespace Explorer
             GUILayout.EndHorizontal();
         }
 
-        public static void DrawMember(ref object value, string valueType, string memberName, Rect rect, object setTarget = null, Action<object> setAction = null, float labelWidth = 180)
+        public static void DrawMember(ref object value, string valueType, string memberName, Rect rect, object setTarget = null, Action<object> setAction = null, float labelWidth = 180, bool autoSet = false)
         {
             GUILayout.Label("<color=cyan>" + memberName + ":</color>", GUILayout.Width(labelWidth));
 
-            DrawValue(ref value, rect, valueType, memberName, setTarget, setAction);
+            DrawValue(ref value, rect, valueType, memberName, setTarget, setAction, autoSet);
         }
 
-        public static void DrawValue(ref object value, Rect rect, string nullValueType = null, string memberName = null, object setTarget = null, Action<object> setAction = null)
+        public static void DrawValue(ref object value, Rect rect, string nullValueType = null, string memberName = null, object setTarget = null, Action<object> setAction = null, bool autoSet = false)
         {
             if (value == null)
             {
@@ -277,7 +277,7 @@ namespace Explorer
                         else
                         {
                             var type = obj.GetType();
-                            DrawMember(ref obj, type.ToString(), i.ToString(), rect, setTarget, setAction, 25);
+                            DrawMember(ref obj, type.ToString(), i.ToString(), rect, setTarget, setAction, 25, true);
                         }
                     }
                 }
@@ -302,7 +302,7 @@ namespace Explorer
 
         // Helper for drawing primitive values (with Apply button)
 
-        public static void DrawPrimitive(ref object value, Rect m_rect, object setTarget = null, Action<object> setAction = null)
+        public static void DrawPrimitive(ref object value, Rect m_rect, object setTarget = null, Action<object> setAction = null, bool autoSet = false)
         {
             bool allowSet = setAction != null;
 
@@ -332,7 +332,7 @@ namespace Explorer
                     value = GUILayout.TextField(value.ToString(), GUILayout.MaxWidth(m_rect.width - 260));
                 }
 
-                if (allowSet && GUILayout.Button("<color=#00FF00>Apply</color>", GUILayout.Width(60)))
+                if (autoSet || (allowSet && GUILayout.Button("<color=#00FF00>Apply</color>", GUILayout.Width(60))))
                 {
                     setAction.Invoke(setTarget);
                 }

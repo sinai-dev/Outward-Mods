@@ -24,12 +24,28 @@ namespace CombatHUD
             }
         }
 
+        private bool wasInMenu = false;
+
         internal void Update()
         {
             if (NetworkLevelLoader.Instance.IsGameplayLoading || NetworkLevelLoader.Instance.IsGameplayPaused)
             {
+                if (!wasInMenu)
+                {
+                    for (int i = 0; i < m_labelHolders.Count; i++)
+                    {
+                        if (m_labelHolders[i].activeSelf)
+                        {
+                            m_labelHolders[i].SetActive(false);
+                        }
+                    }
+                    wasInMenu = true;
+                }
+
                 return;
             }
+
+            wasInMenu = false;
 
             List<StatusEffectInfo> statusInfos = new List<StatusEffectInfo>();
 

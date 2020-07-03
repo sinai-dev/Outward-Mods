@@ -54,6 +54,15 @@ namespace CombatAndDodgeOverhaul
         [HarmonyPatch(typeof(CharacterStats), "ApplyCoopStats")]
         public class CharacterStats_ApplyCoopStats
         {
+            // Reverse Patch, used to invoke the original.
+            [HarmonyReversePatch]
+            public static void ReversePatch(CharacterStats __instance)
+            {
+                throw new NotImplementedException("It's a stub!");
+            }
+
+            // Prefix return false override.
+            [HarmonyPrefix]
             public static bool Prefix(CharacterStats __instance)
             {
                 var self = __instance;
@@ -90,7 +99,7 @@ namespace CombatAndDodgeOverhaul
                     if (Instance.UpdateSyncStats() || Instance.m_currentSyncInfos == null)
                     {
                         //Debug.Log("Settings need update - sent request for sync, and starting delayed orig(self)");
-                        // StartCoroutine(Instance.DelayedOrigSelf(orig, self));
+                        Instance.StartCoroutine(Instance.DelayedOrigInvoke(__instance));
                     }
                     else
                     {
@@ -110,6 +119,27 @@ namespace CombatAndDodgeOverhaul
             }
         }
 
+        private IEnumerator DelayedOrigInvoke(CharacterStats __instance)
+        {
+            float start = Time.time;
+            while (Time.time - start < 5f && m_currentSyncInfos == null)
+            {
+                //Debug.Log("Delayed orig self - waiting for sync infos");
+                if (!NetworkLevelLoader.Instance.AllPlayerDoneLoading)
+                {
+                    start += 1f;
+                }
+                yield return new WaitForSeconds(1.0f);
+            }
+            if (m_currentSyncInfos == null || !(bool)m_currentSyncInfos.GetValue(Settings.Enemy_Balancing))
+            {
+                try
+                {
+                    CharacterStats_ApplyCoopStats.ReversePatch(__instance);
+                }
+                catch { }
+            }
+        }
 
         //private IEnumerator DelayedOrigSelf(On.CharacterStats.orig_ApplyCoopStats orig, CharacterStats self)
         //{
@@ -250,6 +280,9 @@ namespace CombatAndDodgeOverhaul
                 // Debug.Log("Fixed enemies already contains " + m_character.Name);
                 return;
             }
+
+            var m_staminaUseModiifers = new Stat(1f);
+            m_staminaUseModiifers.AddMultiplierStack(new StatStack("MyStat", -0.9f));
 
             if ((bool)_config.GetValue(Settings.Enemy_Balancing))
             {

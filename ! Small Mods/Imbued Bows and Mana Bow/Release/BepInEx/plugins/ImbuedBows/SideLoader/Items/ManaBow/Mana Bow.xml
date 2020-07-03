@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SL_Weapon xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <OnlyChangeVisuals>false</OnlyChangeVisuals>
-  <ReplaceEffects>false</ReplaceEffects>
   <Target_ItemID>2200000</Target_ItemID>
   <New_ItemID>2800900</New_ItemID>
   <Name>Mana Bow</Name>
