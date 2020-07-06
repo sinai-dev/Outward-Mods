@@ -17,7 +17,7 @@ namespace PvP
     {
         public const string GUID = "com.sinai.pvp";
         public const string NAME = "PvP";
-        public const string VERSION = "2.1";
+        public const string VERSION = "2.2";
 
         public static PvP Instance;
 
@@ -29,6 +29,9 @@ namespace PvP
         public GameModes CurrentGame = GameModes.NONE;
         public float GameStartTime = 0f;
         public Dictionary<Character.Factions, List<PlayerSystem>> CurrentPlayers = new Dictionary<Character.Factions, List<PlayerSystem>>();
+
+        public bool FriendlyFireEnabled;
+        public bool FriendlyTargetingEnabled;
 
         public enum GameModes
         {
@@ -126,6 +129,10 @@ namespace PvP
             }
         }
 
+        /// <summary>
+        /// Sends an RPC Character UI message to all players.
+        /// </summary>
+        /// <param name="message"></param>
         public void SendMessageToAll(string message)
         {
             RPCManager.Instance.SendUIMessageLocal(CharacterManager.Instance.GetFirstLocalCharacter(), message);

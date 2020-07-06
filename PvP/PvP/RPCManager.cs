@@ -17,6 +17,30 @@ namespace PvP
             Instance = this;
         }
 
+        public static void SendFriendyFire(bool enabled)
+        {
+            PvP.Instance.SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Fire!");
+            Instance.photonView.RPC("SendFriendlyFireRPC", PhotonTargets.All, new object[] { enabled });
+        }
+
+        [PunRPC]
+        private void SendFriendlyFireRPC(bool enabled)
+        {
+            PvP.Instance.FriendlyFireEnabled = enabled;
+        }
+
+        public static void SendFriendyTargeting(bool enabled)
+        {
+            PvP.Instance.SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Targeting!");
+            Instance.photonView.RPC("SendFriendlyTargetingRPC", PhotonTargets.All, new object[] { enabled });
+        }
+
+        [PunRPC]
+        private void SendFriendlyTargetingRPC(bool enabled)
+        {
+            PvP.Instance.FriendlyTargetingEnabled = enabled;
+        }
+
         [PunRPC]
         public void StartGameplayRPC(int _mode, string messageToPlayers = "")
         {

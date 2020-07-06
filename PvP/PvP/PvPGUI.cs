@@ -184,6 +184,41 @@ namespace PvP
                             PvP.Instance.StopGameplay("The host has ended the game.");
                         }
                     }
+
+                    GUILayout.BeginHorizontal();
+                    if (!PvP.Instance.FriendlyFireEnabled)
+                    {
+                        GUI.color = Color.red;
+                        if (GUILayout.Button("Enable Friendly Fire"))
+                        {
+                            RPCManager.SendFriendyFire(true);
+                        }
+                    }
+                    else
+                    {
+                        GUI.color = Color.green;
+                        if (GUILayout.Button("Disable Friendly Fire"))
+                        {
+                            RPCManager.SendFriendyFire(false);
+                        }
+                        if (!PvP.Instance.FriendlyTargetingEnabled)
+                        {
+                            GUI.color = Color.red;
+                            if (GUILayout.Button("Enable Friendly Targeting"))
+                            {
+                                RPCManager.SendFriendyTargeting(true);
+                            }
+                        }
+                        else
+                        {
+                            if (GUILayout.Button("Disable Friendly Targeting"))
+                            {
+                                RPCManager.SendFriendyTargeting(false);
+                            }
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                    GUI.color = Color.white;
                 }
 
                 GUILayout.Label("Characters: ");
