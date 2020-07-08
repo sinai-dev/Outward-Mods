@@ -19,7 +19,7 @@ namespace PvP
 
         public static void SendFriendyFire(bool enabled)
         {
-            PvP.Instance.SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Fire!");
+            SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Fire!");
             Instance.photonView.RPC("SendFriendlyFireRPC", PhotonTargets.All, new object[] { enabled });
         }
 
@@ -31,7 +31,7 @@ namespace PvP
 
         public static void SendFriendyTargeting(bool enabled)
         {
-            PvP.Instance.SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Targeting!");
+            SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Targeting!");
             Instance.photonView.RPC("SendFriendlyTargetingRPC", PhotonTargets.All, new object[] { enabled });
         }
 
@@ -215,6 +215,11 @@ namespace PvP
         //}
 
         // ======================= SMALL GAMEPLAY FUNCTIONS ============================== //
+
+        public static void SendMessageToAll(string message)
+        {
+            Instance.photonView.RPC("SendMessageToAllRPC", PhotonTargets.All, message);
+        }
 
         [PunRPC]
         public void SendMessageToAllRPC(string message)

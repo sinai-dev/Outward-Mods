@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using UnityEngine;
-
+using UnityEngine.Experimental.UIElements;
 
 namespace PvP
 {
@@ -26,10 +26,34 @@ namespace PvP
             return false;
         }
 
+        // this one is to fix an unintended bug
+        [HarmonyPatch(typeof(Character), "IsEnemyClose")]
+        public class Character_IsEnemyClose
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ref bool __result, Character __instance, float _range)
+            {
+                __result = false;
+
+                Collider[] array = Physics.OverlapSphere(__instance.CenterPosition, _range, Global.LockingPointsMask);
+                for (int i = 0; i < array.Length; i++)
+                {
+                    LockingPoint component = array[i].GetComponent<LockingPoint>();
+                    if (component && component.OwnerChar && component.OwnerChar.Alive && OrigIsTargetable(__instance.TargetingSystem, component.OwnerChar))
+                    {
+                        __result = true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         // Actual needed patch on IsTargetable
         [HarmonyPatch(typeof(TargetingSystem), "IsTargetable", new Type[] { typeof(Character) })]
         public class TargetingSys_IsTargetable
         {
+            [HarmonyPrefix]
             public static bool Prefix(ref bool __result, Character ___m_character, Character _char)
             {
                 if (___m_character.IsAI || !PvP.Instance.FriendlyFireEnabled)
@@ -37,16 +61,13 @@ namespace PvP
                     return true;
                 }
 
-                // just to avoid confusion
-                var targetter = ___m_character;
-
-                if (targetter.UID == _char.UID)
-                {
-                    __result = false;
-                }
-                else if (!targetter.IsAI)
+                if (___m_character.UID != _char.UID)
                 {
                     __result = true;
+                }
+                else
+                {
+                    __result = false;
                 }
 
                 return false;
@@ -57,6 +78,7 @@ namespace PvP
         [HarmonyPatch(typeof(TargetingSystem), "IsTargetable", new Type[] { typeof(Character.Factions) })]
         public class TargetingSys_IsTargetable_2
         {
+            [HarmonyPrefix]
             public static bool Prefix(ref bool __result, Character ___m_character)
             {
                 if (___m_character.IsAI || !PvP.Instance.FriendlyFireEnabled)
@@ -154,10 +176,11 @@ namespace PvP
                     Hitbox component = array[i].GetComponent<Hitbox>();
                     if (component != null
                         && component.OwnerChar != null
-                        //&& __instance.m_targetableFactions.Contains(component.OwnerChar.Faction) 
+                        && component.OwnerChar.UID != __instance.OwnerCharacter.UID
                         && !component.BlockBox
-                        && !list.Contains(component.OwnerChar)
-                        && (!__instance.IgnoreShooter || component.OwnerChar != __instance.OwnerCharacter))
+                        && !list.Contains(component.OwnerChar))
+                        //&& __instance.m_targetableFactions.Contains(component.OwnerChar.Faction) 
+                        //&& (!__instance.IgnoreShooter || component.OwnerChar != __instance.OwnerCharacter))
                     {
                         ___cachedHitBox.Add(component);
                         list.Add(component.OwnerChar);
@@ -184,6 +207,7 @@ namespace PvP
             {
                 if (!__instance.OwnerCharacter || __instance.OwnerCharacter.IsAI || !PvP.Instance.FriendlyFireEnabled)
                 {
+                    Debug.Log("projectile hit, returning orig");
                     return true;
                 }
 
@@ -211,7 +235,7 @@ namespace PvP
                 }
 
                 bool blocked = false;
-                if (character != null)
+                if (character && __instance.OwnerCharacter != character)
                 {
                     if (!__instance.Unblockable && character.ShieldEquipped)
                     {
@@ -222,6 +246,12 @@ namespace PvP
                         }
                     }
                 }
+                else
+                {
+                    character = null;
+                }
+
+                Debug.Log(character?.Name ?? "Null projectile hit");
 
                 // __instance.OnProjectileHit(character, _hitPoint, _hitDir, blocked);
                 At.Call(typeof(Projectile), __instance, "OnProjectileHit", null, new object[] { character, _hitPoint, _hitDir, blocked });
@@ -242,6 +272,115 @@ namespace PvP
                 }
 
                 return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(RaycastProjectile), "CheckCollision")]
+        public class RaycastProjectile_CheckCollision
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(ref bool __result, RaycastProjectile __instance, Vector3 _startRaycast, float dist, ref RaycastHit _hit,
+                ref Vector3 ___m_shootDir, float ___m_radiusAdd, float ___m_capsuleAdd, LockingPoint ___m_homingTarget,
+                List<Character> ___m_hitCharList)
+            {
+                var self = __instance;
+
+                if (!PvP.Instance.FriendlyFireEnabled || self.OwnerCharacter || self.OwnerCharacter.IsAI)
+                {
+                    return true;
+                }
+
+                _hit = default;
+                RaycastHit[] array;
+
+                int hitMask = RaycastHitLayerMask(self);
+
+                if (self.Radius == 0f)
+                {
+                    array = Physics.RaycastAll(_startRaycast, ___m_shootDir, dist, hitMask);
+                }
+                else if (self.Capsule != 0f)
+                {
+                    array = Physics.SphereCastAll(_startRaycast, self.Radius + ___m_radiusAdd, ___m_shootDir, dist, hitMask);
+                }
+                else
+                {
+                    array = Physics.CapsuleCastAll(
+                        _startRaycast - self.transform.right * (self.Capsule + ___m_capsuleAdd), 
+                        _startRaycast + self.transform.right * (self.Capsule + ___m_capsuleAdd), 
+                        self.Radius + ___m_radiusAdd, 
+                        ___m_shootDir, 
+                        dist, 
+                        hitMask
+                    );
+                }
+                if (array.Length != 0)
+                {
+                    var ignoredChar = (Character)At.GetValue(typeof(Projectile), __instance, "m_ignoredCharacter");
+
+                    int num = -1;
+                    for (int i = 0; i < array.Length; i++)
+                    {
+                        Character hitChar = array[i].collider.GetCharacterOwner();
+
+                        // Added: check that we are not hitting ourselves
+                        if (self.OwnerCharacter.UID != hitChar.UID)
+                        {
+                            // This is the same check that the game does, just broken up so it's actually readable.
+                            bool valid = hitChar == null && !self.HitTargetOnly;
+
+                            if (!valid)
+                            {
+                                valid = !self.HitTargetOnly || (___m_homingTarget && hitChar == ___m_homingTarget.OwnerChar);
+                                valid &= hitChar != ignoredChar;
+                                valid &= !___m_hitCharList.Contains(hitChar) || (!self.MultiTarget && self.EndMode == Projectile.EndLifeMode.Normal);
+                                // removed: targetable check
+                            }
+
+                            if (valid)
+                            {
+                                if (array[i].point == Vector3.zero)
+                                {
+                                    array[i].point = self.transform.position;
+                                }
+                                if (num == -1 || (_startRaycast - array[i].point).sqrMagnitude < (_startRaycast - array[num].point).sqrMagnitude)
+                                {
+                                    if (hitChar)
+                                    {
+                                        ___m_hitCharList.Add(hitChar);
+                                    }
+                                    num = i;
+                                }
+                            }
+                        }
+                    }
+                    if (num != -1)
+                    {
+                        _hit = array[num];
+                        __result = true;
+                        return false;
+                    }
+                }
+
+                __result = false;
+                return false;
+            }
+
+            private static int RaycastHitLayerMask(RaycastProjectile __instance)
+            {
+                if (__instance.OnlyExplodeOnLayers)
+                {
+                    return __instance.ExplodeOnContactWithLayers;
+                }
+                if (__instance.HitLayer == RaycastProjectile.HitLayers.Both)
+                {
+                    return Global.ProjectileHitAllMask;
+                }
+                if (__instance.HitLayer == RaycastProjectile.HitLayers.MeleeHitBox)
+                {
+                    return Global.ProjectileHitMeleeMask;
+                }
+                return Global.ProjectileHitRangedMask;
             }
         }
     }

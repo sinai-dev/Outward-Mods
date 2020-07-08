@@ -17,7 +17,7 @@ namespace PvP
     {
         public const string GUID = "com.sinai.pvp";
         public const string NAME = "PvP";
-        public const string VERSION = "2.2";
+        public const string VERSION = "2.3";
 
         public static PvP Instance;
 
@@ -129,15 +129,6 @@ namespace PvP
             }
         }
 
-        /// <summary>
-        /// Sends an RPC Character UI message to all players.
-        /// </summary>
-        /// <param name="message"></param>
-        public void SendMessageToAll(string message)
-        {
-            RPCManager.Instance.SendUIMessageLocal(CharacterManager.Instance.GetFirstLocalCharacter(), message);
-        }
-
         // ================================== HOOKS ===================================
 
         [HarmonyPatch(typeof(InteractionRevive), "OnActivate")]
@@ -154,7 +145,7 @@ namespace PvP
                 }
                 else
                 {
-                    if (At.GetValue(typeof(InteractionBase), self as InteractionBase, "m_lastCharacter") is Character m_lastCharacter && m_lastCharacter.IsLocalPlayer)
+                    if (At.GetValue(typeof(InteractionBase), self, "m_lastCharacter") is Character m_lastCharacter && m_lastCharacter.IsLocalPlayer)
                     {
                         RPCManager.Instance.SendUIMessageLocal(m_lastCharacter, "You cannot revive players during a game!");
                         Instance.StartCoroutine(Instance.FixReviveInteraction(self, self.OnActivationEvent));
