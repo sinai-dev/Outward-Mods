@@ -207,7 +207,6 @@ namespace PvP
             {
                 if (!__instance.OwnerCharacter || __instance.OwnerCharacter.IsAI || !PvP.Instance.FriendlyFireEnabled)
                 {
-                    Debug.Log("projectile hit, returning orig");
                     return true;
                 }
 
@@ -250,8 +249,6 @@ namespace PvP
                 {
                     character = null;
                 }
-
-                Debug.Log(character?.Name ?? "Null projectile hit");
 
                 // __instance.OnProjectileHit(character, _hitPoint, _hitDir, blocked);
                 At.Call(typeof(Projectile), __instance, "OnProjectileHit", null, new object[] { character, _hitPoint, _hitDir, blocked });
