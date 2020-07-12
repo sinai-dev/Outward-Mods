@@ -18,7 +18,7 @@ namespace NecromancySkills
         public static NecromancyBase Instance;
         public const string GUID = "com.sinai.necromancy";
         public const string NAME = "Necromancy Skills";
-        public const string VERSION = "2.7";
+        public const string VERSION = "2.8";
 
         public static Settings settings;
         private static readonly string savePath = @"Mods\NecromancySkills.json";

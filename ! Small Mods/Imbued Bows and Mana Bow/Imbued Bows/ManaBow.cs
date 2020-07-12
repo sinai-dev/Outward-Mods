@@ -24,17 +24,32 @@ namespace ImbuedBows
         {
             Debug.Log("Setting up mana bow");
 
-            SkinnedMeshRenderer skinnedMesh = null;
-
             // setup bow
             var bow = ResourcesPrefabManager.Instance.GetItemPrefab(ManaBowID) as ProjectileWeapon;
 
             if (bow != null && bow.GetItemVisual() is Transform bowVisuals)
             {
-                skinnedMesh = bowVisuals.GetComponentInChildren<SkinnedMeshRenderer>();
+                var skinnedMesh = bowVisuals.GetComponentInChildren<SkinnedMeshRenderer>();
                 if (skinnedMesh)
                 {
                     skinnedMesh.material.color = new Color(0.5f, 0.8f, 2.0f);
+
+                    //var etherealImbue = ResourcesPrefabManager.Instance.GetEffectPreset(208);
+                    //var fx = etherealImbue.GetComponent<ImbueEffectPreset>().ImbueFX;
+
+                    //var newFX = Instantiate(fx.gameObject);
+                    //DontDestroyOnLoad(newFX.gameObject);
+                    //newFX.transform.parent = bow.GetItemVisual();
+
+                    //foreach (var ps in newFX.GetComponentsInChildren<ParticleSystem>())
+                    //{
+                    //    var shape = ps.shape;
+                    //    shape.shapeType = ParticleSystemShapeType.SkinnedMeshRenderer;
+                    //    shape.skinnedMeshRenderer = skinnedMesh;
+
+                    //    var main = ps.main;
+                    //    main.startColor = new Color(0.1f, 0.4f, 0.95f);
+                    //}
                 }
 
                 var light = bowVisuals.gameObject.AddComponent<Light>();
@@ -43,28 +58,8 @@ namespace ImbuedBows
                 light.range = 1.3f;
             }
 
-            var etherealImbue = ResourcesPrefabManager.Instance.GetEffectPreset(208);
-
-            var fx = etherealImbue.GetComponent<ImbueEffectPreset>().ImbueFX;
-
-            var newFX = Instantiate(fx.gameObject);
-            DontDestroyOnLoad(newFX.gameObject);
-            newFX.transform.parent = bow.GetItemVisual();
-
-            foreach (var ps in newFX.GetComponentsInChildren<ParticleSystem>())
-            {
-                var shape = ps.shape;
-                shape.shapeType = ParticleSystemShapeType.SkinnedMeshRenderer;
-                shape.skinnedMeshRenderer = skinnedMesh;
-
-                var main = ps.main;
-                main.startColor = new Color(0.1f, 0.4f, 0.95f);
-            }
-
             // setup custom mana projectile
             var manaArrow = ResourcesPrefabManager.Instance.GetItemPrefab(ManaArrowID) as Ammunition;
-
-            // manaArrow.IsPickable = false;
 
             // custom arrow ProjectileItem component (determines the ammunition behaviour as projectile)
             var origObj = manaArrow.ProjectileFXPrefab.gameObject;
@@ -187,6 +182,11 @@ namespace ImbuedBows
             [HarmonyPrefix]
             public static bool Prefix(AttackSkill __instance, bool _TryingToActivate, ref bool __result)
             {
+                if (!(__instance is RangeAttackSkill))
+                {
+                    return true;
+                }
+
                 var self = __instance;
 
                 if (self.OwnerCharacter && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
@@ -194,10 +194,8 @@ namespace ImbuedBows
                     __result = true;
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
         }
 
@@ -209,9 +207,7 @@ namespace ImbuedBows
             {
                 var self = __instance;
 
-                var affectedChar = At.GetValue(typeof(Effect), self as Effect, "m_affectedCharacter") as Character;
-
-                if (self.MainHand && affectedChar.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
+                if (self.MainHand && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
                 {
                     __result = true;
                     return false;

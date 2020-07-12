@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SL_Item xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <OnlyChangeVisuals>false</OnlyChangeVisuals>
-  <ReplaceEffects>false</ReplaceEffects>
   <Target_ItemID>8000050</Target_ItemID>
   <New_ItemID>8999050</New_ItemID>
   <Name>Activated Plague Aura</Name>

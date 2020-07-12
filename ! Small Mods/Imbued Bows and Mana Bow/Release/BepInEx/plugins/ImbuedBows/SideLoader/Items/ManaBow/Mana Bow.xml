@@ -69,5 +69,4 @@
   <Unblockable>false</Unblockable>
   <SwingSound>Default</SwingSound>
   <SpecialIsZoom>true</SpecialIsZoom>
-  <MaxProjectileShots>1</MaxProjectileShots>
 </SL_Weapon>

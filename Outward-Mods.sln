@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvP", "PvP\PvP\PvP.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsarRing", "! Small Mods\TsarRing\TsarRing.csproj", "{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtectionBubble", "! Small Mods\ProtectionBubble\ProtectionBubble\ProtectionBubble.csproj", "{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,10 @@ Global
 		{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +165,7 @@ Global
 		{2DA1C9EA-9332-45C2-944D-683CB8315E75} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 		{8B29682E-B442-4573-8B17-CE76D746F5C8} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 		{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
+		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61EA2C4-5D64-4828-A24A-47E3EB51A10C}

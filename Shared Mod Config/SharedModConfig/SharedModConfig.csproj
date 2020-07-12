@@ -355,7 +355,6 @@
     <Compile Include="ModConfig\ModConfig.cs" />
     <Compile Include="ModConfig\StringSetting.cs" />
     <Compile Include="utils\CustomKeybindings.cs" />
-    <Compile Include="utils\SinAPI.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

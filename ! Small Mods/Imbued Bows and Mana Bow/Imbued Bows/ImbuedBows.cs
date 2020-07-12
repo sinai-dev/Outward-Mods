@@ -16,7 +16,7 @@ namespace ImbuedBows
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Imbued Bows & Mana Bow";
-        public const string VERSION = "1.2";
+        public const string VERSION = "1.4";
 
         internal void Awake()
         {
@@ -103,7 +103,7 @@ namespace ImbuedBows
         {
             [HarmonyPrefix]
             public static bool Prefix(ItemVisual __instance, ImbueStack newStack, Weapon _linkedWeapon)
-            {
+            {   
                 var self = __instance;
 
                 // if its not a bow, just do orig(self) and return
@@ -112,34 +112,32 @@ namespace ImbuedBows
                     return true;
                 }
 
-                newStack.ImbueFX = ItemManager.Instance.GetImbuedFX(newStack.ImbuedEffectPrefab);
-                if (!newStack.ImbueFX.gameObject.activeSelf)
-                {
-                    newStack.ImbueFX.gameObject.SetActive(true);
-                }
-                newStack.ParticleSystems = newStack.ImbueFX.GetComponentsInChildren<ParticleSystem>();
+                //newStack.ImbueFX = ItemManager.Instance.GetImbuedFX(newStack.ImbuedEffectPrefab);
+                //if (!newStack.ImbueFX.gameObject.activeSelf)
+                //{
+                //    newStack.ImbueFX.gameObject.SetActive(true);
+                //}
+                //newStack.ParticleSystems = newStack.ImbueFX.GetComponentsInChildren<ParticleSystem>();
 
-                if (self.GetComponentInChildren<SkinnedMeshRenderer>() is SkinnedMeshRenderer skinnedMesh)
-                {
-                    for (int j = 0; j < newStack.ParticleSystems.Length; j++)
-                    {
-                        if (newStack.ParticleSystems[j].shape.shapeType == ParticleSystemShapeType.MeshRenderer)
-                        {
-                            var shape = newStack.ParticleSystems[j].shape;
-                            shape.shapeType = ParticleSystemShapeType.SkinnedMeshRenderer;
-                            shape.skinnedMeshRenderer = skinnedMesh;
-                        }
-                        newStack.ParticleSystems[j].Play();
-                    }
-                }
+                //if (self.GetComponentInChildren<SkinnedMeshRenderer>() is SkinnedMeshRenderer skinnedMesh)
+                //{
+                //    for (int j = 0; j < newStack.ParticleSystems.Length; j++)
+                //    {
+                //        Debug.Log("Setting shape type and skinned mesh");
+                //        var shape = newStack.ParticleSystems[j].shape;
+                //        shape.shapeType = ParticleSystemShapeType.SkinnedMeshRenderer;
+                //        shape.skinnedMeshRenderer = skinnedMesh;
+                //        newStack.ParticleSystems[j].Play();
+                //    }
+                //}
 
-                newStack.ImbueFX.SetParent(self.transform);
-                newStack.ImbueFX.ResetLocal(true);
-                if (At.GetValue(typeof(ItemVisual), self, "m_linkedImbueFX") is List<ImbueStack> m_linkedImbues)
-                {
-                    m_linkedImbues.Add(newStack);
-                    At.SetValue(m_linkedImbues, typeof(ItemVisual), self, "m_linkedImbueFX");
-                }
+                //newStack.ImbueFX.SetParent(self.transform);
+                //newStack.ImbueFX.ResetLocal(true);
+                //if (At.GetValue(typeof(ItemVisual), self, "m_linkedImbueFX") is List<ImbueStack> m_linkedImbues)
+                //{
+                //    m_linkedImbues.Add(newStack);
+                //    At.SetValue(m_linkedImbues, typeof(ItemVisual), self, "m_linkedImbueFX");
+                //}
 
                 return false;
             }
