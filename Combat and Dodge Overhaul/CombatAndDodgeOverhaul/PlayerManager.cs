@@ -139,7 +139,8 @@ namespace CombatAndDodgeOverhaul
 
             if (f >= staminaCost)
             {
-                At.SetValue(f - staminaCost, typeof(CharacterStats), self.Stats, "m_stamina");
+                //At.SetValue(f - staminaCost, typeof(CharacterStats), self.Stats, "m_stamina");
+                self.Stats.UseStamina(TagSourceManager.Dodge, staminaCost);
 
                 At.SetValue(0, typeof(Character), self, "m_dodgeAllowedInAction");
 

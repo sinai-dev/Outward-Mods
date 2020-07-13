@@ -16,7 +16,7 @@ namespace CombatAndDodgeOverhaul
     {
         const string GUID = "com.sinai.combatoverhaul";
         const string NAME = "Combat Overhaul";
-        const string VERSION = "2.2";
+        const string VERSION = "2.3";
 
         public static CombatOverhaul Instance;
 
