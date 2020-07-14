@@ -74,19 +74,19 @@ namespace CharacterEditor
                 return;
             }
 
-            if (ModGUI.ShowMenu)
-            {
-                if (!m_mouseShowing)
-                {
-                    m_mouseShowing = true;
-                    ToggleDummyPanel(cha, true);
-                }
-            }
-            else if (m_mouseShowing)
-            {
-                m_mouseShowing = false;
-                ToggleDummyPanel(cha, false);
-            }
+            //if (ModGUI.ShowMenu)
+            //{
+            //    if (!m_mouseShowing)
+            //    {
+            //        m_mouseShowing = true;
+            //        ToggleDummyPanel(cha, true);
+            //    }
+            //}
+            //else if (m_mouseShowing)
+            //{
+            //    m_mouseShowing = false;
+            //    ToggleDummyPanel(cha, false);
+            //}
         }
     }
 }

@@ -16,7 +16,7 @@ namespace ImbuedBows
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Imbued Bows & Mana Bow";
-        public const string VERSION = "1.4";
+        public const string VERSION = "1.5";
 
         internal void Awake()
         {
@@ -38,7 +38,7 @@ namespace ImbuedBows
         {
             yield return new WaitForSeconds(1f);
 
-            // =============== setup infuse skills ===============
+            // =============== setup infuse skills and discharge ===============
             var list = new List<int>
             {
                 8200100, // infuse light
@@ -46,6 +46,8 @@ namespace ImbuedBows
                 8200102, // infuse frost
                 8200103, // infuse fire
                 2502001, // infuse burst of light (templar)
+
+                8200310, // elemental discharge
             };
 
             foreach (int id in list)

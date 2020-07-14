@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Weapon xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Target_ItemID>2200030</Target_ItemID>
+  <New_ItemID>2800901</New_ItemID>
+  
+  <Name>Horror Mana Bow</Name>
+  <Description>An Ethereal Horror Bow. The Chitin has reacted powerfully  to the Mana.
+  
+Inflicts Haunted.</Description>
+  
+  <LegacyItemID>-1</LegacyItemID>
+  <IsPickable>true</IsPickable>
+  <IsUsable>false</IsUsable>
+  <QtyRemovedOnUse>1</QtyRemovedOnUse>
+  <GroupItemInDisplay>false</GroupItemInDisplay>
+  <HasPhysicsWhenWorld>false</HasPhysicsWhenWorld>
+  <RepairedInRest>true</RepairedInRest>
+  <BehaviorOnNoDurability>NotSet</BehaviorOnNoDurability>
+  <CastType>DrawArrow</CastType>
+  <CastModifier>Immobilized</CastModifier>
+  <CastLocomotionEnabled>false</CastLocomotionEnabled>
+  <MobileCastMovementMult>-1</MobileCastMovementMult>
+  <CastSheatheRequired>1</CastSheatheRequired>
+  <OverrideSellModifier>-1</OverrideSellModifier>
+  
+  <Tags>
+    <string>Bow</string>
+    <string>Weapon</string>
+    <string>Item</string>
+    <string>Main Weapon</string>
+    <string>ManaBow</string>
+  </Tags>
+  
+  <StatsHolder xsi:type="SL_WeaponStats">
+    <BaseValue>2500</BaseValue>
+    <RawWeight>4</RawWeight>
+    <MaxDurability>200</MaxDurability>
+    <Damage_Resistance>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+    </Damage_Resistance>
+    <Impact_Resistance>0</Impact_Resistance>
+    <Damage_Protection>0</Damage_Protection>
+    <Damage_Bonus>
+      <float>0</float>
+      <float>10</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+      <float>0</float>
+    </Damage_Bonus>
+    <Stamina_Use_Penalty>0</Stamina_Use_Penalty>
+    <Mana_Use_Modifier>-5</Mana_Use_Modifier>
+    <Movement_Penalty>0</Movement_Penalty>
+    <Pouch_Bonus>0</Pouch_Bonus>
+    <Heat_Protection>0</Heat_Protection>
+    <Cold_Protection>0</Cold_Protection>
+    <Corruption_Protection>0</Corruption_Protection>
+    <Health_Regen xsi:nil="true" />
+    <Cooldown_Reduction xsi:nil="true" />
+    <AttackSpeed>0</AttackSpeed>
+    <BaseDamage>
+      <SL_Damage>
+        <Damage>40</Damage>
+        <Type>Ethereal</Type>
+      </SL_Damage>
+    </BaseDamage>
+    <Impact>18</Impact>
+    <StamCost>0</StamCost>
+    <AutoGenerateAttackData>true</AutoGenerateAttackData>   
+  </StatsHolder>
+  
+  <ExtensionsEditBehaviour>NONE</ExtensionsEditBehaviour>
+  <ItemExtensions>
+    <SL_ItemExtension xsi:type="SL_WeaponLoadoutItem">
+      <Savable>true</Savable>
+      <AmmunitionType>WeaponType</AmmunitionType>
+      <CompatibleItemID xsi:nil="true" />
+      <CompatibleEquipmentType>Arrow</CompatibleEquipmentType>
+      <MaxProjectileLoaded>1</MaxProjectileLoaded>
+      <SaveRemainingShots>false</SaveRemainingShots>
+      <ShowLoadedAmmunition>true</ShowLoadedAmmunition>
+      <ReduceAmmunitionOnLoad>false</ReduceAmmunitionOnLoad>
+    </SL_ItemExtension>
+    <SL_ItemExtension xsi:type="SL_WeaponCharger">
+      <Savable>false</Savable>
+      <ChargingStaminaCost>0.2</ChargingStaminaCost>
+    </SL_ItemExtension>
+  </ItemExtensions>
+  
+  <EffectBehaviour>DestroyEffects</EffectBehaviour>
+  <EffectTransforms>
+    <SL_EffectTransform>
+      <TransformName>Effects</TransformName>
+      <Effects>
+        <SL_Effect xsi:type="SL_ShootItem">
+          <Delay>0</Delay>
+          <SyncType>OwnerSync</SyncType>
+          <OverrideCategory>None</OverrideCategory>
+          <CastPosition>Given</CastPosition>
+          <LocalPositionAdd>
+            <x>0</x>
+            <y>1.5</y>
+            <z>0</z>
+          </LocalPositionAdd>
+          <NoAim>false</NoAim>
+          <TargetType>Enemies</TargetType>
+          <TransformName>ShooterTransform</TransformName>
+          <BaseProjectile>NONE</BaseProjectile>
+          <ProjectileShots />
+          <Lifespan>0</Lifespan>
+          <LateShootTime>0</LateShootTime>
+          <Unblockable>false</Unblockable>
+          <EffectsOnlyIfHitCharacter>false</EffectsOnlyIfHitCharacter>
+          <EndMode>Normal</EndMode>
+          <DisableOnHit>false</DisableOnHit>
+          <IgnoreShooterCollision>false</IgnoreShooterCollision>
+          <TargetingMode>NONE</TargetingMode>
+          <TargetCountPerProjectile>0</TargetCountPerProjectile>
+          <TargetRange>0</TargetRange>
+          <AutoTarget>false</AutoTarget>
+          <AutoTargetMaxAngle>0</AutoTargetMaxAngle>
+          <AutoTargetRange>0</AutoTargetRange>
+          <ProjectileForce>0</ProjectileForce>
+          <AddDirection>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </AddDirection>
+          <AddRotationForce>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </AddRotationForce>
+          <YMagnitudeAffect>0</YMagnitudeAffect>
+          <YMagnitudeForce>0</YMagnitudeForce>
+          <DefenseLength>0</DefenseLength>
+          <DefenseRange>0</DefenseRange>
+          <ImpactSoundMaterial>Goo</ImpactSoundMaterial>
+          <LightIntensityFade>
+            <x>0</x>
+            <y>0</y>
+          </LightIntensityFade>
+          <PointOffset>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </PointOffset>
+          <TrailEnabled>false</TrailEnabled>
+          <TrailTime>0</TrailTime>
+          <EffectBehaviour>OverrideEffects</EffectBehaviour>
+          <ProjectileEffects />
+        </SL_Effect>
+      </Effects>
+      <EffectConditions />
+      <ChildEffects />
+    </SL_EffectTransform>
+    <SL_EffectTransform>
+      <TransformName>HitEffects</TransformName>
+      <Effects>
+        <SL_Effect xsi:type="SL_AddStatusEffectBuildUp">
+          <Delay>0</Delay>
+          <SyncType>OwnerSync</SyncType>
+          <OverrideCategory>None</OverrideCategory>
+          <StatusEffect>Haunted</StatusEffect>
+          <Buildup>60</Buildup>
+        </SL_Effect>
+      </Effects>
+      <EffectConditions />
+      <ChildEffects />
+    </SL_EffectTransform>
+  </EffectTransforms>  
+
+  <EquipSlot>RightHand</EquipSlot>
+  <TwoHandType>TwoHandedLeft</TwoHandType>
+  <IKType>None</IKType>
+  <VisualDetectabilityAdd>0</VisualDetectabilityAdd>
+  <WeaponType>Bow</WeaponType>
+  <Unblockable>false</Unblockable>
+  <SwingSound>Default</SwingSound>
+  <SpecialIsZoom>true</SpecialIsZoom>
+  <HealthLeechRatio xsi:nil="true" />
+  <HealthBurnLeechRatio xsi:nil="true" />
+</SL_Weapon>

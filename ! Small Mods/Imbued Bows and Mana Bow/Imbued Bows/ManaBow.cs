@@ -5,87 +5,120 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using HarmonyLib;
+using SideLoader;
 
 namespace ImbuedBows
 {
     public class ManaBow : MonoBehaviour
     {
-        public static readonly int ManaBowID = 2800900;
-        public static readonly int ManaArrowID = 2800901;
-        public static readonly float ManaBowCost = 5f;
+        public static Tag ManaBowTag;
+        private const string ManaBowTagString = "ManaBow";
+
+        public const float ManaBowCost = 5f;
+        public const float ManaBowHoldCost = 0.1f;
+
+        public const int ManaArrowID = 2800910;
+
+        // ======= harmony patch fixes ==========
+
+        [HarmonyPatch(typeof(ProjectileItem), "AssignVisual")]
+        public class ProjectileItem_AssignVisual
+        {
+            [HarmonyPrefix]
+            public static void Prefix(ref Projectile ___m_projectile, ProjectileItem __instance)
+            {
+                ___m_projectile = __instance.GetComponent<Projectile>();
+            }
+        }
+
+        [HarmonyPatch(typeof(EffectSynchronizer), "RegisterEffectReference")]
+        public class EffectSynchronizer_RegisterEffectReference
+        {
+            [HarmonyPrefix]
+            public static void Prefix(EffectSynchronizer __instance, ref List<string>[] ___m_categoryEffects)
+            {
+                if (___m_categoryEffects == null)
+                {
+                    ___m_categoryEffects = new List<string>[EffectSynchronizer.EffectCategoriesCount];
+                    for (int j = 0; j < ___m_categoryEffects.Length; j++)
+                    {
+                        ___m_categoryEffects[j] = new List<string>();
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ProjectileWeapon), "UpdateProcessing")]
+        public class ProjectileWeapon_UpdateProcessing
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ProjectileWeapon __instance, ref bool ___m_fullyBent)
+            {
+                if (IsManaBow(__instance) && ___m_fullyBent)
+                {
+                    var owner = __instance.OwnerCharacter;
+                    var ammo = owner.Inventory.Equipment.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver);
+                    if (!ammo)
+                    {
+                        ___m_fullyBent = false;
+                        At.SetValue(false, typeof(Character), owner, "m_currentlyChargingAttack");
+                        owner.BowRelease();
+
+                        var charger = (WeaponCharger)__instance.GetExtension("WeaponCharger");
+                        charger.ResetCharging();
+                    }
+                }
+            }
+        }
+
+
+        // ============= methods ==================
+
+        public static bool IsManaBow(Item item)
+        {
+            return item.HasTag(ManaBowTag);
+        }
 
         internal void Awake()
         {
-            SideLoader.SL.OnPacksLoaded += Setup;
+            SL.BeforePacksLoaded += SL_BeforePacksLoaded;
+            SL.OnPacksLoaded += SL_OnPacksLoaded;
+        }
+
+        private void SL_BeforePacksLoaded()
+        {
+            ManaBowTag = CustomTags.CreateTag(ManaBowTagString);
         }
 
         //setup after sideloader init is done
-        private void Setup()
+        private void SL_OnPacksLoaded()
         {
-            Debug.Log("Setting up mana bow");
-
-            // setup bow
-            var bow = ResourcesPrefabManager.Instance.GetItemPrefab(ManaBowID) as ProjectileWeapon;
-
-            if (bow != null && bow.GetItemVisual() is Transform bowVisuals)
-            {
-                var skinnedMesh = bowVisuals.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (skinnedMesh)
-                {
-                    skinnedMesh.material.color = new Color(0.5f, 0.8f, 2.0f);
-
-                    //var etherealImbue = ResourcesPrefabManager.Instance.GetEffectPreset(208);
-                    //var fx = etherealImbue.GetComponent<ImbueEffectPreset>().ImbueFX;
-
-                    //var newFX = Instantiate(fx.gameObject);
-                    //DontDestroyOnLoad(newFX.gameObject);
-                    //newFX.transform.parent = bow.GetItemVisual();
-
-                    //foreach (var ps in newFX.GetComponentsInChildren<ParticleSystem>())
-                    //{
-                    //    var shape = ps.shape;
-                    //    shape.shapeType = ParticleSystemShapeType.SkinnedMeshRenderer;
-                    //    shape.skinnedMeshRenderer = skinnedMesh;
-
-                    //    var main = ps.main;
-                    //    main.startColor = new Color(0.1f, 0.4f, 0.95f);
-                    //}
-                }
-
-                var light = bowVisuals.gameObject.AddComponent<Light>();
-                light.color = new Color(0.3f, 0.7f, 0.9f);
-                light.intensity = 1.5f;
-                light.range = 1.3f;
-            }
+            Debug.Log("Setting up mana arrow");
 
             // setup custom mana projectile
             var manaArrow = ResourcesPrefabManager.Instance.GetItemPrefab(ManaArrowID) as Ammunition;
 
+            // set empty equipped visuals (hide quiver)
+            var vLink = CustomItemVisuals.GetOrAddVisualLink(manaArrow);
+            vLink.ItemSpecialVisuals = new GameObject("ManaQuiverDummy").transform;
+            DontDestroyOnLoad(vLink.ItemSpecialVisuals.gameObject);
+
             // custom arrow ProjectileItem component (determines the ammunition behaviour as projectile)
-            var origObj = manaArrow.ProjectileFXPrefab.gameObject;
-            origObj.SetActive(false);
-            var newObj = Instantiate(origObj);
-            origObj.SetActive(true);
-            DontDestroyOnLoad(newObj);
-            var projBehaviour = newObj.GetComponent<ProjectileItem>();
-            projBehaviour.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.Destroyed;
+            var origProjFX = manaArrow.ProjectileFXPrefab.gameObject;
+            origProjFX.SetActive(false);
+            manaArrow.ProjectileFXPrefab = Instantiate(origProjFX).transform;
+            origProjFX.SetActive(true);
 
-            // custom arrow visuals
-            var arrowVisuals = manaArrow.GetItemVisual();
-            foreach (MeshRenderer mesh in arrowVisuals.GetComponentsInChildren<MeshRenderer>())
-            {
-                if (mesh.GetComponent<BoxCollider>())
-                {
-                    mesh.material.color = new Color(0.3f, 0.8f, 1.2f);
+            DontDestroyOnLoad(manaArrow.ProjectileFXPrefab.gameObject);
 
-                    var light = mesh.gameObject.AddComponent<Light>();
-                    light.color = new Color(0.3f, 0.7f, 0.9f);
-                    light.intensity = 1.2f;
-                    light.range = 0.5f;
+            var projItem = manaArrow.ProjectileFXPrefab.GetComponent<ProjectileItem>();
+            projItem.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.None;
+            projItem.EphemeralProjectile = true;
 
-                    break;
-                }
-            }
+            var raycast = manaArrow.ProjectileFXPrefab.GetComponent<RaycastProjectile>();
+            raycast.ProjectileVisualsToDisable = projItem.gameObject;
+
+            raycast.ImpactSoundMaterial = EquipmentSoundMaterials.Goo;
         }
 
         [HarmonyPatch(typeof(WeaponLoadout), "CanBeLoaded")]
@@ -94,10 +127,9 @@ namespace ImbuedBows
             [HarmonyPrefix]
             public static bool Prefix(WeaponLoadout __instance, ref bool __result)
             {
-                var self = __instance;
-                var item = self.Item;
+                var item = __instance.Item;
 
-                if (item.ItemID == ManaBowID)
+                if (IsManaBow(item))
                 {
                     float currentMana = item.OwnerCharacter.Stats.CurrentMana;
                     float manaCost = item.OwnerCharacter.Stats.GetFinalManaConsumption(null, ManaBowCost);
@@ -123,12 +155,12 @@ namespace ImbuedBows
             [HarmonyPrefix]
             public static bool Prefix(WeaponLoadout __instance, bool _destroyOnEmpty = false)
             {
-                var self = __instance;
+                var item = __instance.Item;
 
-                if (self.Item.ItemID == ManaBowID)
+                if (IsManaBow(item))
                 {
-                    float manaCost = self.Item.OwnerCharacter.Stats.GetFinalManaConsumption(null, ManaBowCost);
-                    self.Item.OwnerCharacter.Stats.UseMana(null, manaCost);
+                    float manaCost = item.OwnerCharacter.Stats.GetFinalManaConsumption(null, ManaBowCost);
+                    item.OwnerCharacter.Stats.UseMana(null, manaCost);
                     return false;
                 }
 
@@ -144,26 +176,24 @@ namespace ImbuedBows
             {
                 var self = __instance;
 
-                if (self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.RightHand) is Weapon weapon && weapon.ItemID == ManaBowID)
+                if (self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.RightHand) is Weapon weapon && IsManaBow(weapon))
                 {
                     var character = At.GetValue(typeof(CharacterEquipment), self, "m_character") as Character;
 
                     if (!character.Inventory.HasEquipped(ManaArrowID))
                     {
+                        Ammunition ammo;
                         if (!character.Inventory.OwnsItem(ManaArrowID))
                         {
-                            var newAmmo = ItemManager.Instance.GenerateItemNetwork(ManaArrowID) as Ammunition;
-                            newAmmo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
-                            __result = newAmmo;
-                            return false;
+                            ammo = ItemManager.Instance.GenerateItemNetwork(ManaArrowID) as Ammunition;
                         }
                         else
                         {
-                            var ammoFromID = character.Inventory.GetOwnedItems(ManaArrowID);
-                            ammoFromID[0].ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
-                            __result = ammoFromID[0] as Ammunition;
-                            return false;
+                            ammo = (Ammunition)character.Inventory.GetOwnedItems(ManaArrowID)[0];
                         }
+                        ammo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
+                        __result = ammo;
+                        return false;
                     }
                     else
                     {
@@ -189,7 +219,7 @@ namespace ImbuedBows
 
                 var self = __instance;
 
-                if (self.OwnerCharacter && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
+                if (self.OwnerCharacter && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && IsManaBow(bow))
                 {
                     __result = true;
                     return false;
@@ -207,7 +237,7 @@ namespace ImbuedBows
             {
                 var self = __instance;
 
-                if (self.MainHand && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
+                if (self.MainHand && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && IsManaBow(bow))
                 {
                     __result = true;
                     return false;
@@ -227,7 +257,7 @@ namespace ImbuedBows
             {
                 var self = __instance;
 
-                if (self.MainHand && _affectedCharacter.CurrentWeapon is ProjectileWeapon bow && bow.ItemID == ManaBowID)
+                if (self.MainHand && _affectedCharacter.CurrentWeapon is ProjectileWeapon bow && IsManaBow(bow))
                 {
                     return false;
                 }
