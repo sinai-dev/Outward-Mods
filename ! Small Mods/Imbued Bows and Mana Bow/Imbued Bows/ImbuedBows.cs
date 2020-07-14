@@ -20,15 +20,16 @@ namespace ImbuedBows
 
         internal void Awake()
         {
-            SL.OnPacksLoaded += Setup;
+            SL.OnPacksLoaded += SetupSkills;
 
-            this.gameObject.AddComponent<ManaBow>();
+            SL.BeforePacksLoaded += ManaBowManager.SetupTag;
+            SL.OnPacksLoaded += ManaBowManager.SetupManaArrow;
 
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
         }
 
-        private void Setup()
+        private void SetupSkills()
         {
             // yield the OnPacksLoaded call (and wait a second just in case) so we can be sure other mods have loaded.
             StartCoroutine(LateFix());
@@ -63,7 +64,7 @@ namespace ImbuedBows
         public class InfuseConsumable_Use
         {
             [HarmonyPostfix]
-            public static void Prefix(InfuseConsumable __instance, Character _character, ref bool __result)
+            public static bool Prefix(InfuseConsumable __instance, Character _character, ref bool __result)
             {
                 __result = false;
 
@@ -71,7 +72,7 @@ namespace ImbuedBows
 
                 if (_character != null)
                 {
-                    if (_character.CurrentWeapon != null) // && _character.CurrentWeapon.Type != Weapon.WeaponType.Bow)
+                    if (_character.CurrentWeapon) // && _character.CurrentWeapon.Type != Weapon.WeaponType.Bow)
                     {
                         if (self.m_UseSound)
                         {
@@ -79,7 +80,7 @@ namespace ImbuedBows
                         }
 
                         //self.m_characterUsing = _character;
-                        At.SetValue(_character, typeof(Item), self as Item, "m_characterUsing");
+                        At.SetValue(_character, typeof(Item), self, "m_characterUsing");
 
                         if (self.ActivateEffectAnimType == Character.SpellCastType.NONE)
                         {
@@ -92,11 +93,13 @@ namespace ImbuedBows
                         }
                         __result = true;
                     }
-                    if (_character.CharacterUI)
+                    else if (_character.CharacterUI)
                     {
                         _character.CharacterUI.ShowInfoNotificationLoc("Notification_Item_InfuseNotCompatible");
                     }
                 }
+
+                return false;
             }
         }
 

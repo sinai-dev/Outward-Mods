@@ -170,7 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImbuedBows.cs" />
-    <Compile Include="ManaBow.cs" />
+    <Compile Include="ManaBowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="util\SinAPI.cs" />
   </ItemGroup>

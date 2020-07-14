@@ -9,7 +9,7 @@ using SideLoader;
 
 namespace ImbuedBows
 {
-    public class ManaBow : MonoBehaviour
+    public class ManaBowManager
     {
         public static Tag ManaBowTag;
         private const string ManaBowTagString = "ManaBow";
@@ -79,19 +79,12 @@ namespace ImbuedBows
             return item.HasTag(ManaBowTag);
         }
 
-        internal void Awake()
-        {
-            SL.BeforePacksLoaded += SL_BeforePacksLoaded;
-            SL.OnPacksLoaded += SL_OnPacksLoaded;
-        }
-
-        private void SL_BeforePacksLoaded()
+        public static void SetupTag()
         {
             ManaBowTag = CustomTags.CreateTag(ManaBowTagString);
         }
 
-        //setup after sideloader init is done
-        private void SL_OnPacksLoaded()
+        public static void SetupManaArrow()
         {
             Debug.Log("Setting up mana arrow");
 
@@ -101,15 +94,15 @@ namespace ImbuedBows
             // set empty equipped visuals (hide quiver)
             var vLink = CustomItemVisuals.GetOrAddVisualLink(manaArrow);
             vLink.ItemSpecialVisuals = new GameObject("ManaQuiverDummy").transform;
-            DontDestroyOnLoad(vLink.ItemSpecialVisuals.gameObject);
+            GameObject.DontDestroyOnLoad(vLink.ItemSpecialVisuals.gameObject);
 
             // custom arrow ProjectileItem component (determines the ammunition behaviour as projectile)
             var origProjFX = manaArrow.ProjectileFXPrefab.gameObject;
             origProjFX.SetActive(false);
-            manaArrow.ProjectileFXPrefab = Instantiate(origProjFX).transform;
+            manaArrow.ProjectileFXPrefab = GameObject.Instantiate(origProjFX).transform;
             origProjFX.SetActive(true);
 
-            DontDestroyOnLoad(manaArrow.ProjectileFXPrefab.gameObject);
+            GameObject.DontDestroyOnLoad(manaArrow.ProjectileFXPrefab.gameObject);
 
             var projItem = manaArrow.ProjectileFXPrefab.GetComponent<ProjectileItem>();
             projItem.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.None;
