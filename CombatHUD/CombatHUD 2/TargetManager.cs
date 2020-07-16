@@ -74,7 +74,7 @@ namespace CombatHUD
 
         internal void Update()
         {
-            if (m_LinkedCharacter == null)
+            if (!m_LinkedCharacter)
             {
                 if (SplitScreenManager.Instance.LocalPlayerCount > Split_ID && SplitScreenManager.Instance.LocalPlayers[Split_ID].AssignedCharacter)
                 {
@@ -238,7 +238,7 @@ namespace CombatHUD
                     if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatusTimers))
                     {
                         TimeSpan t = TimeSpan.FromSeconds(status.RemainingLifespan);
-                        var s = string.Format("{0}:{1}", t.Minutes, t.Seconds.ToString("00"));
+                        var s = $"{t.Minutes}:{t.Seconds:00}";
                         text.text = s;
                         text.color = Color.white;
 
@@ -263,9 +263,8 @@ namespace CombatHUD
             // buildups
             if ((bool)CombatHUD.config.GetValue(Settings.EnemyBuildup))
             {
-                var m_statusBuildup = At.GetValue(typeof(StatusEffectManager), target.StatusEffectMngr, "m_statusBuildUp") as IDictionary;
-                IDictionary dict = m_statusBuildup as IDictionary;
-                FieldInfo buildupField = m_statusBuildup.GetType().GetGenericArguments()[1].GetField("BuildUp");
+                var dict = At.GetValue(typeof(StatusEffectManager), target.StatusEffectMngr, "m_statusBuildUp") as IDictionary;                
+                FieldInfo buildupField = dict.GetType().GetGenericArguments()[1].GetField("BuildUp");
 
                 foreach (string name in dict.Keys)
                 {

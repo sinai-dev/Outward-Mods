@@ -11,7 +11,7 @@ namespace CombatHUD
     {
         public static bool IsElligable(Weapon weapon, Character owner, Character target)
         {
-            return target != null && target != owner && (weapon.CanHitEveryoneButOwner || owner.TargetingSystem.IsTargetable(target));
+            return target && target != owner && (weapon.CanHitEveryoneButOwner || owner.TargetingSystem.IsTargetable(target));
         }
     }
 
@@ -63,14 +63,14 @@ namespace CombatHUD
 
             if (At.GetValue(typeof(Weapon), __instance as Weapon, "m_alreadyHitChars") is List<Character> alreadyhit)
             {
-                bool eligible = (_hitCharacter != null) && (_hitCharacter != selfChar) && (__instance.CanHitEveryoneButOwner || selfChar.TargetingSystem.IsTargetable(_hitCharacter));
+                bool eligible = _hitCharacter && (_hitCharacter != selfChar) && (__instance.CanHitEveryoneButOwner || selfChar.TargetingSystem.IsTargetable(_hitCharacter));
 
                 if (eligible && !alreadyhit.Contains((Character)_hitCharacter))
                 {
                     if (!_blocked)
                     {
                         DamageList damages = __instance.GetDamage(0);
-                        _hitCharacter.Stats.GetMitigatedDamage((Tag[])null, ref damages);
+                        _hitCharacter.Stats.GetMitigatedDamage(null, ref damages);
 
                         DamageLabels.AddDamageLabel(damages, _hitPos, _hitCharacter);
                     }

@@ -64,14 +64,15 @@ namespace CombatHUD
             {
                 var player = SplitScreenManager.Instance.LocalPlayers[i];
 
-                if (player.AssignedCharacter == null)
+                if (!player.AssignedCharacter)
                 {
                     continue;
                 }
 
                 // dont show damage labels if player is in menu
                 bool disable = false;
-                if (m_hideUI || !m_playerShowHUD[i] || MenuManager.Instance.IsMapDisplayed || player.AssignedCharacter.CharacterUI.GetCurrentMenu() is MenuPanel panel && panel.IsDisplayed)
+                if (m_hideUI || !m_playerShowHUD[i] || MenuManager.Instance.IsMapDisplayed 
+                    || (player.AssignedCharacter.CharacterUI.GetCurrentMenu() is MenuPanel panel && panel.IsDisplayed))
                 {
                     disable = true;
                 }

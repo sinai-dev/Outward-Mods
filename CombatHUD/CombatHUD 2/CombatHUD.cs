@@ -37,14 +37,7 @@ namespace CombatHUD
             config = SetupConfig();
             config.Register();
 
-            if (SL.PacksLoaded)
-            {
-                Setup();
-            }
-            else
-            {
-                SL.OnPacksLoaded += Setup;
-            }
+            SL.OnPacksLoaded += Setup;
 
             Debug.Log($"{NAME} started, version {VERSION}");
         }
@@ -70,7 +63,7 @@ namespace CombatHUD
 
         private void Setup()
         {
-            Logger.Log(LogLevel.Message, NAME + " started, version: " + VERSION);
+            Logger.Log(LogLevel.Message, "Combat HUD setting up");
 
             var pack = SL.Packs["CombatHUD"];
 
@@ -96,11 +89,11 @@ namespace CombatHUD
                 // ====== target manager ======
                 var targetMgrHolder = HUDCanvas.transform.Find("TargetManager_Holder");
 
-                var mgr_P1 = targetMgrHolder.transform.Find("TargetManager_P1").GetOrAddComponent<TargetManager>();
-                mgr_P1.Split_ID = 0;
-
-                var mgr_P2 = targetMgrHolder.transform.Find("TargetManager_P2").GetOrAddComponent<TargetManager>();
-                mgr_P2.Split_ID = 1;
+                for (int i = 0; i < 2; i++)
+                {
+                    var mgr = targetMgrHolder.transform.Find($"TargetManager_P{i + 1}").gameObject.AddComponent<TargetManager>();
+                    mgr.Split_ID = i;
+                }
 
                 // ====== player manager ======
                 var statusTimerHolder = HUDCanvas.transform.Find("PlayerStatusTimers");
