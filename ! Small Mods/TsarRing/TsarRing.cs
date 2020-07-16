@@ -30,7 +30,10 @@ namespace TsarRing
         private void SL_BeforePacksLoaded()
         {
             CustomTags.CreateTag("Ring");
+        }
 
+        private void SL_OnPacksLoaded()
+        {
             var ringItem = new SL_Equipment
             {
                 Target_ItemID = 5100500,
@@ -51,19 +54,86 @@ namespace TsarRing
 
                 SLPackName = "TsarRing",
                 SubfolderName = "TsarRing",
-                
+
                 ItemVisuals = new SL_ItemVisual
                 {
                     Prefab_SLPack = "TsarRing",
                     Prefab_AssetBundle = "tsarring",
                     Prefab_Name = "mdl_itm_Tsar_Ring_v",
-                    
+
                     Position = new Vector3(-0.018f, 0.011f, 0.037f),
                     Rotation = new Vector3(347.014f, 357.770f, 0f),
                 },
             };
 
             CustomItems.CreateCustomItem(ringItem);
+
+            var ringEffects = new List<SL_EffectTransform>
+            {
+                new SL_EffectTransform
+                {
+                    TransformName = "ActivationEffects",
+                    Effects = new List<SL_Effect>
+                    {
+                        new SL_PlaySoundEffect
+                        {
+                            SyncType = Effect.SyncTypes.OwnerSync,
+                            Sounds = new List<GlobalAudioManager.Sounds>
+                            {
+                                GlobalAudioManager.Sounds.CS_Mantis_ManaBlast_Whoosh1
+                            }
+                        }
+                    }
+                },
+                new SL_EffectTransform
+                {
+                    TransformName = "Effects",
+                    Effects = new List<SL_Effect>
+                    {
+                        new SL_ShootConeBlast
+                        {
+                            BaseBlast = SL_ShootBlast.BlastPrefabs.EliteImmaculateLaser,
+                            CastPosition = Shooter.CastPositionType.Transform,
+                            NoAim = true,
+                            TargetType = Shooter.TargetTypes.Enemies,
+                            TransformName = "ShooterTransform",
+                            Radius = 0.8f,
+                            RefreshTime = 0.1f,
+                            BlastLifespan = 1.0f,
+                            InstantiatedAmount = 1,
+                            Interruptible = true,
+                            MaxHitTargetCount = -1,
+                            HitOnShoot = true,
+                            NoTargetForwardMultiplier = 5.0f,
+                            ImpactSoundMaterial = EquipmentSoundMaterials.Fire,
+                            EffectBehaviour = EffectBehaviours.OverrideEffects,
+                            BlastEffects = new List<SL_EffectTransform>
+                            {
+                                new SL_EffectTransform
+                                {
+                                    TransformName = "Effects",
+                                    Effects = new List<SL_Effect>
+                                    {
+                                        new SL_PunctualDamage
+                                        {
+                                            Damage = new List<SL_Damage>
+                                            {
+                                                new SL_Damage
+                                                {
+                                                    Type = DamageType.Types.Ethereal,
+                                                    Damage = 5.0f,
+                                                }
+                                            },
+                                            Knockback = 2f,
+                                            HitInventory = true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
 
             var ringSkill = new SL_AttackSkill
             {
@@ -84,80 +154,10 @@ namespace TsarRing
                 SLPackName = "TsarRing",
                 SubfolderName = "RingLaser",
 
-                EffectTransforms = new List<SL_EffectTransform>
-                {
-                    new SL_EffectTransform
-                    {
-                        TransformName = "ActivationEffects",
-                        Effects = new List<SL_Effect>
-                        {
-                            new SL_PlaySoundEffect
-                            {
-                                SyncType = Effect.SyncTypes.OwnerSync,
-                                Sounds = new List<GlobalAudioManager.Sounds>
-                                {
-                                    GlobalAudioManager.Sounds.CS_Mantis_ManaBlast_Whoosh1
-                                }
-                            }
-                        }
-                    },
-                    new SL_EffectTransform
-                    {
-                        TransformName = "Effects",
-                        Effects = new List<SL_Effect>
-                        {
-                            new SL_ShootConeBlast
-                            {
-                                BaseBlast = SL_ShootBlast.BlastPrefabs.EliteImmaculateLaser,
-                                CastPosition = Shooter.CastPositionType.Transform,
-                                NoAim = true,
-                                TargetType = Shooter.TargetTypes.Enemies,
-                                TransformName = "ShooterTransform",
-                                Radius = 0.8f,
-                                RefreshTime = 0.1f,
-                                BlastLifespan = 1.0f,
-                                InstantiatedAmount = 1,
-                                Interruptible = true,
-                                MaxHitTargetCount = -1,
-                                HitOnShoot = true,
-                                NoTargetForwardMultiplier = 5.0f,
-                                ImpactSoundMaterial = EquipmentSoundMaterials.Fire,
-                                EffectBehaviour = EffectBehaviours.OverrideEffects,
-                                BlastEffects = new List<SL_EffectTransform>
-                                {
-                                    new SL_EffectTransform
-                                    {
-                                        TransformName = "Effects",
-                                        Effects = new List<SL_Effect>
-                                        {
-                                            new SL_PunctualDamage
-                                            {
-                                                Damage = new List<SL_Damage>
-                                                {
-                                                    new SL_Damage
-                                                    {
-                                                        Type = DamageType.Types.Ethereal,
-                                                        Damage = 5.0f,
-                                                    }
-                                                },
-                                                Knockback = 2f,
-                                                HitInventory = true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                EffectTransforms = ringEffects
             };
 
             CustomItems.CreateCustomItem(ringSkill);
-        }
-
-        private void SL_OnPacksLoaded()
-        {
-            
         }
     }
 }

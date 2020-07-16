@@ -16,7 +16,7 @@ namespace ImbuedBows
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Imbued Bows & Mana Bow";
-        public const string VERSION = "1.5";
+        public const string VERSION = "1.6";
 
         internal void Awake()
         {
@@ -63,7 +63,7 @@ namespace ImbuedBows
         [HarmonyPatch(typeof(InfuseConsumable), "Use")]
         public class InfuseConsumable_Use
         {
-            [HarmonyPostfix]
+            [HarmonyPrefix]
             public static bool Prefix(InfuseConsumable __instance, Character _character, ref bool __result)
             {
                 __result = false;

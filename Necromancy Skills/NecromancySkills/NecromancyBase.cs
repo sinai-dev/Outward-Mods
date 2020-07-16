@@ -12,13 +12,13 @@ using HarmonyLib;
 namespace NecromancySkills
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInDependency("com.sinai.SideLoader", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(SideLoader.SL.GUID, BepInDependency.DependencyFlags.HardDependency)]
     public class NecromancyBase : BaseUnityPlugin
     {
         public static NecromancyBase Instance;
         public const string GUID = "com.sinai.necromancy";
         public const string NAME = "Necromancy Skills";
-        public const string VERSION = "2.8";
+        public const string VERSION = "2.9";
 
         public static Settings settings;
         private static readonly string savePath = @"Mods\NecromancySkills.json";
