@@ -1,4 +1,4 @@
-﻿using System;
+	using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +10,12 @@ using HarmonyLib;
 
 namespace Dismantler
 {
-	[BepInPlugin(GUID, NAME, VERSION)]
+    [BepInPlugin(GUID, NAME, VERSION)]
     public class Dismantler : BaseUnityPlugin
     {
-		const string GUID = "com.sinai.dismantler";
-		const string NAME = "Dismantler";
-		const string VERSION = "1.1";
+        const string GUID = "com.sinai.dismantler";
+        const string NAME = "Dismantler";
+        const string VERSION = "1.1";
 
         public static Dismantler Instance;
 
@@ -23,72 +23,72 @@ namespace Dismantler
         {
             Instance = this;
 
-			var harmony = new Harmony(GUID);
-			harmony.PatchAll();
+            var harmony = new Harmony(GUID);
+            harmony.PatchAll();
 
-			SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
         }
 
-		[HarmonyPatch(typeof(Deployable), "InitFromItem")]
-		public class Deployable_InitFromItem
-		{
-			[HarmonyPostfix]
-			public static void Postfix(Deployable __instance)
-			{
-				var self = __instance;
+        [HarmonyPatch(typeof(Deployable), "InitFromItem")]
+        public class Deployable_InitFromItem
+        {
+            [HarmonyPostfix]
+            public static void Postfix(Deployable __instance)
+            {
+                var self = __instance;
 
-				if (self.IsDeployed && self.PackedStateItemPrefab == null)
-				{
-					Instance.AddDestroyInteraction(self);
-				}
-			}
-		}
+                if (self.IsDeployed && self.PackedStateItemPrefab == null)
+                {
+                    Instance.AddDestroyInteraction(self);
+                }
+            }
+        }
 
-		private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
-		{
-			StartCoroutine(WaitForSceneReady());
-		}
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            StartCoroutine(WaitForSceneReady());
+        }
 
-		private IEnumerator WaitForSceneReady()
-		{
-			while (!NetworkLevelLoader.Instance.IsOverallLoadingDone || !NetworkLevelLoader.Instance.AllPlayerDoneLoading)
-			{
-				yield return null;
-			}
+        private IEnumerator WaitForSceneReady()
+        {
+            while (!NetworkLevelLoader.Instance.IsOverallLoadingDone || !NetworkLevelLoader.Instance.AllPlayerDoneLoading)
+            {
+                yield return null;
+            }
 
-			foreach (var deployable in ItemManager.Instance.WorldItems.Values.Where(x => x.GetExtension("Deployable") != null))
-			{
-				var comp = deployable.GetComponent<Deployable>();
+            foreach (var deployable in ItemManager.Instance.WorldItems.Values.Where(x => x.GetExtension("Deployable") != null))
+            {
+                var comp = deployable.GetComponent<Deployable>();
 
-				if (comp.IsDeployed && comp.PackedStateItemPrefab == null)
-				{
-					AddDestroyInteraction(comp);
-				}
-			}
-		}
+                if (comp.IsDeployed && comp.PackedStateItemPrefab == null)
+                {
+                    AddDestroyInteraction(comp);
+                }
+            }
+        }
 
-		private void AddDestroyInteraction(Deployable self)
-		{
-			if (self.PackedStateItemPrefab == null)
-			{
-				var m_item = self.Item;
+        private void AddDestroyInteraction(Deployable self)
+        {
+            if (self.PackedStateItemPrefab == null)
+            {
+                var m_item = self.Item;
 
-				Debug.Log("DeployableManager: Adding InteractionDestroy to " + m_item.Name + " (" + m_item.UID + ")");
+                Debug.Log("DeployableManager: Adding InteractionDestroy to " + m_item.Name + " (" + m_item.UID + ")");
 
-				var holder = m_item.InteractionHolder;
+                var holder = m_item.InteractionHolder;
 
-				// add custom "Destroy" component
-				var comp = m_item.InteractionHolder.AddComponent<InteractionDestroy>();
+                // add custom "Destroy" component
+                var comp = m_item.InteractionHolder.AddComponent<InteractionDestroy>();
 
-				// set up the activator and base for our hold action, and do what the game normally does for the disassemble interaction
-				var activator = holder.GetComponent<InteractionActivator>();
-				activator.AddHoldInteractionOverride(comp);
+                // set up the activator and base for our hold action, and do what the game normally does for the disassemble interaction
+                var activator = holder.GetComponent<InteractionActivator>();
+                activator.AddHoldInteractionOverride(comp);
 
-				var triggerbase = holder.GetComponent<InteractionTriggerBase>();				
-				At.SetValue(triggerbase, typeof(Deployable), self, "m_disassembleInteractionTrigger");
+                var triggerbase = holder.GetComponent<InteractionTriggerBase>();                
+                At.SetValue(triggerbase, typeof(Deployable), self, "m_disassembleInteractionTrigger");
 
-				self.RefreshDisassembleCollider();
-			}
-		}
+                self.RefreshDisassembleCollider();
+            }
+        }
     }
 }
