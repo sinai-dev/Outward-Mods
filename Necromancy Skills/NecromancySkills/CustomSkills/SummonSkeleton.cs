@@ -25,12 +25,16 @@ namespace NecromancySkills
 			effects.AddComponent<SummonSkeleton>();
 
 			// setup custom blade visuals
-			var blade = ResourcesPrefabManager.Instance.GetItemPrefab(2598500) as Weapon;
-			var bladeVisuals = CustomItemVisuals.GetOrAddVisualLink(blade).ItemVisuals;
-            if (bladeVisuals.transform.Find("Weapon3DVisual").GetComponent<MeshRenderer>() is MeshRenderer mesh)
+			try
             {
-                mesh.material.color = new Color(-0.5f, 1.5f, -0.5f);
-            }
+				var blade = ResourcesPrefabManager.Instance.GetItemPrefab(2598500) as Weapon;
+				var bladeVisuals = CustomItemVisuals.GetOrAddVisualLink(blade).ItemVisuals;
+				if (bladeVisuals.transform.Find("Weapon3DVisual").GetComponent<MeshRenderer>() is MeshRenderer mesh)
+				{
+					mesh.material.color = new Color(-0.5f, 1.5f, -0.5f);
+				}
+			}
+			catch { }
 
             // make sure the config is applied from the save
             SummonManager.Skeleton.Health = NecromancyBase.settings.Summon_MaxHealth;

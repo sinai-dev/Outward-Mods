@@ -56,10 +56,6 @@ namespace CombatAndDodgeOverhaul
                 }
 
                 float staminaCost = (float)CombatOverhaul.config.GetValue(Settings.Custom_Dodge_Cost);
-                if (self.Inventory.SkillKnowledge.GetItemFromItemID(8205130)) // feather dodge
-                {
-                    staminaCost *= 0.5f;
-                }
 
                 // if dodge cancelling is NOT enabled, just do a normal dodge check.
                 if (!(bool)CombatOverhaul.config.GetValue(Settings.Dodge_Cancelling))

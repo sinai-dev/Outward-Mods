@@ -23,20 +23,18 @@ namespace NecromancySkills
         public static Settings settings;
         private static readonly string savePath = @"Mods\NecromancySkills.json";
 
-        private static GameObject rpcObj;
+        private static GameObject behaviourObj;
 
         internal void Awake()
         {
             LoadSettings();
 
-            var go = this.gameObject;
-            go.AddComponent<TrainerManager>();
-            go.AddComponent<SkillManager>();
-            go.AddComponent<SummonManager>();
-
-            rpcObj = new GameObject("NecromancyRPC");
-            DontDestroyOnLoad(rpcObj);
-            rpcObj.AddComponent<RPCManager>();
+            behaviourObj = new GameObject("NecromancyRPC");
+            DontDestroyOnLoad(behaviourObj);
+            behaviourObj.AddComponent<TrainerManager>();
+            behaviourObj.AddComponent<SkillManager>();
+            behaviourObj.AddComponent<SummonManager>();
+            behaviourObj.AddComponent<RPCManager>();
 
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
