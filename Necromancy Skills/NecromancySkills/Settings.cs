@@ -12,7 +12,7 @@ namespace NecromancySkills
         public bool Summon_BurnsHealth = false;
         public int Summon_MaxSummons_NoArmyOfDeath = 1;
         public int Summon_MaxSummons_WithArmyOfDeath = 3;
-        public int Summon_Summoned_Per_Cast_withArmyOfDeath = 3;
+        public int Summon_Summoned_Per_Cast_withArmyOfDeath = 1;
         public float Summon_MaxHealth = 75f;
         public float Summon_HealthLoss = -0.75f;
         public float StrongSummon_MaxHealth = 250;
