@@ -84,22 +84,20 @@ namespace NecromancySkills
 					while (diff < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath)
                     {
 						if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
-						{
+                        {
 							SummonManager.DestroySummon(summon);
 						}
 
 						diff++;
-					}
-                } else
+                    }
+                }
+				else
                 {
-					if (list.Count == MaxSummons)
-					{
-						if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
-						{
-							SummonManager.DestroySummon(summon);
-						}
-					}
-				}
+					if (list.Count == MaxSummons && SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+                    {
+						SummonManager.DestroySummon(summon);
+                    }
+                }
 			}
 
 			// custom health cost for casting
@@ -112,21 +110,20 @@ namespace NecromancySkills
 			if (!PhotonNetwork.isNonMasterClientInRoom)
 			{
 				var uid = UID.Generate().ToString();
-				//int sceneViewID = PhotonNetwork.AllocateSceneViewID();
 
 				bool insidePlagueAura = PlagueAuraProximityCondition.IsInsidePlagueAura(_affectedCharacter.transform.position);
 
-				// The main stuff happens here
 				if (armyOfDeathLearned)
                 {
-					for (int count = 0; count < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; count++)
+					for (int i = 0; i < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; i++)
                     {
-						SummonManager.Instance.SummonSpawn(_affectedCharacter, UID.Generate().ToString(), insidePlagueAura);
-					}
-				} else
+						SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
+                    }
+                }
+				else
                 {
-					SummonManager.Instance.SummonSpawn(_affectedCharacter, UID.Generate().ToString(), insidePlagueAura);
-				}
+					SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
+                }
 			}
 		}
 	}
