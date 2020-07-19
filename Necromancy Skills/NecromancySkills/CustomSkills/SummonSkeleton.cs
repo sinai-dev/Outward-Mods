@@ -77,13 +77,28 @@ namespace NecromancySkills
 			if (SummonManager.Instance.SummonedCharacters.ContainsKey(_affectedCharacter.UID))
 			{
 				var list = SummonManager.Instance.SummonedCharacters[_affectedCharacter.UID];
+				int diff = MaxSummons - list.Count;
 
-				if (list.Count == MaxSummons)
-				{
-					if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+				if (armyOfDeathLearned)
+                {
+					while (diff < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath)
                     {
-						SummonManager.DestroySummon(summon);
-                    }
+						if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+						{
+							SummonManager.DestroySummon(summon);
+						}
+
+						diff++;
+					}
+                } else
+                {
+					if (list.Count == MaxSummons)
+					{
+						if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+						{
+							SummonManager.DestroySummon(summon);
+						}
+					}
 				}
 			}
 
@@ -102,7 +117,16 @@ namespace NecromancySkills
 				bool insidePlagueAura = PlagueAuraProximityCondition.IsInsidePlagueAura(_affectedCharacter.transform.position);
 
 				// The main stuff happens here
-				SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
+				if (armyOfDeathLearned)
+                {
+					for (int count = 0; count < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; count++)
+                    {
+						SummonManager.Instance.SummonSpawn(_affectedCharacter, UID.Generate().ToString(), insidePlagueAura);
+					}
+				} else
+                {
+					SummonManager.Instance.SummonSpawn(_affectedCharacter, UID.Generate().ToString(), insidePlagueAura);
+				}
 			}
 		}
 	}
