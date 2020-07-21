@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using SideLoader;
 
 namespace CombatHUD
 {
@@ -56,7 +57,7 @@ namespace CombatHUD
             {
                 var player = SplitScreenManager.Instance.LocalPlayers[i].AssignedCharacter;
 
-                if (player == null || !m_playerShowHUD[i] || m_hideUI)
+                if (!player || !m_playerShowHUD[i] || m_hideUI)
                 {
                     continue;
                 }
@@ -117,7 +118,7 @@ namespace CombatHUD
         {
             CharacterBarListener manager = player.CharacterUI.transform.Find("Canvas/GameplayPanels/HUD/MainCharacterBars").GetComponent<CharacterBarListener>();
 
-            if (manager == null) { return; } // OLogger.Error("BarManager is null"); return; }
+            if (!manager) { return; } // OLogger.Error("BarManager is null"); return; }
 
             if (At.GetValue(typeof(CharacterBarListener), manager, "m_healthBar") is Bar healthBar
                 && At.GetValue(typeof(Bar), healthBar, "m_lblValue") is Text healthText
@@ -140,7 +141,7 @@ namespace CombatHUD
         {
             var player = SplitScreenManager.Instance.LocalPlayers[splitID];
 
-            if (player == null || player.AssignedCharacter == null)
+            if (player == null || !player.AssignedCharacter)
             {
                 return;
             }
@@ -197,7 +198,7 @@ namespace CombatHUD
                     }
                 }
 
-                if (remainingLifespan > 0f && entry.Value != null)
+                if (remainingLifespan > 0f && entry.Value)
                 {
                     statusInfos.Add(new StatusEffectInfo
                     {

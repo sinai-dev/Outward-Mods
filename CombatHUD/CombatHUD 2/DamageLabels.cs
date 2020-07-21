@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using SideLoader;
 
 namespace CombatHUD
 {
@@ -40,10 +41,10 @@ namespace CombatHUD
         internal void Update()
         {
             //cleanup dead labels first
+            var maxLifespan = (float)CombatHUD.config.GetValue(Settings.LabelLifespan);
             for (int z = 0; z < ActiveLabels.Count; z++)
             {
-                if (Time.time - ActiveLabels[z].CreationTime > (float)CombatHUD.config.GetValue(Settings.LabelLifespan)
-                    || ActiveLabels[z].Target == null)
+                if (Time.time - ActiveLabels[z].CreationTime > maxLifespan || !ActiveLabels[z].Target)
                 {
                     ActiveLabels.RemoveAt(z);
                     z--;

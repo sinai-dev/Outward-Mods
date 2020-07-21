@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using SideLoader;
 
 namespace CombatHUD
 {
@@ -87,7 +88,7 @@ namespace CombatHUD
             }
             else
             {
-                if (m_LinkedCharacter.TargetingSystem.Locked && m_LinkedCharacter.TargetingSystem.LockedCharacter != null)
+                if (m_LinkedCharacter.TargetingSystem.Locked && m_LinkedCharacter.TargetingSystem.LockedCharacter)
                 {
                     UpdateTarget();
                 }
@@ -144,7 +145,7 @@ namespace CombatHUD
             }
 
             var rect = m_infoboxHolder.GetComponent<RectTransform>();
-            if (m_startPos == null)
+            if (m_startPos == Vector2.zero)
             {
                 m_startPos = rect.position;
             }
