@@ -29,7 +29,7 @@ namespace NecromancySkills
         {
             LoadSettings();
 
-            behaviourObj = new GameObject("NecromancyRPC");
+            behaviourObj = new GameObject("NecromancyBehaviour");
             DontDestroyOnLoad(behaviourObj);
             behaviourObj.AddComponent<TrainerManager>();
             behaviourObj.AddComponent<SkillManager>();
