@@ -7,34 +7,34 @@ using System.Collections;
 
 namespace Dismantler
 {
-	public class InteractionDestroy : InteractionDisassemble
-	{
-		protected override string DefaultHoldText => "Destroy";
+    public class InteractionDestroy : InteractionDisassemble
+    {
+        protected override string DefaultHoldText => "Destroy";
 
-		protected override void OnActivate()
-		{
-			//base.OnActivate();
+        protected override void OnActivate()
+        {
+            //base.OnActivate();
 
-			var script = At.GetValue(typeof(InteractionDisassemble), this as InteractionDisassemble, "m_deployableScript") as Deployable;
+            var script = At.GetValue(typeof(InteractionDisassemble), this as InteractionDisassemble, "m_deployableScript") as Deployable;
 
-			if (script)
-			{
-				Debug.Log("Destroying " + script.Item.Name);
+            if (script)
+            {
+                Debug.Log("Destroying " + script.Item.Name);
 
-				if (this.LastCharacter is Character character)
-				{
-					character.SpellCastAnim(Character.SpellCastType.PackupGround, Character.SpellCastModifier.Immobilized, 1);
-				}
+                if (this.LastCharacter is Character character)
+                {
+                    character.SpellCastAnim(Character.SpellCastType.PackupGround, Character.SpellCastModifier.Immobilized, 1);
+                }
 
-				StartCoroutine(DelayedDestroy(script));
-			}
-		}
+                StartCoroutine(DelayedDestroy(script));
+            }
+        }
 
-		private IEnumerator DelayedDestroy(Deployable _deployable)
-		{
-			yield return new WaitForSeconds(1.0f);
+        private IEnumerator DelayedDestroy(Deployable _deployable)
+        {
+            yield return new WaitForSeconds(1.0f);
 
-			ItemManager.Instance.DestroyItem(_deployable.Item.UID);
-		}
-	}
+            ItemManager.Instance.DestroyItem(_deployable.Item.UID);
+        }
+    }
 }
