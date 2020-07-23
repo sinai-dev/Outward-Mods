@@ -125,7 +125,7 @@ namespace EnchantmentHelper
 
                 if (equipment)
                 {
-                    GUILayout.Label("<b>Mainhand:</b> <color=orange>" + equipment.Name + "</color>");
+                    GUILayout.Label("<b>Equipped:</b> <color=orange>" + equipment.Name + "</color>");
 
                     if (equipment.IsEnchanted)
                     {
