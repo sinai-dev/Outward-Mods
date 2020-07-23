@@ -17,22 +17,18 @@ namespace EnchantmentHelper
         const string NAME = "Enchantment Helper";
         const string VERSION = "1.0.0";
 
-        private const int GuiWindowID = 8273;
-
-        public static bool ShowMenu = false;
-        public static string SearchText = "";
-        public static Enchantment SelectedEnchant;
-        public static bool ApplyToMainHand = true;
-
-        private EquipmentSlot.EquipmentSlotIDs SelectedSlot = EquipmentSlot.EquipmentSlotIDs.RightHand;
-
-        private static Vector2 scroll = Vector2.zero;
-
         // Enchantment cache
         private static Dictionary<string, Enchantment> m_cachedEnchantments;
 
         // GUI
         private static Rect m_rect = new Rect(5, 5, 350, 450);
+        private const int GuiWindowID = 8273;
+        private static Vector2 scroll = Vector2.zero;
+
+        public static bool ShowMenu = false;
+        public static string SearchText = "";
+        public static Enchantment SelectedEnchant;
+        private EquipmentSlot.EquipmentSlotIDs SelectedSlot = EquipmentSlot.EquipmentSlotIDs.RightHand;
 
         // Setup
         internal void Awake()
