@@ -21,13 +21,13 @@ namespace EnchantmentHelper
         private static Dictionary<string, Enchantment> m_cachedEnchantments;
 
         // GUI
-        private static Rect m_rect = new Rect(5, 5, 350, 450);
-        private const int GuiWindowID = 8273;
-        private static Vector2 scroll = Vector2.zero;
+        private const int WINDOW_ID = 8273;
+        private Rect m_rect = new Rect(5, 5, 350, 450);
+        private Vector2 scroll = Vector2.zero;
 
         public static bool ShowMenu = false;
-        public static string SearchText = "";
-        public static Enchantment SelectedEnchant;
+        public string SearchText = "";
+        public Enchantment SelectedEnchant;
         private EquipmentSlot.EquipmentSlotIDs SelectedSlot = EquipmentSlot.EquipmentSlotIDs.RightHand;
 
         // Setup
@@ -74,7 +74,7 @@ namespace EnchantmentHelper
             {
                 var orig = GUI.skin;
                 GUI.skin = SideLoader.UI.UIStyles.WindowSkin;
-                m_rect = GUI.Window(GuiWindowID, m_rect, WindowFunction, "Enchantment Menu (Ctrl+Alt+E Toggle)");
+                m_rect = GUI.Window(WINDOW_ID, m_rect, WindowFunction, "Enchantment Menu (Ctrl+Alt+E Toggle)");
                 GUI.skin = orig;
             }
         }
@@ -132,6 +132,7 @@ namespace EnchantmentHelper
                             enchant.UnapplyEnchantment();
                             var ids = (List<int>)At.GetValue(typeof(Equipment), equipment, "m_enchantmentIDs");
                             ids.Clear();
+                            At.Call(typeof(Equipment), equipment, "RefreshEnchantmentModifiers", null, new object[0]);
                         }
                     }
                     else if (SelectedEnchant != null)

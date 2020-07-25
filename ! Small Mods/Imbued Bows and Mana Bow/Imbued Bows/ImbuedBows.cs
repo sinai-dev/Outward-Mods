@@ -16,7 +16,7 @@ namespace ImbuedBows
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Imbued Bows & Mana Bow";
-        public const string VERSION = "1.6";
+        public const string VERSION = "1.7";
 
         internal void Awake()
         {
@@ -27,6 +27,42 @@ namespace ImbuedBows
 
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
+        }
+
+        // this patch fixes a bug with the game
+        [HarmonyPatch(typeof(PlayerCharacterStats), "OnUpdateStats")]
+        public class PlayerStats_Update
+        {
+            [HarmonyFinalizer]
+            public static Exception Finalizer(PlayerCharacterStats __instance)
+            {
+                var character = __instance.GetComponent<Character>();
+
+                if (!character)
+                {
+                    return null;
+                }
+
+                var charging = (bool)At.GetValue(typeof(Character), character, "m_currentlyChargingAttack");
+                var bowDrawn = (bool)At.GetValue(typeof(Character), character, "m_bowDrawn");
+
+                if (!charging || !bowDrawn)
+                {
+                    return null;
+                }
+
+                if (character.CurrentWeapon && character.CurrentWeapon.Type == Weapon.WeaponType.Bow)
+                {
+                    var charger = (WeaponCharger)character.CurrentWeapon.GetExtension(nameof(WeaponCharger));
+                    if (!charger.ChargeStarted && charger.StartChargeTime < 0)
+                    {
+                        At.SetValue(false, typeof(Character), character, "m_currentlyChargingAttack");
+                        At.SetValue(false, typeof(Character), character, "m_bowDrawn");
+                    }
+                }
+
+                return null;
+            }
         }
 
         private void SetupSkills()
@@ -89,7 +125,7 @@ namespace ImbuedBows
                         else
                         {
                             //self.StartEffectsCast(_character);
-                            At.Call(self as Item, "StartEffectsCast", new object[] { _character });
+                            At.Call(typeof(Item), self, "StartEffectsCast", null, new object[] { _character });
                         }
                         __result = true;
                     }

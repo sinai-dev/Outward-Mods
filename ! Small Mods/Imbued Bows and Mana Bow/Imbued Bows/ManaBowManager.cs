@@ -21,6 +21,7 @@ namespace ImbuedBows
 
         // ======= harmony patch fixes ==========
 
+        // fix a small null ref error
         [HarmonyPatch(typeof(ProjectileItem), "AssignVisual")]
         public class ProjectileItem_AssignVisual
         {
@@ -31,6 +32,7 @@ namespace ImbuedBows
             }
         }
 
+        // fix a null dictionary on init
         [HarmonyPatch(typeof(EffectSynchronizer), "RegisterEffectReference")]
         public class EffectSynchronizer_RegisterEffectReference
         {
@@ -48,6 +50,7 @@ namespace ImbuedBows
             }
         }
 
+        // fix a bug with drawing the mana bow
         [HarmonyPatch(typeof(ProjectileWeapon), "UpdateProcessing")]
         public class ProjectileWeapon_UpdateProcessing
         {
@@ -71,6 +74,55 @@ namespace ImbuedBows
             }
         }
 
+        // not working yet
+
+        //// fix effects not registering from mana arrows
+        //[HarmonyPatch(typeof(WeaponLoadoutItem), "ShootItemFromLoadout")]
+        //public class WeaponLoadoutItem_ShootItemFromLoadout
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix(WeaponLoadoutItem __instance, ProjectileItem _projItem)
+        //    {
+        //        var ammo = (Ammunition)At.GetValue(typeof(WeaponLoadoutItem), __instance, "m_lastLoadedAmmunition");
+
+        //        if (ammo.ItemID != ManaArrowID)
+        //        {
+        //            return;
+        //        }
+
+        //        var raycast = _projItem.GetComponent<RaycastProjectile>();
+        //        var imbued = (List<Effect>)At.GetValue(typeof(ProjectileItem), _projItem, "m_imbuedEffects");
+
+        //        if (raycast && imbued != null)
+        //        {
+        //            var dict = (IDictionary)At.GetValue(typeof(EffectSynchronizer), raycast, "m_effects");
+        //            dict.Clear();
+
+        //            foreach (var effect in imbued)
+        //            {
+        //                if ((bool)At.Call(typeof(EffectSynchronizer), raycast, "IsEffectAlreadyRegistered", null, new object[] { effect }))
+        //                {
+        //                    Debug.LogWarning("Effect is already registered");
+        //                }
+        //                else
+        //                {
+        //                    var data = raycast.RegisterEffect(effect);
+
+        //                    if (data == null)
+        //                    {
+        //                        Debug.LogWarning("null data!");
+        //                    }
+        //                    else
+        //                    {
+        //                        Debug.Log("Registered effect of type " + effect.GetType().Name);
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        Debug.LogWarning("-- registered custom effects to raycast on mana arrow --");
+        //    }
+        //}
 
         // ============= methods ==================
 
@@ -105,10 +157,13 @@ namespace ImbuedBows
             GameObject.DontDestroyOnLoad(manaArrow.ProjectileFXPrefab.gameObject);
 
             var projItem = manaArrow.ProjectileFXPrefab.GetComponent<ProjectileItem>();
-            projItem.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.None;
+            projItem.CollisionBehavior = ProjectileItem.CollisionBehaviorTypes.Destroyed;
             projItem.EphemeralProjectile = true;
 
-            var raycast = manaArrow.ProjectileFXPrefab.GetComponent<RaycastProjectile>();
+            At.SetValue(ManaArrowID, typeof(ProjectileItem), projItem, "m_itemID");
+            At.SetValue(ResourcesPrefabManager.Instance.GetItemPrefab(ManaArrowID), typeof(ProjectileItem), projItem, "m_item");
+
+            var raycast = projItem.GetComponent<RaycastProjectile>();
             raycast.ProjectileVisualsToDisable = projItem.gameObject;
 
             raycast.ImpactSoundMaterial = EquipmentSoundMaterials.Goo;
