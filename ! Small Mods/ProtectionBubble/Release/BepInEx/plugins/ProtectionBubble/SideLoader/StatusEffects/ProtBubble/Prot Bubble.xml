@@ -5,7 +5,7 @@
   <StatusIdentifier>Protection Bubble</StatusIdentifier>
   <Name>Protection Bubble</Name>
   <Lifespan>-1</Lifespan>
-  
+  <LengthType>Long</LengthType>
   <Tags />
   <EffectBehaviour>DestroyEffects</EffectBehaviour>
   <Effects>

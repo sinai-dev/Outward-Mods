@@ -81,17 +81,6 @@ namespace ProtectionBubble
             status.IsHidden = true;
             status.DisplayInHud = false;
 
-            var family = new StatusEffectFamily 
-            {
-                Name = "ProtBubbleFamily",
-                LengthType = StatusEffectFamily.LengthTypes.Long, 
-                MaxStackCount = 1,
-                StackBehavior = StatusEffectFamily.StackBehaviors.IndependantUnique
-            };
-
-            At.SetValue(StatusEffect.FamilyModes.Bind, typeof(StatusEffect), status, "m_familyMode");
-            At.SetValue(family, typeof(StatusEffect), status, "m_bindFamily" );
-
             var sig = status.transform.GetChild(0);
             var effects = new GameObject("Activation");
             effects.transform.parent = sig;
