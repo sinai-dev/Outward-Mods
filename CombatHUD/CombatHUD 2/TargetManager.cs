@@ -45,7 +45,29 @@ namespace CombatHUD
             m_StatusHolder = m_TargetHUDHolder.transform.Find("StatusEffects_Holder").gameObject;
             foreach (Transform child in m_StatusHolder.transform)
             {
+                // fix for Burn (now called Scorched)
+                if (child.name == "Burn")
+                {
+                    child.name = "Scorched";
+                }
+
                 child.gameObject.SetActive(false);
+            }
+
+            // setup new status effects
+            var baseStatus = m_StatusHolder.transform.GetChild(0);
+            var names = new string[] { "Weaken", "Sapped" };
+            for (int i = 0; i < 2; i++)
+            {
+                var newHolder = Instantiate(baseStatus.gameObject);
+                DontDestroyOnLoad(newHolder);
+                newHolder.transform.SetParent(baseStatus.parent, false);
+                newHolder.name = names[i];
+
+                var status = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(names[i]);
+
+                var icon = newHolder.GetComponentInChildren<Image>();
+                icon.sprite = status.StatusIcon;
             }
 
             // Setup Infobox
