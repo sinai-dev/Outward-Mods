@@ -7,7 +7,7 @@
   <Description>An Ethereal Horror Bow. The Chitin has reacted powerfully to the Mana.
   
 Inflicts Haunted.</Description>
-  
+
   <LegacyItemID>-1</LegacyItemID>
   <IsPickable>true</IsPickable>
   <IsUsable>false</IsUsable>
@@ -94,7 +94,7 @@ Inflicts Haunted.</Description>
     </SL_ItemExtension>
     <SL_ItemExtension xsi:type="SL_WeaponCharger">
       <Savable>false</Savable>
-      <ChargingStaminaCost>0.2</ChargingStaminaCost>
+      <ChargingStaminaCost>1.5</ChargingStaminaCost>
     </SL_ItemExtension>
   </ItemExtensions>
   
@@ -118,20 +118,21 @@ Inflicts Haunted.</Description>
           <TransformName>ShooterTransform</TransformName>
           <BaseProjectile>NONE</BaseProjectile>
           <ProjectileShots />
+          <InstantiatedAmount>3</InstantiatedAmount>
           <Lifespan>0</Lifespan>
           <LateShootTime>0</LateShootTime>
           <Unblockable>false</Unblockable>
           <EffectsOnlyIfHitCharacter>false</EffectsOnlyIfHitCharacter>
           <EndMode>Normal</EndMode>
           <DisableOnHit>false</DisableOnHit>
-          <IgnoreShooterCollision>false</IgnoreShooterCollision>
+          <IgnoreShooterCollision>true</IgnoreShooterCollision>
           <TargetingMode>NONE</TargetingMode>
-          <TargetCountPerProjectile>0</TargetCountPerProjectile>
+          <TargetCountPerProjectile>1</TargetCountPerProjectile>
           <TargetRange>0</TargetRange>
           <AutoTarget>false</AutoTarget>
-          <AutoTargetMaxAngle>0</AutoTargetMaxAngle>
-          <AutoTargetRange>0</AutoTargetRange>
-          <ProjectileForce>0</ProjectileForce>
+          <AutoTargetMaxAngle>360</AutoTargetMaxAngle>
+          <AutoTargetRange>5</AutoTargetRange>
+          <ProjectileForce>60</ProjectileForce>
           <AddDirection>
             <x>0</x>
             <y>0</y>
@@ -179,8 +180,16 @@ Inflicts Haunted.</Description>
       <EffectConditions />
       <ChildEffects />
     </SL_EffectTransform>
-  </EffectTransforms>  
-
+  </EffectTransforms>
+  <ItemVisuals>
+    <Prefab_SLPack />
+    <Prefab_AssetBundle />
+    <Prefab_Name />
+    <Position xsi:nil="true" />
+    <Rotation xsi:nil="true" />
+    <PositionOffset xsi:nil="true" />
+    <RotationOffset xsi:nil="true" />
+  </ItemVisuals>
   <EquipSlot>RightHand</EquipSlot>
   <TwoHandType>TwoHandedLeft</TwoHandType>
   <IKType>None</IKType>

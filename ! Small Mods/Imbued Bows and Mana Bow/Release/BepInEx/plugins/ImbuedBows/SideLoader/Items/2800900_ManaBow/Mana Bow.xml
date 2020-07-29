@@ -116,20 +116,21 @@
           <TransformName>ShooterTransform</TransformName>
           <BaseProjectile>NONE</BaseProjectile>
           <ProjectileShots />
+          <InstantiatedAmount>3</InstantiatedAmount>
           <Lifespan>0</Lifespan>
           <LateShootTime>0</LateShootTime>
           <Unblockable>false</Unblockable>
           <EffectsOnlyIfHitCharacter>false</EffectsOnlyIfHitCharacter>
           <EndMode>Normal</EndMode>
           <DisableOnHit>false</DisableOnHit>
-          <IgnoreShooterCollision>false</IgnoreShooterCollision>
+          <IgnoreShooterCollision>true</IgnoreShooterCollision>
           <TargetingMode>NONE</TargetingMode>
-          <TargetCountPerProjectile>0</TargetCountPerProjectile>
+          <TargetCountPerProjectile>1</TargetCountPerProjectile>
           <TargetRange>0</TargetRange>
           <AutoTarget>false</AutoTarget>
-          <AutoTargetMaxAngle>0</AutoTargetMaxAngle>
-          <AutoTargetRange>0</AutoTargetRange>
-          <ProjectileForce>0</ProjectileForce>
+          <AutoTargetMaxAngle>360</AutoTargetMaxAngle>
+          <AutoTargetRange>5</AutoTargetRange>
+          <ProjectileForce>60</ProjectileForce>
           <AddDirection>
             <x>0</x>
             <y>0</y>
