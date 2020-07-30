@@ -228,28 +228,49 @@ namespace ImbuedBows
                 {
                     var character = At.GetValue(typeof(CharacterEquipment), self, "m_character") as Character;
 
-                    if (!character.Inventory.HasEquipped(ManaArrowID))
+                    Ammunition ammo;
+
+                    if (character.Inventory.HasEquipped(ManaArrowID))
                     {
-                        Ammunition ammo;
+                        ammo = self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
+
+                        if (ammo.GetNextProjectile())
+                        {
+                            // we all good
+                            __result = ammo;
+                            return false;
+                        }
+                        else
+                        {
+                            // shot already fired, get a new arrow
+                            ammo = ItemManager.Instance.GenerateItemNetwork(ManaArrowID) as Ammunition;
+                        }
+                    }
+                    else // we dont have mana arrow equipped
+                    {
                         if (!character.Inventory.OwnsItem(ManaArrowID))
                         {
+                            // need to generate one
                             ammo = ItemManager.Instance.GenerateItemNetwork(ManaArrowID) as Ammunition;
                         }
                         else
                         {
+                            // we own one, but not equipped
                             ammo = (Ammunition)character.Inventory.GetOwnedItems(ManaArrowID)[0];
                         }
-                        ammo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
-                        __result = ammo;
-                        return false;
                     }
-                    else
+
+                    if (!character.Inventory.HasEquipped(ManaArrowID))
                     {
-                        __result = self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
-                        return false;
+                        // make sure the arrow is in the right slot
+                        ammo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
                     }
+
+                    __result = ammo;
+                    return false;
                 }
 
+                // don't have mana bow equipped
                 return true;
             }
         }
