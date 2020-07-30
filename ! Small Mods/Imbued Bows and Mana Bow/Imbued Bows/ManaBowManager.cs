@@ -74,6 +74,17 @@ namespace ImbuedBows
             }
         }
 
+        // fix changing scenes while an arrow is mid-flight
+        [HarmonyPatch(typeof(ProjectileItem), "ForceReturn")]
+        public class ProjectileItem_ForceReturn
+        {
+            [HarmonyFinalizer]
+            public static Exception Finalizer()
+            {
+                return null;
+            }
+        }
+
         // not working yet
 
         //// fix effects not registering from mana arrows
@@ -207,8 +218,31 @@ namespace ImbuedBows
 
                 if (IsManaBow(item))
                 {
+                    // custom mana cost
                     float manaCost = item.OwnerCharacter.Stats.GetFinalManaConsumption(null, ManaBowCost);
                     item.OwnerCharacter.Stats.UseMana(null, manaCost);
+
+                    // (vanilla) update weapon loadout remaining shots
+                    int remaining = (int)At.GetValue(typeof(WeaponLoadout), __instance, "m_remainingShots");
+                    remaining--;
+                    At.SetValue(remaining, typeof(WeaponLoadout), __instance, "m_remainingShots");
+
+                    if (remaining < 0)
+                    {
+                        remaining = 0;
+                    }
+                    if (remaining == 0)
+                    {
+                        __instance.Unload();
+                    }
+
+                    // unequip the arrow
+                    var ammo = __instance.Item.OwnerCharacter.Inventory.Equipment.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
+                    ammo.transform.SetParent(null);
+
+                    // vanilla method
+                    At.Call(typeof(ItemExtension), __instance, "SetHasChanged", null);
+
                     return false;
                 }
 
@@ -232,19 +266,9 @@ namespace ImbuedBows
 
                     if (character.Inventory.HasEquipped(ManaArrowID))
                     {
-                        ammo = self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
-
-                        if (ammo.GetNextProjectile())
-                        {
-                            // we all good
-                            __result = ammo;
-                            return false;
-                        }
-                        else
-                        {
-                            // shot already fired, get a new arrow
-                            ammo = ItemManager.Instance.GenerateItemNetwork(ManaArrowID) as Ammunition;
-                        }
+                        // we all good
+                        __result = self.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
+                        return false;
                     }
                     else // we dont have mana arrow equipped
                     {
@@ -260,11 +284,8 @@ namespace ImbuedBows
                         }
                     }
 
-                    if (!character.Inventory.HasEquipped(ManaArrowID))
-                    {
-                        // make sure the arrow is in the right slot
-                        ammo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
-                    }
+                    // make sure the arrow is in the right slot
+                    ammo.ChangeParent(self.GetMatchingEquipmentSlotTransform(EquipmentSlot.EquipmentSlotIDs.Quiver));
 
                     __result = ammo;
                     return false;
