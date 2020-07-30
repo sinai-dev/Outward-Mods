@@ -202,7 +202,7 @@ namespace ImbuedBows
                 }
                 else
                 {
-                    owner.CharacterUI.ShowInfoNotificationLoc("Notification_Skill_NotEnoughtMana");
+                    //owner.CharacterUI.ShowInfoNotificationLoc("Notification_Skill_NotEnoughtMana");
                     return false;
                 }
             }
