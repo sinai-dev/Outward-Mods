@@ -16,7 +16,7 @@ namespace ImbuedBows
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Imbued Bows & Mana Bow";
-        public const string VERSION = "1.72";
+        public const string VERSION = "1.73";
 
         internal void Awake()
         {

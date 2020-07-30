@@ -183,6 +183,30 @@ namespace ImbuedBows
         [HarmonyPatch(typeof(WeaponLoadout), "CanBeLoaded")]
         public class WeaponLoadout_CanBeLoaded
         {
+            public static bool CanBeLoaded(Item manaBow)
+            {
+                var owner = manaBow.OwnerCharacter;
+
+                if (!owner)
+                {
+                    Debug.Log("Mana bow has no owner!");
+                    return false;
+                }
+
+
+                float currentMana = owner.Stats.CurrentMana;
+                float manaCost = owner.Stats.GetFinalManaConsumption(null, ManaBowCost);
+                if (currentMana - manaCost >= 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    owner.CharacterUI.ShowInfoNotificationLoc("Notification_Skill_NotEnoughtMana");
+                    return false;
+                }
+            }
+
             [HarmonyPrefix]
             public static bool Prefix(WeaponLoadout __instance, ref bool __result)
             {
@@ -190,17 +214,7 @@ namespace ImbuedBows
 
                 if (IsManaBow(item))
                 {
-                    float currentMana = item.OwnerCharacter.Stats.CurrentMana;
-                    float manaCost = item.OwnerCharacter.Stats.GetFinalManaConsumption(null, ManaBowCost);
-                    if (currentMana - manaCost >= 0)
-                    {
-                        __result = true;
-                    }
-                    else
-                    {
-                        item.OwnerCharacter.CharacterUI.ShowInfoNotificationLoc("Notification_Skill_NotEnoughtMana");
-                        __result = false;
-                    }
+                    __result = CanBeLoaded(item);
                     return false;
                 }
 
@@ -212,7 +226,7 @@ namespace ImbuedBows
         public class WeaponLoadout_ReduceShotAmount
         {
             [HarmonyPrefix]
-            public static bool Prefix(WeaponLoadout __instance, bool _destroyOnEmpty = false)
+            public static bool Prefix(WeaponLoadout __instance)
             {
                 var item = __instance.Item;
 
@@ -239,6 +253,7 @@ namespace ImbuedBows
                     // unequip the arrow
                     var ammo = __instance.Item.OwnerCharacter.Inventory.Equipment.GetEquippedItem(EquipmentSlot.EquipmentSlotIDs.Quiver) as Ammunition;
                     ammo.transform.SetParent(null);
+                    ammo.transform.ResetLocal();
 
                     // vanilla method
                     At.Call(typeof(ItemExtension), __instance, "SetHasChanged", null);
@@ -311,7 +326,7 @@ namespace ImbuedBows
 
                 if (self.OwnerCharacter && self.OwnerCharacter.CurrentWeapon is ProjectileWeapon bow && IsManaBow(bow))
                 {
-                    __result = true;
+                    __result = WeaponLoadout_CanBeLoaded.CanBeLoaded(bow);
                     return false;
                 }
 
@@ -349,12 +364,11 @@ namespace ImbuedBows
 
                 if (self.MainHand && _affectedCharacter.CurrentWeapon is ProjectileWeapon bow && IsManaBow(bow))
                 {
+                    WeaponLoadout_ReduceShotAmount.Prefix(bow.GetComponent<WeaponLoadout>());
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
         }
 
