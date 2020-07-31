@@ -3,6 +3,7 @@
     "Summon_BurnsHealth": false,
     "Summon_MaxSummons_NoArmyOfDeath": 1,
     "Summon_MaxSummons_WithArmyOfDeath": 3,
+	"Summon_Summoned_Per_Cast_withArmyOfDeath": 1,
     "ShootTendrils_Heal_NoPlagueAura": 2.5,
 	"Summon_MaxHealth": 75,
 	"Summon_HealthLoss": -0.75,
