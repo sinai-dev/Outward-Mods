@@ -109,7 +109,6 @@ namespace NecromancySkills
             // only host should do this
             if (!PhotonNetwork.isNonMasterClientInRoom)
             {
-                var uid = UID.Generate().ToString();
 
                 bool insidePlagueAura = PlagueAuraProximityCondition.IsInsidePlagueAura(_affectedCharacter.transform.position);
 
@@ -117,11 +116,13 @@ namespace NecromancySkills
                 {
                     for (int i = 0; i < NecromancyBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; i++)
                     {
+                        var uid = UID.Generate().ToString();
                         SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
                     }
                 }
                 else
                 {
+                    var uid = UID.Generate().ToString();
                     SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
                 }
             }
