@@ -45,12 +45,6 @@ namespace CombatHUD
             m_StatusHolder = m_TargetHUDHolder.transform.Find("StatusEffects_Holder").gameObject;
             foreach (Transform child in m_StatusHolder.transform)
             {
-                // fix for Burn (now called Scorched)
-                if (child.name == "Burn")
-                {
-                    child.name = "Scorched";
-                }
-
                 child.gameObject.SetActive(false);
             }
 

@@ -42,7 +42,7 @@ namespace TsarRing
                 Description = "An ornately-decorated ring, jeweled with an impressive Tsar.\n\nSome say this ring was summoned by the Creator of Aurai itself.",
                 IKType = Equipment.IKMode.None,
                 EquipSlot = EquipmentSlot.EquipmentSlotIDs.LeftHand,
-                Tags = new List<string> { "Ring" },
+                Tags = new string[] { "Ring" },
                 StatsHolder = new SL_EquipmentStats
                 {
                     BaseValue = 999,
@@ -68,12 +68,12 @@ namespace TsarRing
 
             CustomItems.CreateCustomItem(ringItem);
 
-            var ringEffects = new List<SL_EffectTransform>
+            var ringEffects = new SL_EffectTransform[]
             {
                 new SL_EffectTransform
                 {
                     TransformName = "ActivationEffects",
-                    Effects = new List<SL_Effect>
+                    Effects = new SL_Effect[]
                     {
                         new SL_PlaySoundEffect
                         {
@@ -88,7 +88,7 @@ namespace TsarRing
                 new SL_EffectTransform
                 {
                     TransformName = "Effects",
-                    Effects = new List<SL_Effect>
+                    Effects = new SL_Effect[]
                     {
                         new SL_ShootConeBlast
                         {
@@ -107,12 +107,12 @@ namespace TsarRing
                             NoTargetForwardMultiplier = 5.0f,
                             ImpactSoundMaterial = EquipmentSoundMaterials.Fire,
                             EffectBehaviour = EffectBehaviours.OverrideEffects,
-                            BlastEffects = new List<SL_EffectTransform>
+                            BlastEffects = new SL_EffectTransform[]
                             {
                                 new SL_EffectTransform
                                 {
                                     TransformName = "Effects",
-                                    Effects = new List<SL_Effect>
+                                    Effects = new SL_Effect[]
                                     {
                                         new SL_PunctualDamage
                                         {
@@ -141,7 +141,7 @@ namespace TsarRing
                 New_ItemID = 8500999,
                 Name = "Ring Laser",
                 Description = "Requires: Tsar Ring\n\nInvoke the power of the ring, disintegrating anything in it's path.",
-                RequiredWeaponTags = new List<string> { "Ring" },
+                RequiredWeaponTags = new string[] { "Ring" },
                 Cooldown = 10,
                 ManaCost = 10,
                 StaminaCost = 0,

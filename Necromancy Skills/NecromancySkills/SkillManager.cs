@@ -98,7 +98,7 @@ namespace NecromancySkills
             // add elemental bonuses using custom ManaPointAffectStat class
             // elemental bonus stats are id 98 to 102
 
-            for (int i = 98; i <= 102; i++)
+            for (int i = 98; i < 103; i++)
             {
                 var comp = passiveTransform.gameObject.AddComponent<ManaPointAffectStat>();
                 comp.SelectedUID = i.ToString();
