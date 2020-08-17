@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SL_Recipe xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <UID>com.sinai.manabow.manabowrecipe</UID>
+  <UID>com.sinai.manabow.horrormanabowrecipe</UID>
   <StationType>Survival</StationType> 
   <Ingredients>
     <Ingredient>
