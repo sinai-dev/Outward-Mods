@@ -17,7 +17,7 @@ namespace MoreMapDetails
     {
         const string GUID = "com.sinai.moremapdetails";
         const string NAME = "More Map Details";
-        const string VERSION = "1.2";
+        const string VERSION = "1.3";
 
         public static MoreMapDetails Instance;
 
@@ -126,9 +126,16 @@ namespace MoreMapDetails
                 // caravanner
                 if ((bool)config.GetValue("ShowSoroboreanCaravanner"))
                 {
-                    if (GameObject.Find("HumanSNPC_CaravanTrader") is GameObject merchant && !merchant.GetComponentInChildren<MapWorldMarker>())
+                    var caravanner = GameObject.Find("HumanSNPC_CaravanTrader");
+
+                    if (!caravanner)
                     {
-                        Instance.AddWorldMarker(merchant, "Soroborean Caravanner");
+                        caravanner = GameObject.Find("UNPC_CaravanTraderA");
+                    }
+
+                    if (caravanner && !caravanner.GetComponentInChildren<MapWorldMarker>())
+                    {
+                        Instance.AddWorldMarker(caravanner, "Soroborean Caravanner");
                     }
                 }
                 // player bags
