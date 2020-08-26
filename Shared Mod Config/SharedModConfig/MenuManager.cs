@@ -1,6 +1,6 @@
-﻿using SideLoader;
+﻿using Rewired;
+using SideLoader;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +16,8 @@ namespace SharedModConfig
         public static MenuManager Instance;
 
         private readonly string MenuKey = "Shared Mod Config Menu";
+
+        private readonly int[] MenuKeyIds = new int[2];
 
         public delegate void MenuLoaded();
         public static event MenuLoaded OnMenuLoaded;
@@ -62,25 +64,35 @@ namespace SharedModConfig
                 }
             }
 
-            //if (Input.GetKeyDown(KeyCode.Escape) && m_ConfigPanel.activeSelf)
-            //{
-            //    ToggleMenu();
-            //}
-
             // keybind check
-            foreach (SplitPlayer player in SplitScreenManager.Instance.LocalPlayers)
+            if (Global.Lobby.PlayersInLobbyCount > 0
+                && !NetworkLevelLoader.Instance.IsGameplayLoading
+                && !NetworkLevelLoader.Instance.IsGameplayPaused
+                && !Global.GamePaused)
             {
-                if (CustomKeybindings.m_playerInputManager[player.RewiredID].GetButtonDown(MenuKey))
+                foreach (SplitPlayer player in SplitScreenManager.Instance.LocalPlayers)
                 {
-                    ToggleMenu();
-                }
-            }
+                    if (CustomKeybindings.m_playerInputManager[player.RewiredID].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem == null)
+                    {
+                        continue;
+                    }
 
-            // fix for displaying mouse when menu opens
-            if (Global.Lobby.PlayersInLobbyCount > 0 && !NetworkLevelLoader.Instance.IsGameplayPaused)
-            {
+                    UpdateMenuKey(player.RewiredID);
+
+                    if (ReInput.players.GetPlayer(player.RewiredID).controllers.GetController(
+                        CustomKeybindings.m_playerInputManager[player.RewiredID].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.controllerMap.controllerType,
+                        CustomKeybindings.m_playerInputManager[player.RewiredID].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.controllerMap.controllerId).
+                        GetButtonDownById(MenuKeyIds[player.RewiredID]))
+                    {
+                        ToggleMenu();
+                    }
+                }
+
+                // fix for displaying mouse when menu opens
                 MenuMouseFix();
             }
+
+
 
             // Update current config's displayed values (currently only really used for Float slider value)
             if (m_currentModConfig != null && m_currentModConfig.m_linkedPanel.activeSelf)
@@ -115,7 +127,7 @@ namespace SharedModConfig
 
             CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
         }
-        
+
         private void Setup()
         {
             SetupCanvas();
@@ -123,6 +135,14 @@ namespace SharedModConfig
             InitDone = true;
 
             OnMenuLoaded?.Invoke();
+        }
+
+        private void UpdateMenuKey(int id)
+        {
+            if (MenuKeyIds[id] != CustomKeybindings.m_playerInputManager[id].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.elementIdentifierId)
+            {
+                MenuKeyIds[id] = CustomKeybindings.m_playerInputManager[id].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.elementIdentifierId;
+            }
         }
 
         private void SetupCanvas()
