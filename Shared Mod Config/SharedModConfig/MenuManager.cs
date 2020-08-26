@@ -1,11 +1,7 @@
 ﻿using Rewired;
-using Rewired.Integration.UnityUI;
-using Rewired.Platforms;
 using SideLoader;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -39,7 +35,7 @@ namespace SharedModConfig
         private GameObject m_ModListButtonPrefab;
 
         private GameObject m_SettingsHolder;
-        private GameObject m_currentActiveSettings; 
+        private GameObject m_currentActiveSettings;
         private ModConfig m_currentModConfig;
         private GameObject m_SettingsPrefab;
 
@@ -96,7 +92,7 @@ namespace SharedModConfig
                 MenuMouseFix();
             }
 
-            
+
 
             // Update current config's displayed values (currently only really used for Float slider value)
             if (m_currentModConfig != null && m_currentModConfig.m_linkedPanel.activeSelf)
@@ -131,7 +127,7 @@ namespace SharedModConfig
 
             CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
         }
-        
+
         private void Setup()
         {
             SetupCanvas();
@@ -142,7 +138,7 @@ namespace SharedModConfig
         }
 
         private void UpdateMenuKey(int id)
-        { 
+        {
             if (MenuKeyIds[id] != CustomKeybindings.m_playerInputManager[id].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.elementIdentifierId)
             {
                 MenuKeyIds[id] = CustomKeybindings.m_playerInputManager[id].GetLastUsedControllerFirstElementMapWithAction(MenuKey).aem.elementIdentifierId;
