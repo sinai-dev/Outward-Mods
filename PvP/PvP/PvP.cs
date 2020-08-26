@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using System.IO;
 using BepInEx;
 using HarmonyLib;
+using UnityEngine.SceneManagement;
 
 namespace PvP
 {
@@ -32,6 +33,7 @@ namespace PvP
 
         public bool FriendlyFireEnabled;
         public bool FriendlyTargetingEnabled;
+        public bool EnemiesDisabled;
 
         public enum GameModes
         {
@@ -47,6 +49,8 @@ namespace PvP
             CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5);
 
             LoadSettings();
+
+            SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
 
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
@@ -64,6 +68,40 @@ namespace PvP
             //obj.AddComponent<BattleRoyale>();
             obj.AddComponent<DeathMatch>();
         }
+
+        // Disable enemies feature
+
+        private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+        {
+            var scene = SceneManagerHelper.ActiveSceneName.ToLower();
+            if (scene.Contains("lowmemory") || scene.Contains("mainmenu"))
+            {
+                return;
+            }
+
+            Instance.StartCoroutine(OnSceneChange());
+        }
+
+        private IEnumerator OnSceneChange()
+        {
+            while (NetworkLevelLoader.Instance.IsGameplayLoading || !NetworkLevelLoader.Instance.AllPlayerDoneLoading)
+            {
+                yield return new WaitForSeconds(0.3f);
+            }
+
+            if (EnemiesDisabled)
+            {
+                SetEnemiesActive(false);
+            }
+        }
+
+        public static void SetEnemiesActive(bool active)
+        {
+            Instance.EnemiesDisabled = !active;
+            AISquadManager.Instance.gameObject.SetActive(active);
+        }
+
+        // On Update
 
         internal void Update()
         {
@@ -104,13 +142,13 @@ namespace PvP
         {
             CurrentGame = (GameModes)_mode;
 
-            RPCManager.Instance.photonView.RPC("StartGameplayRPC", PhotonTargets.All, new object[] { _mode, messageToPlayers });
+            RPCManager.Instance.photonView.RPC(nameof(RPCManager.StartGameplayRPC), PhotonTargets.All, new object[] { _mode, messageToPlayers });
         }
 
         // only the host can call this whenever they want, other players may trigger it when they are the winning player.
         public void StopGameplay(string messageToPlayers = "")
         {
-            RPCManager.Instance.photonView.RPC("StopGameplayRPC", PhotonTargets.All, new object[] { messageToPlayers });
+            RPCManager.Instance.photonView.RPC(nameof(RPCManager.StopGameplayRPC), PhotonTargets.All, new object[] { messageToPlayers });
         }
 
         // the game-mode specific Update functions, called directly instead of MonoBehaviour.Update()

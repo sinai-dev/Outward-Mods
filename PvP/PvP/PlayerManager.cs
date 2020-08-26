@@ -102,6 +102,8 @@ namespace PvP
             List<Character.Factions> remainingTeams = new List<Character.Factions>();
             foreach (KeyValuePair<Character.Factions, List<PlayerSystem>> entry in PvP.Instance.CurrentPlayers)
             {
+                if (entry.Key == Character.Factions.NONE) continue;
+
                 bool anyAlive = false;
                 foreach (PlayerSystem ps in entry.Value)
                 {

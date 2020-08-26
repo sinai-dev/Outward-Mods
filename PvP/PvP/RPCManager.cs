@@ -17,10 +17,40 @@ namespace PvP
             Instance = this;
         }
 
+        // ==== Set Enemies Disabled state ====
+
+        public static void SendSetEnemiesActive(bool active)
+        {
+            if (PhotonNetwork.isNonMasterClientInRoom) return;
+
+            Instance.photonView.RPC(nameof(RPCSetEnemiesActive), PhotonTargets.All, new object[] { active });
+        }
+
+        [PunRPC]
+        private void RPCSetEnemiesActive(bool active)
+        {
+            PvP.SetEnemiesActive(active);
+        }
+
+        // ==== Set Player gameobject active state ====
+
+        public static void SendSetPlayerActive(string uid, bool active)
+        {
+            Instance.photonView.RPC(nameof(RPCSetPlayerActive), PhotonTargets.All, new object[] { uid, active });
+        }
+
+        [PunRPC]
+        private void RPCSetPlayerActive(string uid, bool active)
+        {
+            CharacterManager.Instance.GetCharacter(uid)?.gameObject.SetActive(active);
+        }
+
+        // ==== Send Friendly Fire state ====
+
         public static void SendFriendyFire(bool enabled)
         {
             SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Fire!");
-            Instance.photonView.RPC("SendFriendlyFireRPC", PhotonTargets.All, new object[] { enabled });
+            Instance.photonView.RPC(nameof(SendFriendlyFireRPC), PhotonTargets.All, new object[] { enabled });
         }
 
         [PunRPC]
@@ -29,10 +59,12 @@ namespace PvP
             PvP.Instance.FriendlyFireEnabled = enabled;
         }
 
+        // ==== Send Friendly Targeting state ====
+
         public static void SendFriendyTargeting(bool enabled)
         {
             SendMessageToAll($"{(enabled ? "Enabling" : "Disabling")} Friendly Targeting!");
-            Instance.photonView.RPC("SendFriendlyTargetingRPC", PhotonTargets.All, new object[] { enabled });
+            Instance.photonView.RPC(nameof(SendFriendlyTargetingRPC), PhotonTargets.All, new object[] { enabled });
         }
 
         [PunRPC]
@@ -40,6 +72,8 @@ namespace PvP
         {
             PvP.Instance.FriendlyTargetingEnabled = enabled;
         }
+
+        // ==== Direct RPCs for start/stop gameplay (only call with .RPC) ====
 
         [PunRPC]
         public void StartGameplayRPC(int _mode, string messageToPlayers = "")
@@ -61,6 +95,15 @@ namespace PvP
             PvP.Instance.CurrentPlayers.Clear();
             foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby)
             {
+                if (ps.ControlledCharacter.Faction == Character.Factions.NONE)
+                {
+                    if (ps.IsLocalPlayer)
+                    {
+                        ps.gameObject.AddComponent<Spectate>();
+                    }
+                    continue;
+                }
+
                 if (PvP.Instance.CurrentPlayers.ContainsKey(ps.ControlledCharacter.Faction))
                 {
                     PvP.Instance.CurrentPlayers[ps.ControlledCharacter.Faction].Add(ps);
@@ -99,6 +142,11 @@ namespace PvP
 
             foreach (PlayerSystem ps in list)
             {
+                if (ps.ControlledCharacter.Faction == Character.Factions.NONE && ps.IsLocalPlayer)
+                {
+                    ps.gameObject.GetComponent<Spectate>()?.EndSpectate();
+                }
+
                 if (messageToPlayers != "" && ps.ControlledCharacter != null && ps.ControlledCharacter.IsLocalPlayer)
                 {
                     Instance.SendUIMessageLocal(ps.ControlledCharacter, messageToPlayers);
@@ -110,6 +158,78 @@ namespace PvP
                 }
             }
         }
+
+        // ======================= SMALL GAMEPLAY FUNCTIONS ============================== //
+
+        public static void SendMessageToAll(string message)
+        {
+            Instance.photonView.RPC(nameof(SendMessageToAllRPC), PhotonTargets.All, message);
+        }
+
+        [PunRPC]
+        private void SendMessageToAllRPC(string message)
+        {
+            foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
+            {
+                SendUIMessageLocal(ps.ControlledCharacter, message);
+            }
+        }
+
+        // Send UI message - should only be sent to local players.
+
+        public void SendUIMessageLocal(Character c, string message)
+        {
+            c.CharacterUI.NotificationPanel.ShowNotification(message, 5);
+        }
+
+        // SendChangeFactions, and will also fix targeting system (to NOT target own faction)
+
+        [PunRPC]
+        public void SendChangeFactionsRPC(int factionInt, string UID, bool alliedToSame = true)
+        {
+            if (CharacterManager.Instance.GetCharacter(UID) is Character c)
+            {
+                var faction = (Character.Factions)factionInt;
+                c.Faction = faction;
+                c.DetectabilityEmitter.Faction = faction;
+                //c.BroadcastMessage("ReprocessEffects", SendMessageOptions.DontRequireReceiver);
+
+                var list = PlayerManager.Instance.AllFactions.Where(x => (int)x != (int)faction).ToList();
+                c.TargetingSystem.TargetableFactions = list.ToArray();
+
+                if (!alliedToSame)
+                {
+                    c.TargetingSystem.AlliedToSameFaction = false;
+                }
+                else
+                {
+                    c.TargetingSystem.AlliedToSameFaction = true;
+                }
+            }
+        }
+
+        // resurrect 
+
+        public void SendResurrect(Character _character)
+        {
+            if (!PhotonNetwork.offlineMode)
+            {
+                _character.photonView.RPC("SendResurrect", PhotonTargets.All, new object[]
+                {
+                    true,
+                    string.Empty,
+                    true
+                });
+                //photonView.RPC("SendResurrectRPC", PhotonTargets.All, new object[] { _character.UID.ToString() });
+            }
+            else
+            {
+                _character.Resurrect();
+            }
+        }
+
+        #region Deprecated_Battle_Royale
+
 
         // ================= BATTLE ROYALE RPC =======================
 
@@ -213,74 +333,6 @@ namespace PvP
         //    chest.transform.position = new Vector3(x, y, z);
         //    BattleRoyale.Instance.ActiveItemContainers.Add(chest.gameObject);
         //}
-
-        // ======================= SMALL GAMEPLAY FUNCTIONS ============================== //
-
-        public static void SendMessageToAll(string message)
-        {
-            Instance.photonView.RPC("SendMessageToAllRPC", PhotonTargets.All, message);
-        }
-
-        [PunRPC]
-        public void SendMessageToAllRPC(string message)
-        {
-            foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
-            {
-                SendUIMessageLocal(ps.ControlledCharacter, message);
-            }
-        }
-
-        // Send UI message - should only be sent to local players.
-
-        public void SendUIMessageLocal(Character c, string message)
-        {
-            c.CharacterUI.NotificationPanel.ShowNotification(message, 5);
-        }
-
-        // SendChangeFactions, and will also fix targeting system (to NOT target own faction)
-
-        [PunRPC]
-        public void SendChangeFactionsRPC(int factionInt, string UID, bool alliedToSame = true)
-        {
-            if (CharacterManager.Instance.GetCharacter(UID) is Character c)
-            {
-                var faction = (Character.Factions)factionInt;
-                c.Faction = faction;
-                c.DetectabilityEmitter.Faction = faction;
-                //c.BroadcastMessage("ReprocessEffects", SendMessageOptions.DontRequireReceiver);
-
-                var list = PlayerManager.Instance.AllFactions.Where(x => (int)x != (int)faction).ToList();
-                c.TargetingSystem.TargetableFactions = list.ToArray();
-
-                if (!alliedToSame)
-                {
-                    c.TargetingSystem.AlliedToSameFaction = false;
-                }
-                else
-                {
-                    c.TargetingSystem.AlliedToSameFaction = true;
-                }
-            }
-        }
-
-        // resurrect 
-
-        public void SendResurrect(Character _character)
-        {
-            if (!PhotonNetwork.offlineMode)
-            {
-                _character.photonView.RPC("SendResurrect", PhotonTargets.All, new object[]
-                {
-                    true,
-                    string.Empty,
-                    true
-                });
-                //photonView.RPC("SendResurrectRPC", PhotonTargets.All, new object[] { _character.UID.ToString() });
-            }
-            else
-            {
-                _character.Resurrect();
-            }
-        }
+        #endregion
     }
 }

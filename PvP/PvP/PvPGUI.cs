@@ -162,7 +162,7 @@ namespace PvP
         {
             if (Global.Lobby.PlayersInLobbyCount > 0 && !NetworkLevelLoader.Instance.IsGameplayPaused)
             {
-                if (!PhotonNetwork.isNonMasterClientInRoom) // only host can start games
+                if (!PhotonNetwork.isNonMasterClientInRoom) // only host do these things
                 {
                     if (PvP.Instance.CurrentGame == PvP.GameModes.NONE) // && !BattleRoyale.Instance.IsGameplayEnding)
                     {
@@ -217,9 +217,26 @@ namespace PvP
                             }
                         }
                     }
+                    if (!PvP.Instance.EnemiesDisabled)
+                    {
+                        GUI.color = Color.green;
+                        if (GUILayout.Button("Disable Enemies"))
+                        {
+                            RPCManager.SendSetEnemiesActive(false);
+                        }
+                    }
+                    else
+                    {
+                        GUI.color = Color.red;
+                        if (GUILayout.Button("Enable Enemies"))
+                        {
+                            RPCManager.SendSetEnemiesActive(true);
+                        }
+                    }
                     GUILayout.EndHorizontal();
                     GUI.color = Color.white;
                 }
+                // end host-only block
 
                 GUILayout.Label("Characters: ");
 
@@ -241,7 +258,7 @@ namespace PvP
 
                     if (!PhotonNetwork.isNonMasterClientInRoom || ps.ControlledCharacter.IsLocalPlayer)
                     {
-                        if (ps.ControlledCharacter.Faction != Character.Factions.Player && PvP.Instance.CurrentGame == PvP.GameModes.NONE)
+                        if (ps.ControlledCharacter.Faction != Character.Factions.NONE && PvP.Instance.CurrentGame == PvP.GameModes.NONE)
                         {
                             if (GUILayout.Button("<", GUILayout.Width(30)))
                             {
@@ -398,8 +415,10 @@ namespace PvP
 
             GUILayout.Label("Current Teams:");
 
-            foreach (KeyValuePair<Character.Factions, List<PlayerSystem>> entry in PvP.Instance.CurrentPlayers)
+            foreach (var entry in PvP.Instance.CurrentPlayers)
             {
+                if (entry.Key == Character.Factions.NONE) continue;
+
                 GUI.color = TeamColors[entry.Key];
                 GUILayout.Label(entry.Key.ToString() + ":");
                 GUI.color = Color.white;

@@ -16,7 +16,7 @@ namespace SharedModConfig
     {
         public const string GUID = "com.sinai.SharedModConfig";
         public const string ModName = "SharedModConfig";
-        public const string ModVersion = "1.9";
+        public const string ModVersion = "2.0";
 
         internal void Awake()
         {
