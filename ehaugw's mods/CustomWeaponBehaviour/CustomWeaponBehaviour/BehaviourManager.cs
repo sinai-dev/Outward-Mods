@@ -33,7 +33,7 @@ namespace CustomWeaponBehaviour
 		// Token: 0x06000002 RID: 2 RVA: 0x000020A0 File Offset: 0x000002A0
 		public static Weapon.WeaponType GetCurrentAnimationType(Weapon weapon)
 		{
-			Animator animator;
+			Animator animator = null;
 			bool flag;
 			if (weapon.IsEquipped)
 			{
@@ -198,7 +198,7 @@ namespace CustomWeaponBehaviour
 				if (flag9)
 				{
 					Weapon.WeaponType? bastardType = BehaviourManager.GetBastardType(weapon.Type);
-					Weapon.WeaponType valueOrDefault;
+					Weapon.WeaponType valueOrDefault = 0;
 					bool flag10;
 					if (bastardType != null)
 					{

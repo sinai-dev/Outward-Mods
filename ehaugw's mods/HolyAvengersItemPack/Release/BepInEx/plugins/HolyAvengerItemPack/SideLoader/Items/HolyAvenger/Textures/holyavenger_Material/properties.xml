@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Material xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShaderName>Custom/Main Set/Main Standard</ShaderName>
+  <Properties>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_Color</Name>
+      <Value>
+        <r>1</r>
+        <g>1</g>
+        <b>1</b>
+        <a>1</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_Cutoff</Name>
+      <Value>0.5</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_Dither</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_DoubleFaced</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_NormStr</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_SpecColor</Name>
+      <Value>
+        <r>1</r>
+        <g>1</g>
+        <b>1</b>
+        <a>1</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_SmoothMin</Name>
+      <Value>0.094</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_SmoothMax</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_OccStr</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_EmissionColor</Name>
+      <Value>
+        <r>7.00000048</r>
+        <g>6.314199</g>
+        <b>4.838236</b>
+        <a>1</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="VectorProp">
+      <Name>_EmitAnimSettings</Name>
+      <Value>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+        <w>0</w>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_EmitScroll</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_EmitPulse</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_DetColor</Name>
+      <Value>
+        <r>1</r>
+        <g>1</g>
+        <b>1</b>
+        <a>1</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="VectorProp">
+      <Name>_DetTiling</Name>
+      <Value>
+        <x>1</x>
+        <y>1</y>
+        <z>0</z>
+        <w>0</w>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_DetNormStr</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_VPRTexColor</Name>
+      <Value>
+        <r>0.5</r>
+        <g>0.5</g>
+        <b>0.5</b>
+        <a>0.5</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="VectorProp">
+      <Name>_VPRTexSettings</Name>
+      <Value>
+        <x>0.5</x>
+        <y>0.5</y>
+        <z>0.5</z>
+        <w>2</w>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_VPRSpecColor</Name>
+      <Value>
+        <r>0.5</r>
+        <g>0.5</g>
+        <b>0.5</b>
+        <a>0.5</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_VPRNormStr</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_VPRUnderAuto</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_VPRTiling</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_AutoTexColor</Name>
+      <Value>
+        <r>0.5</r>
+        <g>0.5</g>
+        <b>0.5</b>
+        <a>0.5</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="VectorProp">
+      <Name>_AutoTexSettings</Name>
+      <Value>
+        <x>1</x>
+        <y>2</y>
+        <z>1</z>
+        <w>2</w>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_AutoTexHideEmission</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="ColorProp">
+      <Name>_AutoSpecColor</Name>
+      <Value>
+        <r>0.5</r>
+        <g>0.5</g>
+        <b>0.5</b>
+        <a>0.5</a>
+      </Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_AutoNormStr</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_AutoTexTiling</Name>
+      <Value>1</Value>
+    </ShaderProperty>
+    <ShaderProperty xsi:type="FloatProp">
+      <Name>_SnowEnabled</Name>
+      <Value>0</Value>
+    </ShaderProperty>
+  </Properties>
+  <Keywords>
+    <string>_NORMALMAP</string>
+    <string>_OCCLUSION_FROM_ALBEDO_ALPHA</string>
+    <string>_OPAQUE</string>
+    <string>_SPEC_COLOR</string>
+    <string>_WETNESS_RIPPLES</string>
+  </Keywords>
+</SL_Material>

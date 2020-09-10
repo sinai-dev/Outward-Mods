@@ -27,7 +27,7 @@ namespace CustomWeaponBehaviour
 			bool flag = weapon2 != null;
 			if (flag)
 			{
-				Weapon.WeaponType valueOrDefault;
+				Weapon.WeaponType valueOrDefault = (Weapon.WeaponType)0;
 				bool flag2;
 				if (__instance.RequiredWeaponTypes != null)
 				{

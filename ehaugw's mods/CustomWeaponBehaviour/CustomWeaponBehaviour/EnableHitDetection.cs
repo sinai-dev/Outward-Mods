@@ -9,7 +9,7 @@ namespace CustomWeaponBehaviour
 		protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
 		{
 			MeleeSkill meleeSkill = base.ParentItem as MeleeSkill;
-			MeleeHitDetector meleeHitDetector;
+			MeleeHitDetector meleeHitDetector = null;
 			bool flag;
 			if (meleeSkill != null && meleeSkill.MeleeHitDetector != null)
 			{

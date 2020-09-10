@@ -9,7 +9,7 @@ namespace CustomWeaponBehaviour
 {
 	// Token: 0x02000010 RID: 16
 	[BepInPlugin("com.ehaugw.customweaponbehaviour", "Custom Weapon Behaviour", "2.0.0")]
-	[BepInDependency("com.sinai.SideLoader", 2)]
+	[BepInDependency("com.sinai.SideLoader", BepInDependency.DependencyFlags.HardDependency)]
 	[BepInDependency("com.ehaugw.tinyhelper", "1.0.0")]
 	public class CustomWeaponBehaviour : BaseUnityPlugin
 	{
