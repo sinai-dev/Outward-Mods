@@ -1,3 +1,10 @@
+# NOTE
+
+I have made the [MonoExplorer](https://github.com/sinai-dev/MonoExplorer) which is an improved version of this, and also works on any Mono Unity game.
+
+
+# Original Readme
+
 ## Explorer
 
 This is a debugging tool for inspecting the Outward game in a similar way to the Unity editor.
