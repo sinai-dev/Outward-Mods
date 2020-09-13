@@ -4,7 +4,7 @@ Sinai's mods for Outward.
 
 ## Note
 
-These mods were how I got started modding. Only the more recent mods are written somewhat well, most of the early ones contain lots of bad practices and inefficiency. I don't plan on improving the code much because it's not that big of a deal really, but just keep it in mind if looking at the source.
+These mods were how I got started modding, some of the older ones are not written very well.
 
 ## How to install mods
 
