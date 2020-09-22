@@ -50,6 +50,18 @@ namespace Minimap
             "Harmattan",
         };
 
+        private static readonly Dictionary<string, Vector3> CustomRotations = new Dictionary<string, Vector3>
+        {
+            {
+                "Abrassar",
+                new Vector3(90f, 0f, -90f)
+            },
+            {
+                "HallowedMarshNewTerrain",
+                new Vector3(90f, 0f, 90f)
+            }
+        };
+
         //public void OnGUI()
         //{
         //    GUILayout.BeginArea(new Rect(5, 5, 200, 200), GUI.skin.box);
@@ -84,7 +96,7 @@ namespace Minimap
             _minimapCamera.orthographic = true;
             _minimapCamera.orthographicSize = _orthoSize;
             _minimapCamera.rect = new Rect(0, 0, 1, 1);
-            _minimapCamera.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
+            //_minimapCamera.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
 
             // setup RenderTexture
             _miniRenderTexture = new RenderTexture(200, 200, 0);
@@ -233,7 +245,14 @@ namespace Minimap
                 _minimapCamera.transform.position = _ownerCharacter.transform.position + (Vector3.up * 250f);
             }
 
-            _minimapCamera.transform.eulerAngles = new Vector3(90f, 0f, 0f);
+            if (CustomRotations.ContainsKey(SceneManagerHelper.ActiveSceneName))
+            {
+                _minimapCamera.transform.eulerAngles = CustomRotations[SceneManagerHelper.ActiveSceneName];
+            }
+            else
+            {
+                _minimapCamera.transform.eulerAngles = new Vector3(90f, 0f, 0f);
+            }
         }
     }
 }
