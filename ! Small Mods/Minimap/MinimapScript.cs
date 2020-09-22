@@ -12,6 +12,8 @@ namespace Minimap
         public static MinimapScript P1Instance;
         public static MinimapScript P2Instance;
 
+        public bool Enabled { get; private set; } = true;
+
         public RawImage CanvasImage { get; private set; }
         public const float P1_ADJUST_SPLIT = 273.2f;
 
@@ -34,6 +36,15 @@ namespace Minimap
         private static readonly Vector3 _centerPosition = new Vector3(0, 0, 0);
         private static readonly Vector2 _smallSize = new Vector2(200f, 200f);
         private static readonly Vector2 _bigSize = new Vector2(800f, 800f);
+
+        public void ToggleEnable()
+        {
+            Enabled = !Enabled;
+
+            this.enabled = Enabled;
+            this._minimapCamera.enabled = Enabled;
+            this.CanvasImage.gameObject.SetActive(Enabled);
+        }
 
         private static readonly HashSet<string> OutdoorRegions = new HashSet<string>
         {

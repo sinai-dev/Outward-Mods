@@ -48,8 +48,16 @@
       <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\core\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="netstandard">
       <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\Outward_Data\Managed\netstandard.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Rewired_Core">
+      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\Outward_Data\Managed\Rewired_Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -92,6 +100,7 @@
     <Compile Include="MinimapScript.cs" />
     <Compile Include="MinimapMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util\CustomKeybindings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

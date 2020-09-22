@@ -14,13 +14,36 @@ namespace Minimap
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.0.1";
+        public const string VERSION = "1.0.2";
 
         private static readonly FieldInfo currentAreaHasMap = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
 
+        private const string TOGGLE_KEY = "Toggle Minimap";
+
         internal void Awake()
         {
+            CustomKeybindings.AddAction(TOGGLE_KEY, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
+
             new Harmony(GUID).PatchAll();
+        }
+
+        internal void Update()
+        {
+            foreach (var player in SplitScreenManager.Instance.LocalPlayers)
+            {
+                int id = player.RewiredID;
+                if (CustomKeybindings.m_playerInputManager[id].GetButtonDown(TOGGLE_KEY))
+                {
+                    if (id == 0)
+                    {
+                        MinimapScript.P1Instance.ToggleEnable();
+                    }
+                    else
+                    {
+                        MinimapScript.P2Instance.ToggleEnable();
+                    }
+                }
+            }
         }
 
         [HarmonyPatch(typeof(SplitPlayer), nameof(SplitPlayer.SetCharacter))]

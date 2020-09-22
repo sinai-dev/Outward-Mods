@@ -41,6 +41,15 @@ namespace SharedModConfig
 
         public bool InitDone { get; private set; } = false;
 
+        internal void Awake()
+        {
+            Instance = this;
+
+            SL.OnPacksLoaded += Setup;
+
+            CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
+        }
+
         internal void Update()
         {
             if (!Instance.InitDone)
@@ -117,15 +126,6 @@ namespace SharedModConfig
                     m_currentModConfig.INTERNAL_OnSettingsOpened();
                 }
             }
-        }
-
-        internal void Awake()
-        {
-            Instance = this;
-
-            SL.OnPacksLoaded += Setup;
-
-            CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
         }
 
         private void Setup()
