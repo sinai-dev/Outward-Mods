@@ -4,21 +4,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E55ADC62-40AC-42A4-92FF-B21C06E71FDD}</ProjectGuid>
+    <ProjectGuid>{CBD929FB-FA8F-441E-92CF-9FB35CCE9850}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CustomMultiplayerLimit</RootNamespace>
-    <AssemblyName>CustomMultiplayerLimit</AssemblyName>
+    <RootNamespace>Minimap</RootNamespace>
+    <AssemblyName>Minimap</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Release\BepInEx\plugins\</OutputPath>
+    <OutputPath>.\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -53,18 +52,11 @@
       <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\Outward_Data\Managed\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharedModConfig">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SharedModConfig\SharedModConfig.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SideLoader">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SideLoader.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
@@ -89,9 +81,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomMultiplayerLimit.cs" />
+    <Compile Include="MinimapScript.cs" />
+    <Compile Include="MinimapMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="util\SinAPI.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

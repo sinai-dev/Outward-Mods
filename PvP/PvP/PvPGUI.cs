@@ -24,7 +24,7 @@ namespace PvP
         public int guiPage = 0;
         public bool lastMenuToggle;
 
-        //public bool ConfirmingBattleRoyale = false;
+        public bool ConfirmingBattleRoyale = false;
 
         internal void Awake()
         {
@@ -68,40 +68,32 @@ namespace PvP
             {
                 m_windowRect = new Rect(50, 50, 500, 300);
             }
-            else
+
+            if (!ConfirmingBattleRoyale && showGui)
             {
-                if (showGui)
+                m_windowRect = GUI.Window(WINDOW_ID, m_windowRect, DrawWindow, "PvP " + PvP.VERSION);
+            }
+            else if (ConfirmingBattleRoyale || BattleRoyale.Instance.IsGameplayEnding)
+            {
+                float x = Screen.width / 2 - 200;
+                float y;
+                if (Global.Lobby.LocalPlayerCount > 1)
                 {
-                    m_windowRect = GUI.Window(WINDOW_ID, m_windowRect, DrawWindow, "PvP " + PvP.VERSION);
+                    y = Screen.height / 4 - 150;
+                }
+                else
+                {
+                    y = Screen.height / 2 - 150;
                 }
 
-                //if (!ConfirmingBattleRoyale && showGui)
-                //{
-                //    m_windowRect = GUI.Window(WINDOW_ID, m_windowRect, DrawWindow, "PvP " + PvP.VERSION);
-                //}
-                //if (ConfirmingBattleRoyale || BattleRoyale.Instance.IsGameplayEnding)
-                //{
-                //    float x = Screen.width / 2 - 200;
-                //    float y;
-                //    if (Global.Lobby.LocalPlayerCount > 1)
-                //    {
-                //        y = Screen.height / 4 - 150;
-                //    }
-                //    else
-                //    {
-                //        y = Screen.height / 2 - 150;
-                //    }
-
-                //    Rect smallRect = new Rect(x, y, 400, 130);
-                //    if (ConfirmingBattleRoyale)
-                //    {
-                //        GUI.Window(WINDOW_ID, smallRect, BattleRoyaleConfirmStart, "Are you sure?");
-                //    }
-                //    else if (BattleRoyale.Instance.IsGameplayEnding)
-                //    {
-                //        GUI.Window(WINDOW_ID, smallRect, BattleRoyaleGameEnd, "Play again?");
-                //    }
-                //}
+                if (ConfirmingBattleRoyale)
+                {
+                    GUI.Window(WINDOW_ID, new Rect(x, y, 400, 250), BattleRoyaleConfirmStart, "Are you sure?");
+                }
+                else if (BattleRoyale.Instance.IsGameplayEnding)
+                {
+                    GUI.Window(WINDOW_ID, new Rect(x, y, 400, 150), BattleRoyaleGameEnd, "Play again?");
+                }
             }
 
             if (PvP.Instance.CurrentGame != PvP.GameModes.NONE)
@@ -171,10 +163,10 @@ namespace PvP
                         {
                             PvP.Instance.StartGameplay((int)PvP.GameModes.Deathmatch, "A Deathmatch has begun!");
                         }
-                        //if (GUILayout.Button("Begin Battle Royale"))
-                        //{
-                        //    ConfirmingBattleRoyale = true;
-                        //}
+                        if (GUILayout.Button("Begin Battle Royale"))
+                        {
+                            ConfirmingBattleRoyale = true;
+                        }
                         GUILayout.EndHorizontal();
                     }
                     else
@@ -309,137 +301,127 @@ namespace PvP
 
             PvP.Instance.settings.Show_Menu_On_Startup = GUILayout.Toggle(PvP.Instance.settings.Show_Menu_On_Startup, "Show Menu On Startup");
             PvP.Instance.settings.Enable_Menu_Scaling = GUILayout.Toggle(PvP.Instance.settings.Enable_Menu_Scaling, "Enable Menu Scaling");
-            GUILayout.Space(15);
-
-            //GUILayout.BeginHorizontal();
-            //GUILayout.Label("Online Multiplayer Limit:", GUILayout.Width(140));
-
-            //string s = GUILayout.TextField(global.settings.Multiplayer_Limit.ToString(), GUILayout.Width(40));
-            //if (int.TryParse(s, out int i))
-            //{
-            //    global.settings.Multiplayer_Limit = i;
-            //}
-            //GUILayout.EndHorizontal();
-            //GUILayout.Label("This will only apply when you are the host.");
-            //GUILayout.Space(20);
-            //GUILayout.Label("If you want to join a game in split mode, you should join the game first, then start split.");
+            GUILayout.Space(15);            
             GUILayout.EndVertical();
         }
 
-        //private void BattleRoyaleConfirmStart(int windowID)
-        //{
-        //    GUI.DragWindow(new Rect(0, 0, 400, 20));
+        private void BattleRoyaleConfirmStart(int windowID)
+        {
+            GUI.DragWindow(new Rect(0, 0, 400, 20));
 
-        //    GUILayout.BeginArea(new Rect(15, 25, 370, 350));
+            GUILayout.BeginArea(new Rect(15, 25, 370, 350));
 
-        //    GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+            GUI.skin.label.alignment = TextAnchor.MiddleCenter;
 
-        //    string message = "Are you sure you want to start a Battle Royale?";
-        //    if (SceneManagerHelper.ActiveSceneName != "Monsoon") { message += "\r\n\r\nThis will teleport all players to Monsoon."; }
-        //    GUILayout.Label(message, GUILayout.Width(370));
+            string message = "Are you sure you want to start a Battle Royale?";
+            if (SceneManagerHelper.ActiveSceneName != "Monsoon") { message += "\r\n\r\nThis will teleport all players to Monsoon."; }
+            GUILayout.Label(message, GUILayout.Width(370));
 
-        //    GUILayout.Space(20);
-        //    GUILayout.BeginHorizontal();
+            GUILayout.Label("<b><color=red>WARNING:</color> This will WIPE the character save and you will need to manually restore your save " +
+                "from a backup if you wish to restore it for this character.\r\n" +
+                "\r\n" +
+                "It is highly recommended to use a fresh character for Battle Royale so that you don't care if it gets wiped.</b>");
 
-        //    if (GUILayout.Button("No, go back!"))
-        //    {
-        //        ConfirmingBattleRoyale = false;
-        //    }
+            GUILayout.Space(20);
+            GUILayout.BeginHorizontal();
 
-        //    GUILayout.Space(30);
+            if (GUILayout.Button("No, go back!"))
+            {
+                ConfirmingBattleRoyale = false;
+            }
 
-        //    if (GUILayout.Button("Yes, I'm sure!"))
-        //    {
-        //        ConfirmingBattleRoyale = false;
+            GUILayout.Space(30);
 
-        //        if (BattleRoyale.Instance.CheckCanStart())
-        //        {
-        //            BattleRoyale.Instance.StartBattleRoyale(false);
-        //            showGui = false;
-        //        }
-        //        else
-        //        {
-        //            RPCManager.Instance.SendUIMessageLocal(CharacterManager.Instance.GetFirstLocalCharacter(), "There are not enough teams to start!");
-        //        }
-        //    }
+            if (GUILayout.Button("Yes, I'm sure!"))
+            {
+                ConfirmingBattleRoyale = false;
+                showGui = false;
 
-        //    GUILayout.EndHorizontal();
+                if (BattleRoyale.Instance.CheckCanStart())
+                {
+                    BattleRoyale.Instance.StartBattleRoyale(false);
+                }
+                else
+                {
+                    RPCManager.Instance.SendUIMessageLocal(CharacterManager.Instance.GetFirstLocalCharacter(), "There are not enough teams to start!");
+                }
+            }
 
-        //    GUILayout.EndArea();
-        //}
+            GUILayout.EndHorizontal();
 
-        //private void BattleRoyaleGameEnd(int windowID)
-        //{
-        //    GUI.DragWindow(new Rect(0, 0, 400, 20));
+            GUILayout.EndArea();
+        }
 
-        //    GUILayout.BeginArea(new Rect(15, 65, 370, 350));
+        private void BattleRoyaleGameEnd(int windowID)
+        {
+            GUI.DragWindow(new Rect(0, 0, 400, 20));
 
-        //    GUILayout.BeginHorizontal();
-        //    if (GUILayout.Button("Play Again"))
-        //    {
-        //        BattleRoyale.Instance.StartBattleRoyale(true);
-        //        BattleRoyale.Instance.IsGameplayEnding = false;
-        //        showGui = false;
-        //    }
+            GUILayout.BeginArea(new Rect(15, 65, 370, 350));
 
-        //    GUILayout.Space(30);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Play Again"))
+            {
+                BattleRoyale.Instance.StartBattleRoyale(true);
+                BattleRoyale.Instance.IsGameplayEnding = false;
+                showGui = false;
+            }
 
-        //    if (GUILayout.Button("End Lobby"))
-        //    {
-        //        BattleRoyale.Instance.IsGameplayEnding = false;
-        //        showGui = false;
-        //        RPCManager.Instance.photonView.RPC("EndBattleRoyaleRPC", PhotonTargets.All, new object[0]);
-        //    }
+            GUILayout.Space(30);
 
-        //    GUILayout.EndHorizontal();
-        //    GUILayout.EndArea();
-        //}
+            if (GUILayout.Button("End Lobby"))
+            {
+                BattleRoyale.Instance.IsGameplayEnding = false;
+                showGui = false;
+                RPCManager.Instance.photonView.RPC("EndBattleRoyaleRPC", PhotonTargets.All, new object[0]);
+            }
+
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+        }
 
         private void CurrentGameWindow()
         {
             GUILayout.BeginArea(new Rect(15, 15, 240, Screen.height * 0.7f));
 
-            //if (PvP.Instance.CurrentGame == PvP.GameModes.BattleRoyale && BattleRoyale.Instance.IsGameplayStarting)
-            //{
-            //    GUILayout.Label("A Battle Royale is starting...");
-            //}
-            //else
-            //{
-
-            //}
-
-            GUI.skin.label.fontSize *= 2;
-            TimeSpan t = TimeSpan.FromSeconds(Time.time - PvP.Instance.GameStartTime);
-            GUILayout.Label(t.Minutes.ToString("0") + ":" + t.Seconds.ToString("00"), GUILayout.Height(40));
-            GUI.skin.label.fontSize /= 2;
-
-            GUILayout.Label("Current Teams:");
-
-            foreach (var entry in PvP.Instance.CurrentPlayers)
+            if (PvP.Instance.CurrentGame == PvP.GameModes.BattleRoyale && BattleRoyale.Instance.IsGameplayStarting)
             {
-                if (entry.Key == Character.Factions.NONE) continue;
+                GUILayout.Label("A Battle Royale is starting...");
+            }
+            else
+            {
+                GUI.skin.label.fontSize *= 2;
+                TimeSpan t = TimeSpan.FromSeconds(Time.time - PvP.Instance.GameStartTime);
+                GUILayout.Label(t.Minutes.ToString("0") + ":" + t.Seconds.ToString("00"), GUILayout.Height(40));
+                GUI.skin.label.fontSize /= 2;
 
-                GUI.color = TeamColors[entry.Key];
-                GUILayout.Label(entry.Key.ToString() + ":");
-                GUI.color = Color.white;
+                GUILayout.Label("Current Teams:");
 
-                foreach (PlayerSystem player in entry.Value)
+                foreach (var entry in PvP.Instance.CurrentPlayers)
                 {
-                    if (player.ControlledCharacter.IsDead)
+                    if (entry.Key == Character.Factions.NONE) continue;
+
+                    GUI.color = TeamColors[entry.Key];
+                    GUILayout.Label(entry.Key.ToString() + ":");
+                    GUI.color = Color.white;
+
+                    foreach (PlayerSystem player in entry.Value)
                     {
-                        GUI.color = Color.black;
-                        GUILayout.Label(" - " + player.ControlledCharacter.Name + " (DEAD)");
-                    }
-                    else
-                    {
-                        GUILayout.Label(
-                        " - " +
-                        player.ControlledCharacter.Name +
-                        " (" +
-                        Math.Round((decimal)player.ControlledCharacter.Stats.CurrentHealth) +
-                        " / " +
-                        player.ControlledCharacter.Stats.MaxHealth +
-                        ")");
+                        if (player.ControlledCharacter.IsDead)
+                        {
+                            GUI.color = Color.black;
+                            GUILayout.Label(" - " + player.ControlledCharacter.Name + " (DEAD)");
+                        }
+                        else
+                        {
+                            GUILayout.Label(
+                            " - " +
+                            player.ControlledCharacter.Name +
+                            " (" +
+                            Math.Round((decimal)player.ControlledCharacter.Stats.CurrentHealth) +
+                            " / " +
+                            player.ControlledCharacter.Stats.MaxHealth +
+                            ")");
+                        }
                     }
                 }
             }

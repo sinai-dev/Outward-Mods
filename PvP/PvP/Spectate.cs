@@ -13,6 +13,7 @@ namespace PvP
         private static Camera m_camera;
 
         private Character m_ownerCharacter;
+        private SplitAudioListener m_audioListener;
         private Vector3 m_startPosition;
 
         public Character[] AvailableTargets => PlayerManager.Instance.GetRemainingPlayers().ToArray();
@@ -25,11 +26,21 @@ namespace PvP
             m_ownerCharacter = this.gameObject.GetComponent<PlayerSystem>().ControlledCharacter;
             m_startPosition = m_ownerCharacter.transform.position;
 
+            m_audioListener = m_ownerCharacter.CharacterCamera.CameraScript.gameObject.GetComponent<SplitAudioListener>();
+
+            // get closest character to spectate
+            var list = new List<Character>();
+            CharacterManager.Instance.FindCharactersInRange(m_ownerCharacter.transform.position, 10f, ref list);
+            if (list.Contains(m_ownerCharacter)) list.Remove(m_ownerCharacter);
+
             // disable character
             RPCManager.SendSetPlayerActive(m_ownerCharacter.UID, false);
 
             // enable free camera
             SetFreeCam(true);
+
+            // pick any closest character to spectate
+            if (list.Count > 0) SetTarget(list[0]);
         }
 
         private void SetFreeCam(bool active)
@@ -73,7 +84,7 @@ namespace PvP
                 return;
             }
 
-            var pos = m_target.transform.position + (Vector3.up * 4f) + (m_target.transform.forward * -6f);
+            var pos = m_target.transform.position + (Vector3.up * 4f) + (m_target.transform.forward * -6f);            
 
             FreeCamera.transform.position = pos;
             CameraTransform.position = pos;
@@ -103,6 +114,8 @@ namespace PvP
             hasTarget = true;
             m_target = target;
 
+            m_audioListener.TargetChar = target;
+
             RPCManager.Instance.SendUIMessageLocal(m_ownerCharacter, "Spectating " + target.Name);
 
             At.SetValue(target.transform, typeof(VideoCamera), VideoCamera.Instance, "m_targetTrans");
@@ -113,6 +126,8 @@ namespace PvP
         {
             hasTarget = false;
             m_target = null;
+
+            m_audioListener.TargetChar = m_ownerCharacter;
 
             At.SetValue((Transform)null, typeof(VideoCamera), VideoCamera.Instance, "m_targetTrans");
             At.SetValue(VideoCamera.VideoCamState.NORMAL, typeof(VideoCamera), VideoCamera.Instance, "m_state");
@@ -126,7 +141,7 @@ namespace PvP
 
             // enable character
             RPCManager.SendSetPlayerActive(m_ownerCharacter.UID, true);
-            m_ownerCharacter.transform.position = m_startPosition;
+            m_ownerCharacter.Teleport(m_startPosition, Quaternion.identity);
 
             Destroy(this);
         }

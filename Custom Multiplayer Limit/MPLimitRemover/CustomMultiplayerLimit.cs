@@ -18,7 +18,7 @@ namespace CustomMultiplayerLimit
     {
         public const string GUID = "com.sinai.CustomMultiplayerLimit";
         public const string NAME = "Custom Multiplayer Limit";
-        public const string VERSION = "2.6";
+        public const string VERSION = "3.0";
 
         public ModConfig config;
 
@@ -236,7 +236,7 @@ namespace CustomMultiplayerLimit
         {
             var newConfig = new ModConfig
             {
-                ModName = "MP Limit Remover",
+                ModName = "Custom Multiplayer Limit",
                 SettingsVersion = 1.0,
                 Settings = new List<BBSetting>
                 {
@@ -244,7 +244,7 @@ namespace CustomMultiplayerLimit
                     {
                         Name = Settings.PlayerLimit,
                         Description = "Max number of Players in room (when you are host)",
-                        DefaultValue = 4.0f,
+                        DefaultValue = 4f,
                         RoundTo = 0,
                         MinValue = 1f,
                         MaxValue = 20f,

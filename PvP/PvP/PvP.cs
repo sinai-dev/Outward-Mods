@@ -18,7 +18,7 @@ namespace PvP
     {
         public const string GUID = "com.sinai.pvp";
         public const string NAME = "PvP";
-        public const string VERSION = "2.3";
+        public const string VERSION = "2.4";
 
         public static PvP Instance;
 
@@ -52,7 +52,7 @@ namespace PvP
 
             SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
 
-            var harmony = new Harmony(GUID);
+            var harmony = new Harmony(GUID);            
             harmony.PatchAll();
 
             var obj = new GameObject("PvP");
@@ -65,7 +65,7 @@ namespace PvP
 
             obj.AddComponent<PvPGUI>();
             obj.AddComponent<PlayerManager>();
-            //obj.AddComponent<BattleRoyale>();
+            obj.AddComponent<BattleRoyale>();
             obj.AddComponent<DeathMatch>();
         }
 

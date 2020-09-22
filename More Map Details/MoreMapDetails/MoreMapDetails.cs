@@ -180,10 +180,10 @@ namespace MoreMapDetails
         [HarmonyPatch(typeof(MapDisplay), "UpdateWorldMarkers")]
         public class MapDisplay_UpdateWorldMarkers
         {
-            [HarmonyPostfix]
-            public static void Postfix(MapDisplay __instance)
+            [HarmonyFinalizer]
+            public static Exception Finalizer(MapDisplay __instance, Exception __exception)
             {
-                var self = __instance; 
+                var self = __instance;
 
                 bool flag = !(self.CurrentMapScene.MarkerOffset == Vector2.zero) || !(self.CurrentMapScene.MarkerScale == Vector2.zero);
 
@@ -217,6 +217,14 @@ namespace MoreMapDetails
                         }
                     }
                 }
+
+                //if (__exception != null)
+                //{
+                //    Debug.Log("MapDisplay.UpdateWorldMarkers had an exception!");
+                //    Debug.Log(__exception.ToString());
+                //}
+
+                return null;
             }
         }
 

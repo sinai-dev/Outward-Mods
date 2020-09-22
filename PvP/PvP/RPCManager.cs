@@ -82,13 +82,13 @@ namespace PvP
 
             if (_mode == (int)PvP.GameModes.BattleRoyale)
             {
-                //// actual moment that gameplay starts for the players
-                //BattleRoyale.Instance.IsGameplayStarting = false;
-                //BattleRoyale.Instance.LastSupplyDropTime = -1;
-                //BattleRoyale.Instance.LastEnemySpawnTime = Time.time;
-                //BattleRoyale.Instance.SupplyDropCounter = 0;
-                //BattleRoyale.Instance.ActiveItemContainers.Clear();
-                //BattleRoyale.Instance.ActiveBeamObjects.Clear();
+                // actual moment that gameplay starts for the players
+                BattleRoyale.Instance.IsGameplayStarting = false;
+                BattleRoyale.Instance.LastSupplyDropTime = -1;
+                BattleRoyale.Instance.LastEnemySpawnTime = Time.time;
+                BattleRoyale.Instance.SupplyDropCounter = 0;
+                BattleRoyale.Instance.ActiveItemContainers.Clear();
+                BattleRoyale.Instance.ActiveBeamObjects.Clear();
             }
 
             // get the current teams to a list. send message to local players.
@@ -129,7 +129,7 @@ namespace PvP
             // custom fix for Battle Royale when game ends
             if (PvP.Instance.CurrentGame == PvP.GameModes.BattleRoyale)
             {
-                //BattleRoyale.Instance.EndBattleRoyale();
+                BattleRoyale.Instance.EndBattleRoyale();
             }
 
             PvP.Instance.CurrentGame = PvP.GameModes.NONE;
@@ -142,9 +142,9 @@ namespace PvP
 
             foreach (PlayerSystem ps in list)
             {
-                if (ps.ControlledCharacter.Faction == Character.Factions.NONE && ps.IsLocalPlayer)
+                if (ps.GetComponent<Spectate>() is Spectate spectate)
                 {
-                    ps.gameObject.GetComponent<Spectate>()?.EndSpectate();
+                    spectate.EndSpectate();
                 }
 
                 if (messageToPlayers != "" && ps.ControlledCharacter != null && ps.ControlledCharacter.IsLocalPlayer)
@@ -228,111 +228,106 @@ namespace PvP
             }
         }
 
-        #region Deprecated_Battle_Royale
+
+        //================= BATTLE ROYALE RPC =======================
+
+        //RPC calls for the Battle Royale mode.Putting it in here so there is only 1 photonView class for the mod.
 
 
-        // ================= BATTLE ROYALE RPC =======================
+        [PunRPC]
+        public void RPCStartBattleRoyale(bool skipLoad = false)
+        {
+            if (SceneManagerHelper.ActiveSceneName == "Monsoon") { skipLoad = true; }
 
-        // RPC calls for the Battle Royale mode. Putting it in here so there is only 1 photonView class for the mod.
+            BattleRoyale.Instance.IsGameplayStarting = true;
+            PvP.Instance.CurrentGame = PvP.GameModes.BattleRoyale;
 
-        //[PunRPC]
-        //public void RPCStartBattleRoyale(bool skipLoad = false)
-        //{
-        //    if (SceneManagerHelper.ActiveSceneName == "Monsoon") { skipLoad = true; }
+            if (!skipLoad)
+            {
+                foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
+                {
+                    Character c = ps.ControlledCharacter;
+                    CharacterManager.Instance.RequestAreaSwitch(c, AreaManager.Instance.GetAreaFromSceneName("Monsoon"), 0, 0, 1.5f, "Battle Royale!");
+                }
+            }
 
-        //    BattleRoyale.Instance.IsGameplayStarting = true;
-        //    BattleRoyale.Instance.ForceNoSaves = true;
-        //    PvP.Instance.CurrentGame = PvP.GameModes.BattleRoyale;
+            if (Global.CheatsEnabled)
+            {
+                Global.CheatsEnabled = false;
 
-        //    if (!skipLoad)
-        //    {
-        //        foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
-        //        {
-        //            Character c = ps.ControlledCharacter;
-        //            CharacterManager.Instance.RequestAreaSwitch(c, AreaManager.Instance.GetAreaFromSceneName("Monsoon"), 0, 0, 1.5f, "Battle Royale!");
-        //        }
-        //    }
+                foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
+                {
+                    Character c = ps.ControlledCharacter;
+                    (c.CharacterControl as LocalCharacterControl).MovementMultiplier = 1f;
+                }
+            }
 
-        //    if (Global.CheatsEnabled)
-        //    {
-        //        //OLogger.Warning("Disabling cheats!");
-        //        BattleRoyale.Instance.WasCheatsEnabled = true;
-        //        Global.CheatsEnabled = false;
+            StartCoroutine(BattleRoyale.Instance.SetupAfterSceneLoad(skipLoad));
+        }
 
-        //        foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
-        //        {
-        //            Character c = ps.ControlledCharacter;
-        //            (c.CharacterControl as LocalCharacterControl).MovementMultiplier = 1f;
-        //        }
-        //    }
+        [PunRPC]
+        public void SendSpawnEnemyRPC(string uid, float x, float y, float z)
+        {
+            if (BattleRoyale.Instance.EnemyCharacters.Find(w => w.UID == uid) is Character c)
+            {
+                c.gameObject.SetActive(true);
 
-        //    StartCoroutine(BattleRoyale.Instance.SetupAfterSceneLoad(skipLoad));
-        //}
+                c.Teleport(new Vector3(x, y, z), c.transform.rotation);
 
-        //[PunRPC]
-        //public void SendSpawnEnemyRPC(string uid, float x, float y, float z)
-        //{
-        //    if (BattleRoyale.Instance.EnemyCharacters.Find(w => w.UID == uid) is Character c)
-        //    {
-        //        c.gameObject.SetActive(true);
+                // HIGHLY SPECIFIC TO MONSOON
+                int value = 50;
+                if (c.Name.ToLower().Contains("butcher"))
+                {
+                    value = 200;
+                }
+                else if (c.name.ToLower().Contains("illuminator"))
+                {
+                    value = 20;
+                }
+                At.SetValue(new Stat(value), typeof(CharacterStats), c.Stats, "m_maxHealthStat");
 
-        //        c.Teleport(new Vector3(x, y, z), c.transform.rotation);
+                //BattleRoyale.Instance..FixEnemyStats(c.Stats);
 
-        //        // HIGHLY SPECIFIC TO MONSOON
-        //        int value = 50;
-        //        if (c.Name.ToLower().Contains("butcher"))
-        //        {
-        //            value = 200;
-        //        }
-        //        else if (c.name.ToLower().Contains("illuminator"))
-        //        {
-        //            value = 20;
-        //        }
-        //        At.SetValue(new Stat(value), typeof(CharacterStats), c.Stats, "m_maxHealthStat");
+                //foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(w => w.IsLocalPlayer))
+                //{
+                //    SendUIMessageLocal(ps.ControlledCharacter, c.Name + " has spawned!");
+                //}
 
-        //        //BattleRoyale.Instance..FixEnemyStats(c.Stats);
+                //BattleRoyale.Instance..EnemyCharacters.Remove(c);
+            }
+        }
 
-        //        //foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(w => w.IsLocalPlayer))
-        //        //{
-        //        //    SendUIMessageLocal(ps.ControlledCharacter, c.Name + " has spawned!");
-        //        //}
+        [PunRPC]
+        public void EndBattleRoyaleRPC()
+        {
+            MenuManager.Instance.BackToMainMenu();
+            //foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
+            //{
+            //    Character c = ps.ControlledCharacter;
+            //    CharacterManager.Instance.RequestAreaSwitch(c, AreaManager.Instance.GetAreaFromSceneName(previousScene), 0, 0, 1.5f, "");
+            //}
+        }
 
-        //        //BattleRoyale.Instance..EnemyCharacters.Remove(c);
-        //    }
-        //}
+        [PunRPC]
+        public void RPCSendSupplyDrop(string itemUID, float x, float y, float z)
+        {
+            StartCoroutine(BattleRoyale.Instance.SupplyDropLocalCoroutine(itemUID, new Vector3(x, y, z)));
+        }
 
-        //[PunRPC]
-        //public void EndBattleRoyaleRPC()
-        //{
-        //    MenuManager.Instance.BackToMainMenu();
-        //    //foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
-        //    //{
-        //    //    Character c = ps.ControlledCharacter;
-        //    //    CharacterManager.Instance.RequestAreaSwitch(c, AreaManager.Instance.GetAreaFromSceneName(previousScene), 0, 0, 1.5f, "");
-        //    //}
-        //}
+        [PunRPC]
+        public void RPCSendCleanup()
+        {
+            BattleRoyale.Instance.CleanupSupplyObjects();
+        }
 
-        //[PunRPC]
-        //public void RPCSendSupplyDrop(string itemUID, float x, float y, float z)
-        //{
-        //    StartCoroutine(BattleRoyale.Instance.SupplyDropLocalCoroutine(itemUID, new Vector3(x, y, z)));
-        //}
-
-        //[PunRPC]
-        //public void RPCSendCleanup()
-        //{
-        //    BattleRoyale.Instance.CleanupSupplyObjects();
-        //}
-
-        //[PunRPC]
-        //public void RPCGenerateStash(int itemID, string UID, float x, float y, float z)
-        //{
-        //    TreasureChest chest = ItemManager.Instance.GenerateItemNetwork(itemID).GetComponent<TreasureChest>();
-        //    chest.UID = UID;
-        //    chest.SaveType = Item.SaveTypes.Savable;
-        //    chest.transform.position = new Vector3(x, y, z);
-        //    BattleRoyale.Instance.ActiveItemContainers.Add(chest.gameObject);
-        //}
-        #endregion
+        [PunRPC]
+        public void RPCGenerateStash(int itemID, string UID, float x, float y, float z)
+        {
+            TreasureChest chest = ItemManager.Instance.GenerateItemNetwork(itemID).GetComponent<TreasureChest>();
+            chest.UID = UID;
+            chest.SaveType = Item.SaveTypes.Savable;
+            chest.transform.position = new Vector3(x, y, z);
+            BattleRoyale.Instance.ActiveItemContainers.Add(chest.gameObject);
+        }
     }
 }
