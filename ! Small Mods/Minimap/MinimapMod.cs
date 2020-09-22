@@ -14,7 +14,7 @@ namespace Minimap
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.0.0";
+        public const string VERSION = "1.0.1";
 
         private static readonly FieldInfo currentAreaHasMap = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -42,10 +42,10 @@ namespace Minimap
             {
                 if (!(bool)currentAreaHasMap.GetValue(__instance))
                 {
-                    var minimap = __instance.LocalCharacter.GetComponentInChildren<MinimapScript>();
+                    var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                     if (minimap)
                     {
-                        minimap.ShowMap();
+                        minimap.ShowBigMap();
                     }
                 }
             }
@@ -54,13 +54,13 @@ namespace Minimap
         [HarmonyPatch(typeof(MapDisplay), "OnHide")]
         public class MapDisplay_OnHide
         {
-            [HarmonyPostfix]
-            public static void Postfix(MapDisplay __instance)
+            [HarmonyPrefix]
+            public static void Prefix(MapDisplay __instance)
             {
-                var minimap = __instance.LocalCharacter.GetComponentInChildren<MinimapScript>();
+                var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                 if (minimap)
                 {
-                    minimap.HideMap();
+                    minimap.HideBigMap();
                 }
             }
         }
@@ -71,8 +71,6 @@ namespace Minimap
             [HarmonyPrefix]
             public static void Prefix(SplitScreenManager __instance)
             {
-                Debug.Log("SplitScreenManager.AddLocalPlayer. Count: " + __instance.LocalPlayerCount);
-
                 if (__instance.LocalPlayerCount == 1)
                 {
                     // Adding Player 2
@@ -89,8 +87,6 @@ namespace Minimap
             [HarmonyPrefix]
             public static void Prefix(SplitScreenManager __instance)
             {
-                Debug.Log("SplitScreenManager.RemoveLocalPlayer. Count: " + __instance.LocalPlayerCount);
-
                 if (__instance.LocalPlayerCount == 2)
                 {
                     // Removing Player 2
@@ -100,6 +96,5 @@ namespace Minimap
                 }
             }
         }
-
     }
 }
