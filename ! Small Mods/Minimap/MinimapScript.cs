@@ -12,16 +12,16 @@ namespace Minimap
         public static MinimapScript P1Instance;
         public static MinimapScript P2Instance;
 
+        public const float P1_ADJUST_SPLIT = 273.2f;
+
         public bool Enabled { get; private set; } = true;
 
         public RawImage CanvasImage { get; private set; }
-        public const float P1_ADJUST_SPLIT = 273.2f;
-
-        private bool inOutdoorRegion;
 
         private Character _ownerCharacter;
 
         private float _orthoSize = 14f;
+        private bool inOutdoorRegion;
         private bool showingBigMap = false;
 
         private Camera _minimapCamera;
@@ -31,11 +31,12 @@ namespace Minimap
         private Transform _hudTransform;
         private Transform _mapTransform;
 
-        private static readonly Vector3 _P1_topLeftPosition = new Vector3(802f, 434f, 0f);
-        private static readonly Vector3 _P2_topLeftPosition = new Vector3(802f, 162.5f, 0f);
-        private static readonly Vector3 _centerPosition = new Vector3(0, 0, 0);
-        private static readonly Vector2 _smallSize = new Vector2(200f, 200f);
-        private static readonly Vector2 _bigSize = new Vector2(800f, 800f);
+        private static readonly Vector3 P1_cornerPos = new Vector3(802f, 434f, 0f);
+        private static readonly Vector3 P2_cornerPos = new Vector3(802f, 162.5f, 0f);
+        private static readonly Vector3 bigMapPosition = new Vector3(0, 0, 0);
+
+        private static readonly Vector2 smallMapSize = new Vector2(200f, 200f);
+        private static readonly Vector2 bigMapSize = new Vector2(800f, 800f);
 
         public void ToggleEnable()
         {
@@ -121,14 +122,14 @@ namespace Minimap
 
             if (_ownerCharacter.OwnerPlayerSys.PlayerID == 0)
             {
-                CanvasImage.rectTransform.localPosition = _P1_topLeftPosition;
+                CanvasImage.rectTransform.localPosition = P1_cornerPos;
             }
             else
             {
-                CanvasImage.rectTransform.localPosition = _P2_topLeftPosition;
+                CanvasImage.rectTransform.localPosition = P2_cornerPos;
             }
 
-            CanvasImage.rectTransform.sizeDelta = _smallSize;
+            CanvasImage.rectTransform.sizeDelta = smallMapSize;
 
             _hudTransform = character.CharacterUI.transform.Find("Canvas/GameplayPanels/HUD");
             _mapTransform = MenuManager.Instance.transform.Find("GeneralMenus");
@@ -183,8 +184,8 @@ namespace Minimap
             CanvasImage.material.SetTexture(1, _bigRenderTexture);
 
             CanvasImage.transform.SetParent(_mapTransform, false);
-            CanvasImage.rectTransform.localPosition = _centerPosition;
-            CanvasImage.rectTransform.sizeDelta = _bigSize;
+            CanvasImage.rectTransform.localPosition = bigMapPosition;
+            CanvasImage.rectTransform.sizeDelta = bigMapSize;
 
             _minimapCamera.orthographicSize += 45f;
         }
@@ -197,8 +198,8 @@ namespace Minimap
             CanvasImage.material.SetTexture(1, _miniRenderTexture);
 
             CanvasImage.transform.SetParent(_hudTransform, false);
-            CanvasImage.rectTransform.localPosition = _P1_topLeftPosition;
-            CanvasImage.rectTransform.sizeDelta = _smallSize;
+            CanvasImage.rectTransform.localPosition = P1_cornerPos;
+            CanvasImage.rectTransform.sizeDelta = smallMapSize;
 
             _minimapCamera.orthographicSize = _orthoSize;
         }
