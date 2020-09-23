@@ -14,18 +14,30 @@ namespace Minimap
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.0.2";
+        public const string VERSION = "1.0.3";
 
-        private static readonly FieldInfo currentAreaHasMap = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo currentAreaHasMap 
+            = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private const string TOGGLE_KEY = "Toggle Minimap";
 
         internal void Awake()
         {
-            CustomKeybindings.AddAction(TOGGLE_KEY, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5, CustomKeybindings.InputActionType.Button);
+            // setup keybinding
+            CustomKeybindings.AddAction(TOGGLE_KEY, 
+                CustomKeybindings.KeybindingsCategory.Menus,
+                CustomKeybindings.ControlType.Both, 
+                5, 
+                CustomKeybindings.InputActionType.Button);
 
+            // setup harmony
             new Harmony(GUID).PatchAll();
+
+            // setup config
+            Settings.SetupConfig();
         }
+
+        // custom keybinding input
 
         internal void Update()
         {
@@ -34,17 +46,12 @@ namespace Minimap
                 int id = player.RewiredID;
                 if (CustomKeybindings.m_playerInputManager[id].GetButtonDown(TOGGLE_KEY))
                 {
-                    if (id == 0)
-                    {
-                        MinimapScript.P1Instance.ToggleEnable();
-                    }
-                    else
-                    {
-                        MinimapScript.P2Instance.ToggleEnable();
-                    }
+                    MinimapScript.Instances[id].ToggleEnable();
                 }
             }
         }
+
+        // Setup the MinimapScript when player is created
 
         [HarmonyPatch(typeof(SplitPlayer), nameof(SplitPlayer.SetCharacter))]
         public class SplitPlayer_SetCharacter
@@ -57,6 +64,8 @@ namespace Minimap
             }
         }
 
+        // For scenes with no map, show a big version of our manual minimap instead.
+
         [HarmonyPatch(typeof(MapDisplay), nameof(MapDisplay.Show), new Type[0])]
         public class MapDisplay_Show
         {
@@ -68,7 +77,7 @@ namespace Minimap
                     var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                     if (minimap)
                     {
-                        minimap.ShowBigMap();
+                        minimap.OnShowBigMap();
                     }
                 }
             }
@@ -83,10 +92,12 @@ namespace Minimap
                 var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                 if (minimap)
                 {
-                    minimap.HideBigMap();
+                    minimap.OnHideBigMap();
                 }
             }
         }
+
+        // Fix Player 1's minimap position when split begins and ends
 
         [HarmonyPatch(typeof(SplitScreenManager), nameof(SplitScreenManager.AddLocalPlayer))]
         public class SplitScreenManager_AddLocalPlayer
@@ -96,10 +107,7 @@ namespace Minimap
             {
                 if (__instance.LocalPlayerCount == 1)
                 {
-                    // Adding Player 2
-                    var pos = MinimapScript.P1Instance.CanvasImage.rectTransform.localPosition;
-                    pos.y -= MinimapScript.P1_ADJUST_SPLIT;
-                    MinimapScript.P1Instance.CanvasImage.rectTransform.localPosition = pos;
+                    MinimapScript.P1_OnSplitBegin();
                 }
             }
         }
@@ -112,10 +120,7 @@ namespace Minimap
             {
                 if (__instance.LocalPlayerCount == 2)
                 {
-                    // Removing Player 2
-                    var pos = MinimapScript.P1Instance.CanvasImage.rectTransform.localPosition;
-                    pos.y += MinimapScript.P1_ADJUST_SPLIT;
-                    MinimapScript.P1Instance.CanvasImage.rectTransform.localPosition = pos;
+                    MinimapScript.P1_OnSplitEnd();
                 }
             }
         }
