@@ -101,6 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MarkerScript.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="MinimapScript.cs" />
     <Compile Include="MinimapMod.cs" />
