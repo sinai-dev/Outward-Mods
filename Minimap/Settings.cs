@@ -11,14 +11,17 @@ namespace Minimap
         public static ModConfig Instance;
 
         // setting names
-        public const string P1_ZOOM = "p1zoom";
-        public const string P1_OUTDOOREXTRA = "p1outdoorextra";
-        public const string P2_ZOOM = "p2zoom";
-        public const string P2_OUTDOOREXTRA = "p2outdoorextra";
+        public const string LOWPOLY_CAMERA = "lowpolycamera";
+        public const string CULLING_DEPTH = "cullingdepth";
+        public const string CAMERA_HEIGHT = "cameraheight";
         public const string PLAYER_MARKERS = "playermarkers";
         public const string ENEMY_MARKERS = "enemymarkers";
         public const string LOOT_MARKERS = "lootmarkers";
         public const string NPC_MARKERS = "npcmarkers";
+        public const string P1_ZOOM = "p1zoom";
+        public const string P1_OUTDOOREXTRA = "p1outdoorextra";
+        public const string P2_ZOOM = "p2zoom";
+        public const string P2_OUTDOOREXTRA = "p2outdoorextra";
 
         public static void OnSettingsApplied()
         {
@@ -49,6 +52,32 @@ namespace Minimap
                 new BoolSetting
                 {
                     SectionTitle = "Global",
+                    Name = LOWPOLY_CAMERA,
+                    Description = "Use low poly camera? (Better performance)",
+                    DefaultValue = true
+                },
+                //new FloatSetting
+                //{
+                //    Name = CAMERA_HEIGHT,
+                //    Description = "Camera Height above Player (indoors)",
+                //    DefaultValue = 3f,
+                //    MinValue = 1f,
+                //    MaxValue = 500f,
+                //    RoundTo = 0,
+                //    Increment = 1
+                //},
+                //new FloatSetting
+                //{
+                //    Name = CULLING_DEPTH,
+                //    Description = "Culling depth (indoors), set to -1 for automatic (height * 2)",
+                //    DefaultValue = -1f,
+                //    MinValue = -1f,
+                //    MaxValue = 250f,
+                //    RoundTo = 0,
+                //    Increment = 1
+                //},
+                new BoolSetting
+                {
                     Name = PLAYER_MARKERS,
                     Description = "Enable Player minimap markers",
                     DefaultValue = true

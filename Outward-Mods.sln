@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtectionBubble", "! Small
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnchantmentHelper", "! Small Mods\EnchantmentHelper\EnchantmentHelper\EnchantmentHelper.csproj", "{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimap", "! Small Mods\Minimap\Minimap.csproj", "{CBD929FB-FA8F-441E-92CF-9FB35CCE9850}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimap", "Minimap\Minimap.csproj", "{CBD929FB-FA8F-441E-92CF-9FB35CCE9850}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,7 +179,6 @@ Global
 		{00887CC0-9B1B-4E5B-ACFB-6209F8BC26DC} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 		{7F4D840E-DE61-46D0-8C65-8E25AE6C7D59} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 		{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
-		{CBD929FB-FA8F-441E-92CF-9FB35CCE9850} = {D4ED1719-C87C-498D-A772-121C2636DE1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E61EA2C4-5D64-4828-A24A-47E3EB51A10C}

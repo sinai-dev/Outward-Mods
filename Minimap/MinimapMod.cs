@@ -12,20 +12,20 @@ using UnityEngine.SceneManagement;
 namespace Minimap
 {
     [BepInPlugin(GUID, NAME, VERSION)]
+    [BepInDependency(SharedModConfig.SharedModConfig.GUID, BepInDependency.DependencyFlags.HardDependency)]
     public class MinimapMod : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.2.0";
 
         private static readonly FieldInfo currentAreaHasMap 
             = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private const string TOGGLE_KEY = "Toggle Minimap";
+        public const string ASSETBUNDLE_PATH = @"BepInEx\plugins\Minimap\shaderbundle";
+        public static Material AlwaysOnTopMaterial;
 
-        private const string MARKER_NAME = "MarkerSphere";
-        private const int MARKER_LAYER = 14;
-        private static readonly Color CYAN = new Color(52f/255f, 229f/255f, 235f/255f);
+        private const string TOGGLE_KEY = "Toggle Minimap";
 
         internal void Awake()
         {
@@ -44,6 +44,10 @@ namespace Minimap
 
             // global scene change event
             SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+
+            // Load bundle
+            var bundle = AssetBundle.LoadFromFile(ASSETBUNDLE_PATH);
+            AlwaysOnTopMaterial = bundle.LoadAsset<Material>("UI_AlwaysOnTop");
         }
 
         private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
@@ -61,50 +65,19 @@ namespace Minimap
             // enemies
             foreach (var character in CharacterManager.Instance.Characters.Values.Where(x => x.IsAI))
             {
-                AddMarker(character.gameObject, Color.red, MarkerScript.Types.Enemy);
+                MarkerScript.AddMarker(character.gameObject, MarkerScript.Types.Enemy);
             }
 
             // gatherables
             foreach (var loot in Resources.FindObjectsOfTypeAll<SelfFilledItemContainer>())
             {
-                AddMarker(loot.gameObject, Color.yellow, MarkerScript.Types.Loot);
+                MarkerScript.AddMarker(loot.gameObject, MarkerScript.Types.Loot);
             }
 
             foreach (var npc in Resources.FindObjectsOfTypeAll<SNPC>())
             {
-                AddMarker(npc.gameObject, CYAN, MarkerScript.Types.NPC);
+                MarkerScript.AddMarker(npc.gameObject, MarkerScript.Types.NPC);
             }
-        }
-
-        private static void AddMarker(GameObject obj, Color color, MarkerScript.Types type)
-        {
-            if (obj.transform.Find(MARKER_NAME))
-                return;
-
-            var marker = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-
-            marker.name = MARKER_NAME;
-
-            marker.layer = MARKER_LAYER;
-
-            marker.transform.parent = obj.transform;
-            marker.transform.ResetLocal();
-            marker.transform.localPosition += Vector3.up * 2.5f;
-
-            marker.transform.localScale *= 2;
-
-            var mesh = marker.GetComponent<MeshRenderer>();
-            mesh.material.color = color;
-
-            var script = marker.AddComponent<MarkerScript>();
-            script.Init(type);
-
-            //// make bright
-            //var light = marker.AddComponent<Light>();
-            //light.color = color;
-            //light.intensity = 15f;
-            //light.range = 5f;
-            //light.cullingMask = 1 << MARKER_LAYER;
         }
 
         // custom keybinding input
@@ -133,7 +106,7 @@ namespace Minimap
                     return;
                 }
 
-                AddMarker(__instance.gameObject, Color.green, MarkerScript.Types.Player);
+                MarkerScript.AddMarker(__instance.gameObject, MarkerScript.Types.Player);
             }
         }
 
@@ -144,7 +117,7 @@ namespace Minimap
             public static void Postfix(Camera _camera)
             {
                 // XOR-out the marker layer from the mask
-                _camera.cullingMask ^= 1 << MARKER_LAYER;
+                _camera.cullingMask ^= 1 << MarkerScript.MARKER_LAYER;
             }
         }
 

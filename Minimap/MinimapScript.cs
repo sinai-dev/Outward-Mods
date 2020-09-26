@@ -7,12 +7,6 @@ using UnityEngine.UI;
 
 namespace Minimap
 {
-    /* TODO     
-        * More intelligent culling? Allow user to adjust cull depth?
-        * Try increase brightness in dark areas 
-        * ...
-    */
-
     public class MinimapScript : MonoBehaviour
     {
         // ~~~~~ static members ~~~~~
@@ -26,6 +20,9 @@ namespace Minimap
         // state
         private static bool InOutdoorRegion => OutdoorRegions.Contains(SceneManagerHelper.ActiveSceneName);
         private static bool ShowingBigMap;
+        private static RenderingPath CameraRenderPath => (bool)Settings.Instance.GetValue(Settings.LOWPOLY_CAMERA)
+                                                            ? RenderingPath.VertexLit
+                                                            : RenderingPath.UsePlayerSettings;
 
         // minimap position defaults
         private static readonly Vector3[] CornerPositions = new Vector3[]
@@ -43,7 +40,7 @@ namespace Minimap
         private static readonly HashSet<string> OutdoorRegions = new HashSet<string>
         {
             "ChersoneseNewTerrain", "Emercar", "HallowedMarshNewTerrain", "Abrassar", "AntiqueField", 
-            "CierzoTutorial",  "CierzoNewTerrain", "Berg",  "Monsoon",  "Levant",  "Harmattan",
+            //"CierzoTutorial",  "CierzoNewTerrain", "Berg",  "Monsoon",  "Levant",  "Harmattan",
         };
 
         // maps which require manual Z align
@@ -53,7 +50,6 @@ namespace Minimap
             { "HallowedMarshNewTerrain", 90f },
         };
 
-
         // ~~~~~ instance members ~~~~~
 
         private bool m_enabled = true;
@@ -61,8 +57,9 @@ namespace Minimap
 
         private float m_cameraOrthoSize;            // config: P1_ZOOM, P2_ZOOM
         private float m_outdoorExtraSize;           // config: P1_OUTDOOREXTRA, P2_OUTDOOREXTRA
-        private float m_indoorHeight = 6f;       // todo config
-        private float m_outdoorHeight = 250f;    // todo config
+
+        private readonly float m_indoorHeight = 6f;
+        private readonly float m_outdoorHeight = 250f;    
 
         private float m_currentZrotation;   // Usually 0, unless ManualZRotations overrides it.
 
@@ -101,7 +98,6 @@ namespace Minimap
             m_minimapCamera.clearFlags = CameraClearFlags.SolidColor;
             m_minimapCamera.backgroundColor = new Color(0.5f, 0.5f, 0.5f);
 
-            m_minimapCamera.renderingPath = RenderingPath.VertexLit;
 
             // setup RenderTexture
             m_miniRenderTexture = new RenderTexture(200, 200, 0);
@@ -123,14 +119,6 @@ namespace Minimap
 
             mat.SetTexture(1, m_miniRenderTexture);
             m_mapImage.material = mat;
-
-            //// add the white dot on the minimap
-            //var dotGO = new GameObject("dot");
-            //dotGO.transform.SetParent(m_mapImage.transform, false);
-            //dotGO.transform.ResetLocal();
-            //var dotImg = dotGO.AddComponent<Image>();
-            //dotImg.rectTransform.sizeDelta = new Vector2(3f, 3f);
-            //dotImg.rectTransform.localPosition = Vector3.zero;
 
             SetZRotation();
 
@@ -157,65 +145,6 @@ namespace Minimap
             }
         }
 
-        public void OnGUI()
-        {
-            if (!ShowingBigMap) return;
-
-            var x = Screen.width / 2 - 200f;
-            var y = Screen.height / 8;
-
-            GUILayout.BeginArea(new Rect(x, y, 400, 50), GUI.skin.box);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Cull:", GUILayout.Width(50));
-            if (GUILayout.RepeatButton("-", GUILayout.Width(25)))
-            {
-                m_minimapCamera.farClipPlane -= 1f;
-            }
-            if (GUILayout.RepeatButton("+", GUILayout.Width(25)))
-            {
-                m_minimapCamera.farClipPlane += 1f;
-            }
-            GUILayout.Label("Position:", GUILayout.Width(70));
-            if (GUILayout.RepeatButton("<", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.x -= 1f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            if (GUILayout.RepeatButton(">", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.x += 1f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            if (GUILayout.RepeatButton("^", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.z += 1f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            if (GUILayout.RepeatButton("v", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.z -= 1f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            if (GUILayout.RepeatButton("+", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.y += 0.3f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            if (GUILayout.RepeatButton("-", GUILayout.Width(25)))
-            {
-                var pos = m_minimapCamera.transform.localPosition;
-                pos.y -= 0.3f;
-                m_minimapCamera.transform.localPosition = pos;
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
-        }
-
         private void ActiveSceneChanged(Scene arg0, Scene arg1)
         {
             var scene = SceneManagerHelper.ActiveSceneName;
@@ -231,9 +160,9 @@ namespace Minimap
             SetHeightAndCull();
         }
 
-        public void SetHeightAndCull(float? height = null)
+        public void SetHeightAndCull()
         {
-            height = height ?? (InOutdoorRegion ? m_outdoorHeight : m_indoorHeight);            
+            var height = InOutdoorRegion ? m_outdoorHeight : m_indoorHeight;            
 
             m_minimapCamera.transform.position = m_ownerCharacter.transform.position + (Vector3.up * (float)height);
 
@@ -252,6 +181,8 @@ namespace Minimap
                 m_cameraOrthoSize = (float)Settings.Instance.GetValue(Settings.P2_ZOOM);
                 m_outdoorExtraSize = (float)Settings.Instance.GetValue(Settings.P2_OUTDOOREXTRA);
             }
+
+            m_minimapCamera.renderingPath = CameraRenderPath;
 
             ApplyOrthoSize();
         }
@@ -355,7 +286,7 @@ namespace Minimap
                 }
                 else if (Input.GetKey(KeyCode.UpArrow))
                 {
-                    m_cameraOrthoSize -= 0.5f;
+                    m_cameraOrthoSize = Mathf.Clamp(m_cameraOrthoSize - 0.5f, 1f, float.MaxValue);
                     set = true;
                 }
 
@@ -365,6 +296,65 @@ namespace Minimap
                     Settings.Instance.SetValue(Settings.P1_ZOOM, m_cameraOrthoSize);
                 }
             }
+        }
+
+        public void OnGUI()
+        {
+            if (!ShowingBigMap) return;
+
+            var x = Screen.width / 2 - 200f;
+            var y = Screen.height / 9;
+
+            GUILayout.BeginArea(new Rect(x, y, 400, 50), GUI.skin.box);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Cull:", GUILayout.Width(50));
+            if (GUILayout.RepeatButton("-", GUILayout.Width(25)))
+            {
+                m_minimapCamera.farClipPlane -= 1f;
+            }
+            if (GUILayout.RepeatButton("+", GUILayout.Width(25)))
+            {
+                m_minimapCamera.farClipPlane += 1f;
+            }
+            GUILayout.Label("Position:", GUILayout.Width(70));
+            if (GUILayout.RepeatButton("<", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.x -= 1f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            if (GUILayout.RepeatButton(">", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.x += 1f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            if (GUILayout.RepeatButton("^", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.z += 1f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            if (GUILayout.RepeatButton("v", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.z -= 1f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            if (GUILayout.RepeatButton("+", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.y += 0.3f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            if (GUILayout.RepeatButton("-", GUILayout.Width(25)))
+            {
+                var pos = m_minimapCamera.transform.localPosition;
+                pos.y -= 0.3f;
+                m_minimapCamera.transform.localPosition = pos;
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
         }
 
         // ~~~~~~~~~~~~~~~~~~
