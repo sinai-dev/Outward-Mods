@@ -53,7 +53,7 @@ namespace Minimap
                 layer = MARKER_LAYER
             };
 
-            marker.transform.parent = obj.transform;
+            marker.transform.SetParent(obj.transform, false);
             marker.transform.ResetLocal();
 
             marker.transform.localScale = Vector3.one * 0.05f;

@@ -18,7 +18,7 @@ namespace PvP
     {
         public const string GUID = "com.sinai.pvp";
         public const string NAME = "PvP";
-        public const string VERSION = "2.4";
+        public const string VERSION = "2.5";
 
         public static PvP Instance;
 

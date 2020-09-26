@@ -9,11 +9,21 @@ namespace PvP
     public class Spectate : MonoBehaviour
     {
         public static Transform CameraTransform => VideoCamera.Instance.VideoCameraTrans;
-        public static Camera FreeCamera => m_camera ?? (m_camera = (Camera)At.GetValue(typeof(VideoCamera), VideoCamera.Instance, "m_camera"));
+
+        public static Camera FreeCamera
+        {
+            get
+            {
+                if (!m_camera)
+                {
+                    m_camera = (Camera)At.GetValue(typeof(VideoCamera), VideoCamera.Instance, "m_camera");
+                }
+                return m_camera;
+            }
+        }
         private static Camera m_camera;
 
         private Character m_ownerCharacter;
-        private SplitAudioListener m_audioListener;
         private Vector3 m_startPosition;
 
         public Character[] AvailableTargets => PlayerManager.Instance.GetRemainingPlayers().ToArray();
@@ -25,8 +35,6 @@ namespace PvP
         {
             m_ownerCharacter = this.gameObject.GetComponent<PlayerSystem>().ControlledCharacter;
             m_startPosition = m_ownerCharacter.transform.position;
-
-            m_audioListener = m_ownerCharacter.CharacterCamera.CameraScript.gameObject.GetComponent<SplitAudioListener>();
 
             // get closest character to spectate
             var list = new List<Character>();
@@ -69,6 +77,12 @@ namespace PvP
                 m_spectateTargetIndex = 0;
                 ReleaseTarget();
             }
+            else if (Input.GetKeyDown(KeyCode.Escape) && !PvPGUI.Instance.showGui)
+            {
+                ReleaseTarget();
+                PvPGUI.Instance.showGui = true;
+                Global.LockCursor(false);
+            }
 
             if (hasTarget)
             {
@@ -78,7 +92,7 @@ namespace PvP
 
         private void UpdateTarget()
         {
-            if (m_target.IsDead)
+            if (!m_target || m_target.IsDead)
             {
                 ReleaseTarget();
                 return;
@@ -113,8 +127,7 @@ namespace PvP
         {
             hasTarget = true;
             m_target = target;
-
-            m_audioListener.TargetChar = target;
+            Global.LockCursor(true);
 
             RPCManager.Instance.SendUIMessageLocal(m_ownerCharacter, "Spectating " + target.Name);
 
@@ -126,8 +139,6 @@ namespace PvP
         {
             hasTarget = false;
             m_target = null;
-
-            m_audioListener.TargetChar = m_ownerCharacter;
 
             At.SetValue((Transform)null, typeof(VideoCamera), VideoCamera.Instance, "m_targetTrans");
             At.SetValue(VideoCamera.VideoCamState.NORMAL, typeof(VideoCamera), VideoCamera.Instance, "m_state");

@@ -222,7 +222,7 @@ namespace PvP
                     {
                         obj.SetActive(true);
                     }
-                    else if (FindInActiveObjectByName(s) is GameObject obj2)
+                    else if (FindInactiveObjectByName(s) is GameObject obj2)
                     {
                         obj2.SetActive(true);
                     }
@@ -719,7 +719,7 @@ namespace PvP
             }
         }
 
-        public GameObject FindInActiveObjectByName(string name)
+        public GameObject FindInactiveObjectByName(string name)
         {
             Transform[] objs = Resources.FindObjectsOfTypeAll<Transform>() as Transform[];
             for (int i = 0; i < objs.Length; i++)
