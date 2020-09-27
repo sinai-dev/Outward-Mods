@@ -1,6 +1,8 @@
 # NOTE
 
-I have made the [MonoExplorer](https://github.com/sinai-dev/MonoExplorer) which is an improved version of this, and also works on any Mono Unity game.
+I have made the [Explorer](https://github.com/sinai-dev/Explorer) which is an improved version of this, and also works on any Mono Unity game.
+
+Use the <b>Explorer.BepInEx.Mono.zip</b> version for Outward.
 
 
 # Original Readme
