@@ -70,13 +70,14 @@ namespace CombatAndDodgeOverhaul
                 var character = self.GetComponent<Character>();
                 if (!character.IsAI)
                 {
-                    self.RemoveStatStack(TagSourceManager.Instance.GetTag("81"), "CombatOverhaul", true);
+                    var tag = TagSourceManager.Instance.GetTag("81");
+                    self.RemoveStatStack(tag, "CombatOverhaul", true);
                     self.AddStatStack(
-                        TagSourceManager.Instance.GetTag("81"),
+                        tag,
                         new StatStack(
                             "CombatOverhaul",
                             0.01f * (float)CombatOverhaul.config.GetValue(Settings.Stamina_Cost_Stat)),
-                        true);
+                        true);                    
 
                     return true;
                 }

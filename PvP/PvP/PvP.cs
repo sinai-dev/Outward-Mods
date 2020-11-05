@@ -69,44 +69,6 @@ namespace PvP
             obj.AddComponent<DeathMatch>();
         }
 
-        [HarmonyPatch(typeof(PvP), nameof(PvP.TestMethod))]
-        public class Coroutine_Patch
-        {
-            [HarmonyPrefix]
-            public static bool Prefix(ref IEnumerator __result)
-            {
-                Debug.Log("This is the prefix");
-
-                __result = OverrideCoroutine();
-
-                return false;
-            }
-
-            private static IEnumerator OverrideCoroutine()
-            {
-                Debug.Log("The override coroutine has started.");
-
-                yield return null;
-
-                Debug.Log("The override coroutine has ended.");
-            }
-
-            [HarmonyPostfix]
-            public static void Postfix()
-            {
-                Debug.Log("This is the postfix");
-            }
-        }
-
-        private IEnumerator TestMethod()
-        {
-            Debug.Log("The coroutine has started.");
-
-            yield return null;
-
-            Debug.Log("The coroutine has ended.");
-        }
-
         // Disable enemies feature
 
         private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
