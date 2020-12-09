@@ -4,7 +4,7 @@ Sinai's mods for Outward.
 
 ## Note
 
-These mods were how I got started modding, some of the older ones are not written very well.
+Long overdue for a cleanup. Big archiving and cleanup will happen shortly.
 
 ## How to install mods
 
