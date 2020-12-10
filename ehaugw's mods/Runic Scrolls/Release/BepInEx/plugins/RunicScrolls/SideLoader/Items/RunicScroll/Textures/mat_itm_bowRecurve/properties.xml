@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SL_Material xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ShaderName>Custom/Main Set/Main Standard</ShaderName>
-  <Properties />
-  <Keywords>
-    <string>_OPAQUE</string>
-    <string>_WETNESS_NONE</string>
-  </Keywords>
-</SL_Material>

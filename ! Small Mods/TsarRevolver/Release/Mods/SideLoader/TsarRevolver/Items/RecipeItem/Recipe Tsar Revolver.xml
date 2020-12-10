@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<SL_RecipeItem xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <EffectBehaviour>DestroyEffects</EffectBehaviour>
-  <Target_ItemID>5700195</Target_ItemID>
-  <New_ItemID>5799199</New_ItemID>
-  <Name>Recipe: Tsar Revolver</Name>
-  <RecipeUID>recipe.sinai.tsarRevolver</RecipeUID>
-</SL_RecipeItem>
