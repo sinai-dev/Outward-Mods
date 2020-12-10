@@ -1,0 +1,1378 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SideLoader</name>
+    </assembly>
+    <members>
+        <member name="T:SideLoader.CustomAudio">
+            <summary>Helper class used to manage and replace Audio and Music.</summary>
+        </member>
+        <member name="P:SideLoader.CustomAudio.GAMInstance">
+            <summary>The GlobalAudioManager Instance reference (since its not public)</summary>
+        </member>
+        <member name="M:SideLoader.CustomAudio.ReplaceAudio(GlobalAudioManager.Sounds,UnityEngine.AudioClip)">
+            <summary>Replace a global sound with the provided AudioClip.</summary>
+        </member>
+        <member name="M:SideLoader.CustomAudio.LoadClip(System.String,SideLoader.SLPack)">
+            <summary>Coroutine used to load an AudioClip.</summary>
+        </member>
+        <member name="T:SideLoader.CustomItemVisuals">
+            <summary>SideLoader's manger class for Custom Item Visuls. Contains useful methods for managing item visuals.</summary>
+        </member>
+        <member name="F:SideLoader.CustomItemVisuals.ItemVisuals">
+            <summary> Custom Item Visual prefabs (including retexture-only) </summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.GetSafeMaterialName(System.String)">
+            <summary>
+            Returns the true name of the given material name (removes "(Clone)" and "(Instance)", etc)
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.SetSpriteLink(Item,UnityEngine.Sprite,System.Boolean)">
+            <summary>
+            Helper to set the ItemVisualLink Icon or SkillTreeIcon for an Item.
+            </summary>
+            <param name="item">The item you want to set to.</param>
+            <param name="sprite">The Sprite you want to set.</param>
+            <param name="skill">Whether this is a "small skill tree icon", or just the main item icon.</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.GetOrigItemVisuals(Item,SideLoader.VisualPrefabType)">
+            <summary>Returns the original Item Visuals for the given Item and VisualPrefabType</summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.CloneVisualPrefab(Item,SideLoader.VisualPrefabType,System.Boolean)">
+            <summary> Clone's an items current visual prefab (and materials), then sets this item's visuals to the new cloned prefab. </summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.CloneVisualPrefab(Item,UnityEngine.GameObject,SideLoader.VisualPrefabType,System.Boolean)">
+            <summary>
+            Clones the provided 'prefab' GameObject, and sets it to the provided Item and VisualPrefabType.
+            </summary>
+            <param name="item">The Item to apply to.</param>
+            <param name="prefab">The visual prefab to clone and set.</param>
+            <param name="type">The Type of VisualPrefab you are setting.</param>
+            <param name="logging">Whether to log errors or not.</param>
+            <returns>The cloned gameobject.</returns>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.TryApplyCustomTextures(System.String,Item)">
+            <summary>Try apply textures to an item from the specified directory 'texturesFolder'.</summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.TryApplyCustomTextures(SideLoader.SL_Item,Item)">
+            <summary>
+            Will check for the "SLPackFolder/Items/SubfolderName/Textures" folder (if it exists), and if so load and apply these textures to your item.
+            </summary>
+            <param name="template">The template for your custom item (must already be set up, including SLPackName and SubfolderName)</param>
+            <param name="newItem">The actual new item prefab, already created by CreateCustomItem</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.ApplyTexturesFromFolder(System.String,Item)">
+            <summary>
+            Applies textures and icons to the item from the given directory.
+            The icons should be in the base folder, called "icon.png" and "skillicon.png".
+            The textures should be in sub-folders for each material (name of folder is material name), and each texture should be named after the shader layer it is setting.
+            </summary>
+            <param name="dir">Full path relative to Outward folder.</param>
+            <param name="item">The item to apply to.</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.GetMaterials(Item,SideLoader.VisualPrefabType)">
+            <summary>
+            Gets an array of the Materials on the given visual prefab type for the given item.
+            These are actual references to the Materials, not a copy like Unity's Renderer.Materials[]
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.ApplyTexturesFromAssetBundle(UnityEngine.AssetBundle)">
+            <summary>
+            Searches the provided AssetBundle for folders in the expected format, and applies textures to the corresponding Item.
+            Each item must have its own sub-folder, where the name of this folder starts with the Item's ItemID.
+            The folder name can have anything else after the ID, but it must start with the ID.
+            Eg., '2000010_IronSword\' would be valid to set the textures on the Iron Sword. 
+            The textures should be placed inside this folder and should match the Shader Layer names of the texture (the same way you set Item textures from a folder).
+            </summary>
+            <param name="bundle">The AssetBundle to apply Textures from.</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.GetTexturesFromFolder(System.String,System.Collections.Generic.Dictionary{System.String,SideLoader.SL_Material}@)">
+            <summary>
+            Checks the provided folder for sub-folders, each sub-folder should be the name of a material.
+            Inside this folder there should be the texture PNG files (named after Shader Layers), and the properties.xml file.
+            SideLoader will load everything and return it to you in two dictionaries.
+            </summary>
+            <param name="dir">The base directory to check (eg. "SLPack\Items\MyItem\Textures\")</param>
+            <param name="slMaterials">Secondary out paramater for the SL Material templates. Key: Material Name, Value: SL_Material.</param>
+            <returns>Key: Material name, Value: List of Texture2D for the material.</returns>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.ApplyIconsByName(UnityEngine.Sprite[],Item)">
+            <summary>
+            Sets the provided sprites to the item. The list (of 1 or 2 length) should contain either/or: the main item icon called "icon", and the skill tree icon called "skillicon".
+            </summary>
+            <param name="icons">A list of 1 or 2 length. Item icons should be called "icon", and skill tree icons should be called "skillicon".</param>
+            <param name="item">The item to set to.</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.ApplyTexturesByName(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{UnityEngine.Texture2D}},System.Collections.Generic.Dictionary{System.String,SideLoader.SL_Material},Item)">
+            <summary>
+            Applies textures to the item using the provided dictionary.
+            </summary>
+            <param name="textures">Key: Material names (with GetSafeMaterialName), Value: List of Textures to apply, names should match the shader layers of the material.</param>
+            <param name="slMaterials">[OPTIONAL] Key: Material names with GetSafeMaterialName, Value: SL_Material template to apply.</param>
+            <param name="item">The item to apply to</param>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.SaveAllItemTextures(Item,System.String)">
+            <summary>
+            Saves textures from an Item to a directory.
+            </summary>
+            <param name="item">The item to apply to.</param>
+            <param name="dir">Full path, relative to Outward folder</param>
+        </member>
+        <member name="T:SideLoader.CustomItemVisuals.ItemVisualsLink">
+            <summary>
+            Used internally for managing custom item visuals for the ResourcesPrefabManager.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomItemVisuals.ItemVisualsLink.GetVisuals(SideLoader.VisualPrefabType)">
+            <summary>
+            Returns the linked ItemVisuals for the provided VisualPrefabType (if any), otherwise null.
+            </summary>
+            <param name="type">The type of Visual Prefab you want.</param>
+            <returns>The linked Transform, or null.</returns>
+        </member>
+        <member name="T:SideLoader.CustomStatusEffects">
+            <summary>
+            SideLoader's manager class for Custom Status Effects. Contains helpful methods for creating and managing SL_StatusEffects and SL_ImbueEffects.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomStatusEffects.OrigStatusEffects">
+            <summary>Cached un-edited Status Effects.</summary>
+        </member>
+        <member name="F:SideLoader.CustomStatusEffects.OrigEffectPresets">
+            <summary>Cached un-edited Effect Presets, used by Imbue Presets. For StatusEffects, use GetOrigStatusEffect.</summary>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.GetOrigEffectPreset(System.Int32)">
+            <summary>
+            Helper to get the cached ORIGINAL (not modified) EffectPreset of this PresetID.
+            </summary>
+            <param name="presetID">The Preset ID of the effect preset you want.</param>
+            <returns>The EffectPreset, if found.</returns>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.GetOrigStatusEffect(System.String)">
+            <summary>
+            Get the original Status Effect with this identifier.
+            </summary>
+            <param name="identifier">The identifier to get.</param>
+            <returns>The EffectPreset, if found, otherwise null.</returns>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.CreateCustomStatus(SideLoader.SL_StatusEffect)">
+            <summary>
+            Use this to create or modify a Status Effect.
+            </summary>
+            <param name="template">The SL_StatusEffect template.</param>
+            <returns>The new or existing StatusEffect.</returns>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.GetStatusLocalization(StatusEffect,System.String@,System.String@)">
+            <summary>
+            Get the Localization for the Status Effect (name and description).
+            </summary>
+            <param name="effect">The Status Effect to get localization for.</param>
+            <param name="name">The output name.</param>
+            <param name="desc">The output description.</param>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.SetStatusLocalization(StatusEffect,System.String,System.String)">
+            <summary>
+            Helper to set the Name and Description localization for a StatusEffect
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.CreateCustomImbue(SideLoader.SL_ImbueEffect)">
+            <summary>
+            Use this to create or modify an Imbue Effect status.
+            </summary>
+            <param name="template">The SL_ImbueEffect Template for this imbue.</param>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.GetImbueLocalization(ImbueEffectPreset,System.String@,System.String@)">
+            <summary>
+            Helper to get the name and description for an Imbue.
+            </summary>
+            <param name="preset">The Imbue Preset to get localization for.</param>
+            <param name="name">The output name.</param>
+            <param name="desc">The output description.</param>
+        </member>
+        <member name="M:SideLoader.CustomStatusEffects.SetImbueLocalization(ImbueEffectPreset,System.String,System.String)">
+            <summary>
+            Helper to set the Name and Description localization for an Imbue Preset
+            </summary>
+        </member>
+        <member name="T:SideLoader.CustomTags">
+            <summary>
+            A helper class for getting Tags more easily, and for creating new ones too.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomTags.GetTag(System.String,System.Boolean)">
+            <summary>
+            Returns the game's actual Tag for the string you provide, if it exists.
+            </summary>
+            <param name="TagName">Eg "Food", "Blade", etc...</param>
+            <param name="logging">Whether to log error messages to debug console or not (if tag doesnt exist)</param>
+            <returns></returns>
+        </member>
+        <member name="M:SideLoader.CustomTags.CreateTag(System.String)">
+            <summary>
+            Helper for creating a new Tag
+            </summary>
+            <param name="name">The new tag name</param>
+        </member>
+        <member name="T:SideLoader.References">
+            <summary>Helpers to access useful dictionaries, lists and instances maintained by the game.</summary>
+        </member>
+        <member name="P:SideLoader.References.GENERAL_LOCALIZATION">
+            <summary>Cached LocalizationManager.m_generalLocalization reference.</summary>
+        </member>
+        <member name="P:SideLoader.References.ITEM_LOCALIZATION">
+            <summary>Cached LocalizationManager.m_itemLocalization reference</summary>
+        </member>
+        <member name="P:SideLoader.References.RPM_ITEM_PREFABS">
+            <summary>Cached ResourcesPrefabManager.ITEM_PREFABS Dictionary</summary>
+        </member>
+        <member name="P:SideLoader.References.RPM_EFFECT_PRESETS">
+            <summary>Cached ResourcesPrefabManager.EFFECTPRESET_PREFABS reference.</summary>
+        </member>
+        <member name="P:SideLoader.References.RPM_STATUS_EFFECTS">
+            <summary>Cached ResourcesPrefabManager.STATUSEFFECT_PREFABS reference.</summary>
+        </member>
+        <member name="P:SideLoader.References.ENCHANTMENT_PREFABS">
+            <summary>Cached ResourcesPrefabManager.ENCHANTMENT_PREFABS reference.</summary>
+        </member>
+        <member name="P:SideLoader.References.ALL_RECIPES">
+            <summary>Cached RecipeManager.m_recipes Dictionary</summary>
+        </member>
+        <member name="P:SideLoader.References.RECIPES_PER_UTENSIL">
+            <summary>Cached RecipeManager.m_recipeUIDsPerUstensils Dictionary</summary>
+        </member>
+        <member name="P:SideLoader.References.ENCHANTMENT_RECIPES">
+            <summary>Cached RecipeManager.m_enchantmentRecipes reference.</summary>
+        </member>
+        <member name="T:SideLoader.Hooks.ResourcesPrefabManager_Load">
+            <summary>
+            SideLoader's setup is a Finalizer on ResourcesPrefabManager.Load().
+            </summary>
+        </member>
+        <member name="T:SideLoader.Hooks.Effect_OnEnable">
+            <summary>
+            This patch is to fix StatusEffect prefab references on AddStatus components, for when editing an existing StatusEffect.
+            </summary>
+        </member>
+        <member name="T:SideLoader.Hooks.ShootProjectile_Setup">
+            <summary>
+            This patch fixes some things for Blast and Projectile EffectSynchronizers.
+            Due to the way we clone and setup these prefabs, we need to fix a few things here.
+            1) Set the ParentEffect (the ShootBlast or ShootProjectile)
+            2) Re-enable the prefab.
+            </summary>
+        </member>
+        <member name="T:SideLoader.Hooks.ShootBlastHornetControl_Update">
+            <summary>
+            Patch for ShootBlastHornetControl to allow them to end based on the Lifespan.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_PlayVFX.GetSafeVFXName(VFXSystem)">
+            <summary>
+            Gets the safe name of a VFXSystem (for serialization / enum).
+            </summary>
+            <param name="vfx">The VFXSystem to get the name for.</param>
+            <returns>The actual, serialization-safe name.</returns>
+        </member>
+        <member name="M:SideLoader.SL_PlayVFX.GetVFXSystemEnum(VFXSystem)">
+            <summary>
+            Helper to take a VFXSystem and get the VFXSystemPrefabs enum value for it (if valid).
+            </summary>
+            <param name="vfx">The vfx system</param>
+        </member>
+        <member name="T:SideLoader.EditBehaviours">
+            <summary>Determines how SideLoader applies your template to the original object.</summary>
+        </member>
+        <member name="F:SideLoader.EditBehaviours.NONE">
+            <summary>Will leave the existing objects untouched, and add yours on-top of them (if any).</summary>
+        </member>
+        <member name="F:SideLoader.EditBehaviours.Override">
+            <summary>Will override the existing objects if you have defined an equivalent (for SL_EffectTransform, this means the SL_EffectTransform itself)</summary>
+        </member>
+        <member name="F:SideLoader.EditBehaviours.Destroy">
+            <summary>Destroys all existing objects before adding yours (if any).</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Type">
+            <summary>You don't need to set this if you're setting a value in an SL_Item template, SideLoader will figure this out for you.</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.ResourcesPrefabPath">
+            <summary>
+            Used to set the visual prefab from an existing prefab at the given path. Checks the Unity Resources "folder" for the asset path.
+            </summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Prefab_SLPack">
+            <summary>SLPack using for AssetBundle visuals</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Prefab_AssetBundle">
+            <summary>AssetBundle file name inside specified Prefab_SLPack</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Prefab_Name">
+            <summary>Prefab GameObject name inside specified Prefab_AssetBundle</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Position">
+            <summary>Optional, directly set the position</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.Rotation">
+            <summary>Optional, directly set the rotation</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.PositionOffset">
+            <summary>Optional, add offset to position</summary>
+        </member>
+        <member name="F:SideLoader.SL_ItemVisual.RotationOffset">
+            <summary>Optional, add offset to rotation</summary>
+        </member>
+        <member name="M:SideLoader.SL_ItemVisual.ApplyToItem(Item)">
+            <summary>
+            Apply the SL_ItemVisual prefab to the Item.
+            </summary>
+            <param name="item">The Item to set to.</param>
+        </member>
+        <member name="M:SideLoader.SL_ItemVisual.SetCustomVisualPrefab(Item,SideLoader.VisualPrefabType,UnityEngine.Transform,UnityEngine.Transform)">
+            <summary>
+            Sets a CUSTOM visual prefab to an Item. Don't use this for transmogs.
+            </summary>
+            <param name="item">The Item to set to.</param>
+            <param name="type">The Type of visual prefab you are setting.</param>
+            <param name="newVisuals">The new CUSTOM visual prefab.</param>
+            <param name="oldVisuals">The original visual prefab.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SideLoader.SL_ItemVisual.ApplyToVisuals(ItemVisual,UnityEngine.Transform)">
+            <summary>
+            Applies the values to the ItemVisual component itself.
+            </summary>
+            <param name="itemVisual">The ItemVisual to apply to.</param>
+            <param name="visuals">The visual prefab you want to set to.</param>
+        </member>
+        <member name="T:SideLoader.VisualPrefabType">
+            <summary>
+            Helper enum for the possible Visual Prefab types on Items. 
+            </summary>
+        </member>
+        <member name="F:SideLoader.VisualPrefabType.VisualPrefab">
+            <summary>Item.VisualPrefab</summary>
+        </member>
+        <member name="F:SideLoader.VisualPrefabType.SpecialVisualPrefabDefault">
+            <summary>Item.SpecialVisualPrefabDefault</summary>
+        </member>
+        <member name="F:SideLoader.VisualPrefabType.SpecialVisualPrefabFemale">
+            <summary>Item.SpecialVisualPrefabFemale</summary>
+        </member>
+        <member name="T:SideLoader.RPCManager">
+            <summary>
+            Used internally to manage various networking features, using Photon RPC calls.
+            </summary>
+        </member>
+        <member name="M:SideLoader.RPCManager.SpawnCharacter(System.String,System.Int32,System.String,System.String,System.Boolean,System.String,System.String)">
+            <summary>
+            Internal RPC call used by CustomCharacters.CreateCharacter. This is essentially a link to the CustomCharacters.SpawnCharacterCoroutine method.
+            </summary>
+        </member>
+        <member name="M:SideLoader.RPCManager.DestroyCharacter(System.String)">
+            <summary>
+            Internal RPC call used by CustomCharacters.DestroyCharacterRPC.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_ShootBlast.GetBlastPrefabEnum(Blast)">
+            <summary>
+            Helper to take a Blast and get the BlastPrefabs enum value for it (if valid).
+            </summary>
+            <param name="blast">The blast prefab</param>
+        </member>
+        <member name="T:SideLoader.SL_Shooter">
+            <summary>
+            Abstract base class for SL_ShootBlast and SL_ShootProjectile
+            </summary>
+        </member>
+        <member name="T:SideLoader.SL_ShootItem">
+            <summary>
+            Shell class, doesn't require any extra fields, but requires a WeaponLoadoutItem ItemExtension on the Item.
+            </summary>
+        </member>
+        <member name="T:SideLoader.EffectBehaviours">
+            <summary>Determines how SL_EffectTransforms are applied in various templates.</summary>
+        </member>
+        <member name="F:SideLoader.EffectBehaviours.NONE">
+            <summary>Everything will be applied on-top of the existing effects, nothing will be removed.</summary>
+        </member>
+        <member name="F:SideLoader.EffectBehaviours.DestroyEffects">
+            <summary>Destroys all existing effects and conditions.</summary>
+        </member>
+        <member name="F:SideLoader.EffectBehaviours.OverrideEffects">
+            <summary>Only destroys Transforms if you have defined one with the same TransformName.</summary>
+        </member>
+        <member name="F:SideLoader.SL_ImbueEffect.SLPackName">
+            <summary> [NOT SERIALIZED] The name of the SLPack this custom item template comes from (or is using).
+            If defining from C#, you can set this to the name of the pack you want to load assets from.</summary>
+        </member>
+        <member name="F:SideLoader.SL_ImbueEffect.SubfolderName">
+            <summary> [NOT SERIALIZED] The name of the folder this custom item is using for textures (MyPack/Items/[SubfolderName]/Textures/).</summary>
+        </member>
+        <member name="F:SideLoader.SL_ImbueEffect.TargetStatusID">
+            <summary>This is the Preset ID of the Status Effect you want to base from.</summary>
+        </member>
+        <member name="F:SideLoader.SL_ImbueEffect.NewStatusID">
+            <summary>The new Preset ID for your Status Effect</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.SLPackName">
+            <summary> [NOT SERIALIZED] The name of the SLPack this custom status template comes from (or is using).
+            If defining from C#, you can set this to the name of the pack you want to load assets from.</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.SubfolderName">
+            <summary> [NOT SERIALIZED] The name of the folder this custom status is using for the icon.png (MyPack/StatusEffects/[SubfolderName]/icon.png).</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.TargetStatusIdentifier">
+            <summary> The StatusEffect you would like to clone from. Can also use TargetStatusID (checks for a Preset ID), but this takes priority.</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.TargetStatusID">
+            <summary>[Optional] Used if SideLoader could not find anything with your TargetStatusIdentifier.</summary>
+        </member>
+        <member name="M:SideLoader.SL_StatusEffect.ShouldSerializeTargetStatusID">
+            <summary>Internal C# override, so that TargetStatusID is not included in generated XML templates.</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.NewStatusID">
+            <summary>The new Preset ID for your Status Effect.</summary>
+        </member>
+        <member name="F:SideLoader.SL_StatusEffect.StatusIdentifier">
+            <summary>The new Status Identifier name for your Status Effect. Used by ResourcesPrefabManager.GetStatusEffect(string identifier)</summary>
+        </member>
+        <member name="T:SideLoader.SL_Character">
+            <summary>SideLoader's wrapper for Custom Characters.</summary>
+        </member>
+        <member name="E:SideLoader.SL_Character.OnSpawn">
+            <summary> This event will be executed locally by ALL clients via RPC. Use this for any custom local setup that you need.
+            <list type="bullet">The character is the Character your template was applied to.</list>
+            <list type="bullet">The string is the optional extraRpcData provided to the CustomCharacters.CreateCharacter() method.</list>
+            </summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.UID">
+            <summary>The Unique ID for this character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Name">
+            <summary>The display name for this character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.SceneToSpawn">
+            <summary>The Scene Name to spawn in (referring to scene build names).</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.SpawnPosition">
+            <summary>The Vector3 position to spawn at.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.AddCombatAI">
+            <summary>Whether or not to add basic Combat AI to the character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.CanDodge">
+            <summary>If combat AI enabled, can the character dodge?</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.CanBlock">
+            <summary>If combat AI enabled, can the character block?</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Faction">
+            <summary>Faction to set for the Character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.CharacterVisualsData">
+            <summary>Visual Data to set for the character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Weapon_ID">
+            <summary>Item ID for Weapon</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Shield_ID">
+            <summary>Item ID for Shield</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Helmet_ID">
+            <summary>Item ID for Helmet</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Chest_ID">
+            <summary>Item ID for Chest Armor</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Boots_ID">
+            <summary>Item ID for Boots</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Backpack_ID">
+            <summary>Item ID for Backpack</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Health">
+            <summary>Base max health stat, default 100.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.HealthRegen">
+            <summary>Base health regen stat, default 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.ImpactResist">
+            <summary>Base impact resist stat, default 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Protection">
+            <summary>Base protection stat, default 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Damage_Resists">
+            <summary>Base damage resists, default all 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Damage_Bonus">
+            <summary>Base damage bonuses, default all 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.Status_Immunity">
+            <summary>
+            List of Status or Status Family Tags this character is immune to (eg Bleeding, Poison, Burning)
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.Prepare">
+            <summary>
+            Prepares callbacks. Only do this after you have set the UID! This is called by SLPack.LoadCharacters().
+            This adds a callback for the OnSpawn event, and also the Spawner (if you set SpawnLocation and SceneToSpawn).
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.INTERNAL_OnSpawn(Character,System.String)">
+            <summary>
+            Internal method used to invoke the OnSpawn callback.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.SafeSpawn">
+            <summary>
+            Used internally for automatic spawner, use CreateCharacter to manually spawn. 
+            This will spawn only if host, and we are in the SceneToSpawn.
+            This uses the default template.UID.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.CreateCharacter(UnityEngine.Vector3,System.String,System.String)">
+            <summary>
+            Calls CustomCharacters.CreateCharacter with this template.
+            </summary>
+            <param name="position">Spawn position for character. eg, template.SpawnPosition.</param>
+            <param name="characterUID">Optional custom character UID for dynamic spawns</param>
+            <param name="extraRpcData">Optional extra RPC data to send.</param>
+        </member>
+        <member name="M:SideLoader.SL_Character.ApplyToCharacter(Character)">
+            <summary>
+            Applies this template to a character. Some parts of the template are only applied by the host, while others are applied by any client.
+            Ideally this method should be called by all clients via RPC (which is the case if you just use CreateCharacter).
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.TryEquipItem(Character,System.Int32)">
+            <summary>
+            An EquipInstantiate helper that also works on custom items. It also checks if the character owns the item and in that case tries to equip it.
+            </summary>
+        </member>
+        <member name="T:SideLoader.SL_Character.VisualData">
+            <summary>Wrapper for Visual Data to apply to a Character.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.VisualData.Gender">
+            <summary>Gender of the character (Male or Female)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.VisualData.HairColorIndex">
+            <summary>Hair color index (refer to character creation options)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.VisualData.HairStyleIndex">
+            <summary>Hair style index (refer to character creation options)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.VisualData.HeadVariationIndex">
+            <summary>Head variation index (refer to character creation options)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Character.VisualData.SkinIndex">
+            <summary>Skin index (refer to character creation options)</summary>
+        </member>
+        <member name="M:SideLoader.SL_Character.VisualData.ToString">
+            <summary>
+            Generates a string for this VisualData with CharacterVisualData.ToNetworkData()
+            </summary>
+        </member>
+        <member name="P:SideLoader.SL_EffectTransform.HasContent">
+            <summary>
+            Returns true if this Transform contains any Effects or Conditions, or has Children which do.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_EffectTransform.ApplyTransformList(UnityEngine.Transform,SideLoader.SL_EffectTransform[],SideLoader.EffectBehaviours)">
+            <summary>
+            Applies a list of SL_EffectTransforms to a transform parent, with the provided EffectBehaviour.
+            </summary>
+            <param name="parent">The parent to apply to, ie. the Item, StatusEffect.Signature, or Blast/Projectile, etc</param>
+            <param name="transformsToApply">The list of SL_EffectTransforms to apply.</param>
+            <param name="behaviour">The desired behaviour for these transoforms (remove original, overwrite, or none)</param>
+        </member>
+        <member name="M:SideLoader.SL_EffectTransform.ApplyToTransform(UnityEngine.Transform,SideLoader.EffectBehaviours)">
+            <summary>
+            Pass the desired parent Transform, this method will create 'this.TransformName' on it, then apply the Effects and Conditions.
+            </summary>
+            <param name="parent">The PARENT transform to apply to (the Item, StatusEffect.Signature, Blast/Projectile, etc)</param>
+            <param name="behaviour">Desired EffectBehaviour</param>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffectBuildUp.StatusEffect">
+            <summary>
+            Must use a Status Identifier, not the actual name of the status effect.
+            </summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffectBuildUp.Buildup">
+            <summary>
+            The effect build-up value, between 0 and 100.
+            </summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffect.StatusEffect">
+            <summary>Must use a Status Identifier, not the actual name of the status effect.</summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffect.ChanceToContract">
+            <summary>Usually this is 100 for 100%, but it can be between 0 and 100.</summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffect.AffectController">
+            <summary>If true, overrides the affected character to be the creator of this effect. Used for HitEffects.</summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffect.AdditionalLevel">
+            <summary>For LevelStatusEffects (ie Alert), adds additional stacks to the level.</summary>
+        </member>
+        <member name="F:SideLoader.SL_AddStatusEffect.NoDealer">
+            <summary>If true, forces this effect to not know who applied it.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Effect.Delay">
+            <summary>The time, in seconds, after which the effects will be applied. Default is 0.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Effect.SyncType">
+            <summary>Sync type determines the networking behaviour.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Effect.OverrideCategory">
+            <summary>Override the SL_EffectTransform.TransformName category with a manual value.</summary>
+        </member>
+        <member name="M:SideLoader.SL_Effect.ApplyToTransform(UnityEngine.Transform)">
+            <summary>Adds and applies this effect to the provided Transform.</summary>
+        </member>
+        <member name="M:SideLoader.SL_Effect.ParseEffect(Effect)">
+            <summary>Serialize an effect and get the equivalent SL_Effect.</summary>
+        </member>
+        <member name="M:SideLoader.SL_ShootProjectile.GetProjectilePrefabEnum(Projectile)">
+            <summary>
+            Helper to take a Projectile and get the ProjectilePrefabs enum value for it (if valid).
+            </summary>
+            <param name="projectile">The projectile prefab</param>
+        </member>
+        <member name="F:SideLoader.SL_Item.SLPackName">
+            <summary> [NOT SERIALIZED] The name of the SLPack this custom item template comes from (or is using).
+            If defining from C#, you can set this to the name of the pack you want to load assets from.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.SubfolderName">
+            <summary> [NOT SERIALIZED] The name of the folder this custom item is using for textures (MyPack/Items/[SubfolderName]/Textures/).</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.Target_ItemID">
+            <summary>The Item ID of the Item you are cloning FROM</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.New_ItemID">
+            <summary>The NEW Item ID for your custom Item (can be the same as target, will overwrite)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.LegacyItemID">
+            <summary>The Item ID of the Legacy Item (the upgrade of this item when placed in a Legacy Chest)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.IsPickable">
+            <summary>Can the item be picked up?</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.IsUsable">
+            <summary>Can you "Use" the item? ("Use" option from menu)</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.Tags">
+            <summary>Item Tags, represented as strings (uses CustomTags.GetTag(string tagName)).</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.StatsHolder">
+            <summary>Holder for the ItemStats object</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.ExtensionsEditBehaviour">
+            <summary>Determines how the ItemExtensions are replaced and edited</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.ItemExtensions">
+            <summary>List of SL_ItemExtensions for this item. Can only have one per item.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Item.EffectTransforms">
+            <summary>Transform heirarchy containing the Effects and EffectConditions</summary>
+        </member>
+        <member name="M:SideLoader.SL_Item.Apply">
+            <summary>
+            The normal (and safest) way to apply the template. 
+            If SL.PacksLoaded = true this will apply the template immediately.
+            Otherwise it uses a callback to apply later.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Item.ApplyToItem">
+            <summary>
+            Tries to apply the template immediately, with the template's New_ItemID.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Item.ApplyToItem(Item)">
+            <summary>
+            Applies the template immediately to the provided Item.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL_Item.ApplyItemVisuals(Item)">
+            <summary>
+            Applies the ItemVisuals, and checks for pngs and materials to apply in `SLPack\Items\SubfolderPath\Textures\`.
+            </summary>
+        </member>
+        <member name="T:SideLoader.SL_Material">
+            <summary>Wrapper for serializing a UnityEngine.Material object.</summary>
+        </member>
+        <member name="P:SideLoader.SL_Material.Name">
+            <summary>The name of the Material (private set).</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.ShaderName">
+            <summary>The Shader to use for the Material.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.Keywords">
+            <summary>Shader Keywords to enable.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.Properties">
+            <summary>List of Shader Properties to set.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.TextureConfigs">
+            <summary>List of TextureConfigs to apply.</summary>
+        </member>
+        <member name="M:SideLoader.SL_Material.ApplyToMaterial(UnityEngine.Material)">
+            <summary>Applies this SL_Material template to the provided Material.</summary>
+            <param name="mat">The material to apply to.</param>
+        </member>
+        <member name="M:SideLoader.SL_Material.ApplyTextureSettings(UnityEngine.Material)">
+            <summary>
+            Apply the TextureConfigs to the provided Material.
+            </summary>
+            <param name="mat">The material to apply to.</param>
+        </member>
+        <member name="M:SideLoader.SL_Material.TextureConfigsToDict">
+            <summary>
+            Converts the TextureConfigs list into a Dictionary (key: Texture name).
+            </summary>
+            <returns>The completed dictionary.</returns>
+        </member>
+        <member name="M:SideLoader.SL_Material.ParseMaterial(UnityEngine.Material)">
+            <summary>
+            Serializes a Material into a SL_Material.
+            </summary>
+            <param name="mat">The material to serialize.</param>
+            <returns>Serialized SL_Material.</returns>
+        </member>
+        <member name="T:SideLoader.SL_Material.TextureConfig">
+            <summary>
+            Container class for setting config values to a Texture on a Material.
+            </summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.TextureConfig.TextureName">
+            <summary>The name of the Texture to apply to (shader layer name).</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.TextureConfig.UseMipMap">
+            <summary>Whether or not to use MipMap on the texture.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.TextureConfig.MipMapBias">
+            <summary>If using MipMap, the bias level.</summary>
+        </member>
+        <member name="T:SideLoader.SL_Material.ShaderProperty">
+            <summary>Abstract wrapper used to serialize Shader Properties.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.ShaderProperty.Name">
+            <summary>Name of the Property.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.FloatProp.Value">
+            <summary>Float value to set.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.ColorProp.Value">
+            <summary>UnityEngine.Color value to set.</summary>
+        </member>
+        <member name="F:SideLoader.SL_Material.VectorProp.Value">
+            <summary>UnityEngine.Vector4 value to set.</summary>
+        </member>
+        <member name="T:SideLoader.CustomCharacters">
+            <summary>
+            SideLoader's manager class for Custom Characters. Contains useful methods for the creation, mangement and destruction  of SL_Characters.
+            </summary>
+        </member>
+        <member name="P:SideLoader.CustomCharacters.BasicAIPrefab">
+            <summary>
+            The generic AI Prefab which SideLoader uses to give characters combat AI.
+            Note: Do not modify this Prefab directly. If you want to change it, clone it first and change the clone.
+            </summary>
+        </member>
+        <member name="E:SideLoader.CustomCharacters.INTERNAL_SpawnCharacters">
+            <summary>
+            Internal event called on scene changes.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomCharacters.OnSpawnCallbacks">
+            <summary>
+            Internal dictionary which manages the OnSpawn callbacks.
+            Key: Spawn callback UID (generally template UID), Value: SL_Character with OnSpawn event to invoke
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.DestroyCharacterRPC(Character)">
+            <summary>
+            Use this to cleanup a custom character. This will send out an RPC.
+            </summary>
+            <param name="character">The Character to destroy.</param>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.InvokeSpawnCharacters">
+            <summary>
+            Used internally to invoke the SpawnCharacters events on valid scene load.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CreateCharacter(SideLoader.SL_Character,UnityEngine.Vector3,System.String,System.String)">
+            <summary>
+            Spawns a custom character and applies the template. Optionally provide a manual spawn position and Character UID.
+            The OnSpawn callback is based on the Template UID. You should have already called template.Prepare() before calling this.
+            </summary>
+            <param name="template">The SL_Character template containing most of the main information</param>
+            <param name="position">Optional manual spawn position, otherwise just provide the template.SpawnPosition</param>
+            <param name="characterUID">Optional manual character UID, if dynamically spawning multiple from one template.</param>
+            <param name="extraRpcData">Optional extra RPC data to send with the spawn.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CreateCharacter(UnityEngine.Vector3,System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Simple helper to create a generic character without any template.
+            </summary>
+            <param name="pos">The spawn position for the character.</param>
+            <param name="uid">The UID for the character.</param>
+            <param name="name">Name for the character.</param>
+            <param name="addCombatAI">Whether to add a generic combat AI to the character</param>
+            <param name="extraRpcData">Optional extra RPC data to send.</param>
+            <returns>Your custom character (instantly for Host)</returns>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CreateCharacter(UnityEngine.Vector3,System.String,System.String,System.String,System.Boolean,System.String,System.String)">
+            <summary>
+            Instantiates a new human character with the attributes provided. Only one client should call this.
+            This is the main CreateCharacter method, called by the other CreateCharacter methods.
+            </summary>
+            <param name="_position">The spawn position for the character.</param>
+            <param name="_UID">The UID for the character.</param>
+            <param name="_name">The Name of your custom character.</param>
+            <param name="spawnCallbackUID">Optional custom UID for the spawn callback (checks against registered SL_Character template UIDs)</param>
+            <param name="addCombatAI">Whether to add basic combat AI to the character</param>
+            <param name="visualData">Optional visual data (network data). Use SL_Character.VisualData.ToString().</param>
+            <param name="extraRpcData">Optional extra RPC data to send with the spawn</param>
+            <returns>The custom character (instantly for executing client)</returns>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.SpawnCharacterCoroutine(System.String,System.Int32,System.String,System.String,System.Boolean,System.String,System.String)">
+            <summary>
+            Internal coroutine that executes locally for all clients to spawn a Character (continues directly from CreateCharacter)
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.SetupBasicAI(Character)">
+            <summary>
+            Helper to add basic combat AI to a Character.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CleanupCharacters">
+            <summary>
+            Internal. The host calls this on Scene Changes to cleanup non-persistent characters (currently all SL_Character are non-persistent)
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.DestroyCharacterLocal(Character)">
+            <summary>
+            Used internally to destroy a Character locally. Use DestroyCharacterRPC to cleanup a character.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.AddActiveCharacter(Character)">
+            <summary>
+            Used internally to create a new character.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.FixStats(Character)">
+            <summary>
+            Removes PlayerCharacterStats and replaces with CharacterStats.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.SetupBlankCharacterStats(CharacterStats)">
+            <summary>
+            Resets a CharacterStats to have all default stats (default for the Player).
+            </summary>
+            <param name="stats"></param>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.SetupBasicAIPrefab">
+            <summary>
+            This is a completely custom AI States setup from scratch. It copies the Summoned Ghost AI.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CloneCharacter(System.String)">
+            <summary>
+            [BETA] Finds a GameObject with _gameObjectName and clones it into a new Character (if it contains a Character component)
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomCharacters.CloneCharacter(Character)">
+            <summary>
+            [BETA] Clone a character by providing the component directly
+            </summary>
+        </member>
+        <member name="T:SideLoader.CustomItems">
+            <summary>
+            SideLoader's manager class for Custom Items. Contains useful methods for the creation, mangement and destruction  of SL_Items.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomItems.OrigItemPrefabs">
+            <summary>Cached ORIGINAL Item Prefabs (not modified)</summary>
+        </member>
+        <member name="P:SideLoader.CustomItems.RPM_ITEM_PREFABS">
+            <summary>For legacy support. Use the SideLoader.References class for these sorts of references.</summary>
+        </member>
+        <member name="P:SideLoader.CustomItems.ITEM_LOCALIZATION">
+            <summary>For legacy support. Use the SideLoader.References class for these sorts of references.</summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.GetOriginalItemPrefab(System.Int32)">
+            <summary> Will return the true original prefab for this Item ID. </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.CreateCustomItem(SideLoader.SL_Item)">
+            <summary>
+            Simple method to apply a SL_Item template. 
+            If defining a custom item after SL.OnPacksLoaded it will be applied instantly, otherwise it uses a callback to be applied later.
+            </summary>
+            <param name="template"></param>
+            <returns>Your new custom item (or the original item, if modifying an existing one)</returns>
+        </member>
+        <member name="M:SideLoader.CustomItems.CreateCustomItem(System.Int32,System.Int32,System.String,SideLoader.SL_Item)">
+            <summary>
+            Clones an item prefab and returns the clone to you. Caches the original prefab for other mods or other custom items to reference.
+            If you provide a SL_Item template, this will be applied as well (either immediately or with a callback later).
+            </summary>
+            <param name="cloneTargetID">The Item ID of the Item you want to clone from</param>
+            <param name="newID">The new Item ID for your cloned item. Can be the same as the target, will overwrite.</param>
+            <param name="name">Only used for the gameObject name, not the actual Item Name. This is the name thats used in Debug Menus.</param>
+            <param name="template">[Optional] If you want to apply a template for this item manually, you can provide it here.</param>
+            <returns>Your cloned Item prefab</returns>
+        </member>
+        <member name="M:SideLoader.CustomItems.SetItemID(System.Int32,Item)">
+            <summary>
+            Sets the ResourcesPrefabManager.ITEM_PREFABS dictionary for a custom Item ID. Will overwrite if the ID exists.
+            This is called by CustomItems.CreateCustomItem
+            </summary>
+            <param name="_ID">The Item ID you want to set</param>
+            <param name="item">The Item prefab</param>
+        </member>
+        <member name="M:SideLoader.CustomItems.SetName(Item,System.String)">
+            <summary> Helper for setting an Item's name easily </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.SetDescription(Item,System.String)">
+            <summary> Helper for setting an Item's description easily </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.SetNameAndDescription(Item,System.String,System.String)">
+            <summary> Set both name and description. Used by SetName and SetDescription. </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.GetTag(System.String,System.Boolean)">
+            <summary>
+            Gets a tag from a string tag name. Note: This just calls CustomTags.GetTag(tagName, logging).
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.CreateTag(System.String)">
+            <summary>
+            Creates a new custom tag. Note: This just calls CustomTags.CreateTag(tagName).
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomItems.SetItemTags(Item,System.String[],System.Boolean)">
+            <summary> Adds the range of tags to the Items' TagSource, and optionally destroys the existing tags.</summary>
+        </member>
+        <member name="M:SideLoader.SL_BaseSkillSlot.SetRequiredSlot(BaseSkillSlot)">
+            <summary>
+            Internal use for setting a required slot.
+            </summary>
+            <param name="comp">The component that this SkillSlot is setting. Not the required slot.</param>
+        </member>
+        <member name="T:SideLoader.SL_Serialized">
+            <summary>
+            Attribute used to mark a type that needs to be serialized by the Serializer.
+            Usage is to just put [SL_Serialized] on a base class. Derived classes will inherit it.
+            </summary>
+        </member>
+        <member name="T:SideLoader.Serializer">
+            <summary>
+            Sideloader's serializer. Handles Xml serialization and deserialization for SideLoader's custom types.
+            </summary>
+        </member>
+        <member name="P:SideLoader.Serializer.SL_Assembly">
+            <summary>
+            SideLoader.dll AppDomain reference.
+            </summary>
+        </member>
+        <member name="P:SideLoader.Serializer.Game_Assembly">
+            <summary>
+            The Assembly-Csharp.dll AppDomain reference.
+            </summary>
+        </member>
+        <member name="P:SideLoader.Serializer.SLTypes">
+            <summary>
+            List of SL_Type classes (types marked as SL_Serialized).
+            </summary>
+        </member>
+        <member name="M:SideLoader.Serializer.GetXmlSerializer(System.Type)">
+            <summary>
+            Use this to get and cache an XmlSerializer for the provided Type, this will include all SL_Types as the extraTypes.
+            </summary>
+            <param name="type">The root type of the document</param>
+            <returns>The new (or cached) XmlSerializer</returns>
+        </member>
+        <member name="M:SideLoader.Serializer.GetGameType(System.Type,System.Boolean)">
+            <summary>
+            Pass a SideLoader class type (eg, SL_Item) and get the corresponding Game class (eg, Item).
+            </summary>
+            <param name="_slType">Eg, typeof(SL_Item)</param>
+            <param name="logging">If you want to log debug messages.</param>
+        </member>
+        <member name="M:SideLoader.Serializer.GetSLType(System.Type,System.Boolean)">
+            <summary>
+            Pass a Game Class type (eg, Item) and get the corresponding SideLoader class (eg, SL_Item).
+            </summary>
+            <param name="_gameType">Eg, typeof(Item)</param>
+            <param name="logging">If you want to log debug messages.</param>
+        </member>
+        <member name="M:SideLoader.Serializer.GetBestSLType(System.Type)">
+            <summary>
+            Get the "best-match" for the provided game class.
+            Will get the highest-level base class of the provided game class with a matching SL class.
+            </summary>
+            <param name="type">The game class you want a match for.</param>
+            <returns>Best-match SL Type, if any, otherwise null.</returns>
+        </member>
+        <member name="M:SideLoader.Serializer.SaveToXml(System.String,System.String,System.Object)">
+            <summary>
+            Save an SL_Type object to xml.
+            </summary>
+        </member>
+        <member name="M:SideLoader.Serializer.LoadFromXml(System.String)">
+            <summary>
+            Load an SL_Type object from XML.
+            </summary>
+        </member>
+        <member name="M:SideLoader.Serializer.ReplaceInvalidChars(System.String)">
+            <summary>Remove invalid filename characters from a string</summary>
+        </member>
+        <member name="T:SideLoader.SLPack">
+            <summary>
+            Handles internal management of SL Packs (folders which SideLoader will load and apply).
+            </summary>
+        </member>
+        <member name="P:SideLoader.SLPack.Name">
+            <summary>The FolderName of this SLPack</summary>
+        </member>
+        <member name="F:SideLoader.SLPack.InMainSLFolder">
+            <summary>
+            Used internally to track where this SL Pack was loaded from.
+            True = folder is `Outward\Mods\SideLoader\{Name}`. 
+            False = folder is `Outward\BepInEx\plugins\{Name}\SideLoader\`.
+            </summary>
+        </member>
+        <member name="P:SideLoader.SLPack.FolderPath">
+            <summary>
+            Returns the folder path for this SL Pack (relative to Outward directory).
+            </summary>
+        </member>
+        <member name="F:SideLoader.SLPack.AssetBundles">
+            <summary>AssetBundles loaded from the `AssetBundles\` folder. Dictionary Key is the file name.</summary>
+        </member>
+        <member name="F:SideLoader.SLPack.Texture2D">
+            <summary>Texture2Ds loaded from the PNGs in the `Texture2D\` folder (not from the `Items\...` folders). Dictionary Key is the file name (without ".png")</summary>
+        </member>
+        <member name="F:SideLoader.SLPack.AudioClips">
+            <summary>AudioClips loaded from the WAV files in the `AudioClip\` folder. Dictionary Key is the file name (without ".wav")</summary>
+        </member>
+        <member name="F:SideLoader.SLPack.CharacterTemplates">
+            <summary>SL_Characters loaded from the `Characters\` folder. Dictionary Key is the SL_Character.UID value.</summary>
+        </member>
+        <member name="T:SideLoader.SLPack.SubFolders">
+            <summary>
+            The supported sub-folders in an SL Pack. 
+            </summary>
+        </member>
+        <member name="M:SideLoader.SLPack.GetSubfolderPath(SideLoader.SLPack.SubFolders)">
+            <summary>
+            Returns the full (relative to the Outward folder) path for the specified subfolder, for this SLPack. Eg, "Mods/SideLoader/SLPACKNAME/SubFolder"
+            </summary>
+            <param name="subFolder">The SubFolder you want the path for</param>
+        </member>
+        <member name="M:SideLoader.SLPack.TryLoadPack(System.String,System.Boolean)">
+            <summary>
+            Safely tries to load an SLPack with the provided name, either in the Mods\SideLoader\ folder or the BepInEx\plugins\ folder.
+            </summary>
+            <param name="name">The name of the SLPack folder.</param>
+            <param name="inMainFolder">Is it in the Mods\SideLoader\ directory? (If not, it should be in BepInEx\plugins\)</param>
+        </member>
+        <member name="M:SideLoader.SLPack.LoadFromFolder(System.String,System.Boolean)">
+            <summary>
+            Loads all the assets from the specified SLPack name. Not for calling directly, just place your pack in the SideLoader folder and use SL.Packs["Folder"]
+            </summary>
+            <param name="name">The name of the SideLoader pack (ie. the name of the folder inside Mods/SideLoader/)</param>
+            <param name="inMainSLFolder">Is the SLPack in Mods\SideLoader? If not, it should be Mods\ModName\SideLoader\ structure.</param>
+        </member>
+        <member name="T:SideLoader.CustomScenes">
+            <summary>
+            Work-in-progress class, used to manage custom scenes.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomScenes.LoadSceneFromBundle(UnityEngine.AssetBundle,UnityEngine.Vector3,System.Action,System.Int32,System.Single)">
+            <summary>
+            Load a Scene from an AssetBundle.
+            </summary>
+            <param name="bundle">The AssetBundle to load from.</param>
+            <param name="spawnPoint">A Vector3 to spawn the characters at.</param>
+            <param name="onSceneLoaded">A method to invoke when the scene has finished loading.</param>
+            <param name="bundleSceneIndex">The Index of this scene in the AssetBundle (default is 0)</param>
+            <param name="timeOffset">A time offset (in hours) applied to the Characters.</param>
+        </member>
+        <member name="T:SideLoader.CustomTextures">
+            <summary>
+            SideLoader's helper class for working with Texture2Ds.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.Textures">
+            <summary>
+            Public dictionary of textures being used for global replacements.
+            </summary>
+        </member>
+        <member name="T:SideLoader.CustomTextures.SpriteBorderTypes">
+            <summary>
+            Helper enum for certain types of icon borders that Nine Dots use.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.SpriteBorderTypes.NONE">
+            <summary>No icon border.</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.SpriteBorderTypes.ItemIcon">
+            <summary>The border for Item Icons.</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.SpriteBorderTypes.SkillTreeIcon">
+            <summary>The border for Skill Tree Icons.</summary>
+        </member>
+        <member name="T:SideLoader.CustomTextures.TextureType">
+            <summary>
+            Handles how different types of Textures are loaded with Texture2D.LoadImage.
+            If it's not a Normal (bump map) or GenTex, just use Default.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.TextureType.Default">
+            <summary>No special behaviour applied to the Texture.</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.TextureType.Normal">
+            <summary>For Normal Map (bump map) textures.</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.TextureType.GenTex">
+            <summary>For GenTex (Generative Texture), for Nine Dots' shader.</summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.Init">
+            <summary>
+            Used internally.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.LoadTexture(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Simple helper for loading a Texture2D from a .png filepath
+            </summary>
+            <param name="filePath">The full or relative filepath</param>
+            <param name="mipmap">Do you want mipmaps for this texture?</param>
+            <param name="linear">Is this linear or sRGB? (Normal or non-normal)</param>
+            <returns>The Texture2D (or null if there was an error)</returns>
+        </member>
+        <member name="M:SideLoader.CustomTextures.CreateSprite(UnityEngine.Texture2D)">
+            <summary> Helper for creating a generic sprite with no border, from a Texture2D. Use CustomTextures.LoadTexture() to load a tex from a filepath. </summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.CreateSprite(UnityEngine.Texture2D,SideLoader.CustomTextures.SpriteBorderTypes)">
+            <summary> Create a sprite with the appropriate border for the type. Use CustomTextures.LoadTexture() to load a tex from a filepath.</summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.SaveIconAsPNG(UnityEngine.Sprite,System.String,System.String)">
+            <summary>
+            Save an Icon as a png file.
+            </summary>
+            <param name="icon">The icon to save.</param>
+            <param name="dir">The directory to save at.</param>
+            <param name="name">The filename of the icon.</param>
+        </member>
+        <member name="M:SideLoader.CustomTextures.SaveTextureAsPNG(UnityEngine.Texture2D,System.String,System.String,System.Boolean)">
+            <summary>
+            Save a Texture2D as a png file.
+            </summary>
+            <param name="_tex">The texture to save.</param>
+            <param name="dir">The directory to save at.</param>
+            <param name="name">The filename to save as.</param>
+            <param name="normal">Is this a Normal map (bump map)?</param>
+        </member>
+        <member name="T:SideLoader.CustomTextures.ShaderPropType">
+            <summary>
+            Helper enum for the types of Shader Properties which SideLoader supports.
+            </summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.ShaderPropType.Color">
+            <summary>Property Value is a Color</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.ShaderPropType.Vector">
+            <summary>Property Value is a Vector4</summary>
+        </member>
+        <member name="F:SideLoader.CustomTextures.ShaderPropType.Float">
+            <summary>Property Value is a float</summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.GetProperties(UnityEngine.Material)">
+            <summary>
+            Get the Properties for the Shader on the provided material.
+            </summary>
+            <param name="m">The material to get properties for.</param>
+            <returns>If supported, the list of Shader Properties.</returns>
+        </member>
+        <member name="F:SideLoader.CustomTextures.ShaderPropertyDicts">
+            <summary>
+            Keys: see the CustomTextures.CUSTOM_ const strings, Values: Shader Property names and types.
+            </summary>
+        </member>
+        <member name="M:SideLoader.CustomTextures.ReplaceActiveTextures">
+            <summary>
+            Internal method used to replace active textures from our Textures dictionary.
+            </summary>
+        </member>
+        <member name="T:SideLoader.SL">
+            <summary> The main SideLoader class. </summary>
+        </member>
+        <member name="F:SideLoader.SL.Instance">
+            <summary>The current instance of SideLoader.</summary>
+        </member>
+        <member name="F:SideLoader.SL.Packs">
+            <summary>All loaded SL Packs. Key: Pack name, Value: SL Pack.</summary>
+        </member>
+        <member name="P:SideLoader.SL.PacksLoaded">
+            <summary>Have SL Packs been loaded yet?</summary>
+        </member>
+        <member name="E:SideLoader.SL.BeforePacksLoaded">
+            <summary>Invoked before packs are loaded and applied, but after ResouresPrefabManager is loaded.</summary>
+        </member>
+        <member name="E:SideLoader.SL.OnPacksLoaded">
+            <summary>Only called once on startup. This will be after ResourcesPrefabManager is loaded, and all SLPacks are loaded and applied.</summary>
+        </member>
+        <member name="E:SideLoader.SL.OnSceneLoaded">
+            <summary>Use this to safely make changes to a scene when it is truly loaded. (All players loaded, gameplay may not yet be resumed).</summary>
+        </member>
+        <member name="E:SideLoader.SL.INTERNAL_ApplyStatuses">
+            <summary>Only called once on startup. It is a callback used by SL_StatusEffect and SL_ImbueEffect to apply after assets are loaded.</summary>
+        </member>
+        <member name="E:SideLoader.SL.INTERNAL_ApplyItems">
+            <summary>Only called once on startup. It is a callback used by SL_Items to apply after all assets are loaded.</summary>
+        </member>
+        <member name="E:SideLoader.SL.INTERNAL_ApplyRecipes">
+            <summary>Only called once on startup. It is a callback used by SL_Recipes and SL_EnchantmentRecipes to apply after all CustomItems are loaded.</summary>
+        </member>
+        <member name="E:SideLoader.SL.INTERNAL_ApplyLateItems">
+            <summary>Only called once on startup. It is a callback used by SL_RecipeItems and other templates to apply after all other templates are loaded.</summary>
+        </member>
+        <member name="M:SideLoader.SL.Setup(System.Boolean)">
+            <summary>
+            SideLoader's Setup method. Called by a Harmony Patch Finalizer on ResourcesPrefabManager.Load
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL.TryInvoke(System.MulticastDelegate,System.Object[])">
+            <summary>
+            Generic helper for invoking a MulticastDelegate safely
+            </summary>
+            <param name="_delegate">Either an Action or UnityAction, generally.</param>
+            <param name="args">Any arguments the delegate expects.</param>
+        </member>
+        <member name="M:SideLoader.SL.LoadAssetBundle(System.String)">
+            <summary>
+            Simple helper for loading an AssetBundle inside a try/catch.
+            </summary>
+        </member>
+        <member name="M:SideLoader.SL.DestroyChildren(UnityEngine.Transform,System.Boolean,System.Boolean)">
+            <summary> Small helper for destroying all children on a given Transform 't'. Uses DestroyImmediate(). </summary>
+            <param name="t">The transform whose children you want to destroy.</param>
+            <param name="destroyContent">If true, will destroy children called "Content" (used for Bags)</param>
+            <param name="destroyActivator">If true, will destroy children called "Activator" (used for Deployables / Traps)</param>
+        </member>
+        <member name="M:SideLoader.SL.DestroyChildren(UnityEngine.Transform,System.Boolean,System.Boolean,System.Boolean)">
+            <summary> Small helper for destroying all children on a given Transform 't'. Uses DestroyImmediate(). </summary>
+            <param name="t">The transform whose children you want to destroy.</param>
+            <param name="destroyContent">If true, will destroy children called "Content" (used for Bags)</param>
+            <param name="destroyActivator">If true, will destroy children called "Activator" (used for Deployables / Traps)</param>
+            <param name="destroyVFX">If true, will destroy children whose names begin with "VFX".</param>
+        </member>
+        <member name="M:SideLoader.SL.FixComponentType(System.Type,UnityEngine.Component)">
+            <summary>
+            Replaces existingComponent type with desiredType ONLY if desiredType is not assignable from the existingComponent type.
+            That means if desiredType is Item and existingComponent type is Weapon, this will do nothing.
+            If both types are the same, this will do nothing.
+            Otherwise, this will replace existingComponent with a desiredType component and inherit all possible values.
+            </summary>
+            <param name="desiredType">The desired class type (the game type, not the SL type)</param>
+            <param name="existingComponent">The existing component</param>
+            <returns>The component left on the transform after the method runs.</returns>
+        </member>
+        <member name="M:SideLoader.SL.GetCopyOf``1(``0,UnityEngine.Transform)">
+            <summary>
+            Gets a copy of Component and adds it to the transform provided.
+            </summary>
+            <typeparam name="T">The Type of Component which will be added to the transform.</typeparam>
+            <param name="component">The existing component to copy from (and the T if not directly supplied)</param>
+            <param name="transform">The Transform to add to</param>
+            <returns></returns>
+        </member>
+        <member name="M:SideLoader.SL.Log(System.String,System.Int32)">
+            <summary>Debug.Log with [SideLoader] prefix.</summary>
+            <param name="log">The message to log.</param>
+            <param name="errorLevel">-1 = Debug.Log, 0 = Debug.LogWarning, 1 = Debug.LogError</param>
+        </member>
+        <member name="M:SideLoader.SL.LogInnerException(System.Exception)">
+            <summary>
+            Recursively logs inner exceptions from an Exception, if there are any.
+            </summary>
+        </member>
+        <member name="T:SideLoader.At">
+            <summary>At (AccessTools) is a collection of Reflection Helpers.</summary>
+        </member>
+        <member name="F:SideLoader.At.FLAGS">
+            <summary>
+            Common BindingFlags, and the only ones that are really needed for Outward.
+            </summary>
+        </member>
+        <member name="M:SideLoader.At.SetValue``1(``0,System.Type,System.Object,System.String)">
+            <summary>
+            Helper to set the value to a private or protected field.
+            </summary>
+            <typeparam name="T">The Type of value you are setting (only required if value is "null").</typeparam>
+            <param name="value">The value you want to set.</param>
+            <param name="type">The declaring class Type which contains this field.</param>
+            <param name="obj">The instance, for non-static members. If the member is static, use "null".</param>
+            <param name="field">The name of the field.</param>
+        </member>
+        <member name="M:SideLoader.At.GetValue(System.Type,System.Object,System.String)">
+            <summary>
+            Helper to get the value from a private or protected field.
+            </summary>
+            <param name="type">The declaring class Type which contains this field.</param>
+            <param name="obj">The instance, for non-static members. If the member is static, use "null".</param>
+            <param name="field">The name of the field you want to get.</param>
+            <returns>The value of the field provided, if valid.</returns>
+        </member>
+        <member name="M:SideLoader.At.CopyFields(System.Object,System.Object,System.Type,System.Boolean)">
+            <summary>
+            A helper to get all the fields from one class instance, and set them to another.
+            </summary>
+            <param name="copyTo">The object which you are setting values to.</param>
+            <param name="copyFrom">The object which you are getting values from.</param>
+            <param name="declaringType">Optional, manually define the declaring class type.</param>
+            <param name="recursive">Whether to recursively dive into the BaseTypes and copy those fields too</param>
+        </member>
+        <member name="M:SideLoader.At.CopyProperties(System.Object,System.Object,System.Type,System.Boolean)">
+            <summary>
+            A helper to get all the properties from one class instance, and set them to another.
+            </summary>
+            <param name="copyTo">The object which you are setting values to.</param>
+            <param name="copyFrom">The object which you are getting values from.</param>
+            <param name="declaringType">Optional, manually define the declaring class type.</param>
+            <param name="recursive">Whether to recursively dive into the BaseTypes and copy those properties too</param>
+        </member>
+        <member name="M:SideLoader.At.Call(System.Type,System.Object,System.String,System.Type[],System.Object[])">
+            <summary>
+            Helper to invoke a private or protected method.
+            </summary>
+            <param name="type">The declaring class Type which contains this method.</param>
+            <param name="obj">The instance to invoke the method from. If method is static, use "null".</param>
+            <param name="method">The name of the method you want to invoke.</param>
+            <param name="argumentTypes">[Optional] For ambiguous methods, provide an array corresponding to the Type of each argument, otherwise use "null".</param>
+            <param name="args">The actual arguments you want to provide for the method, if any.</param>
+            <returns>The return value of the method (might be void).</returns>
+        </member>
+        <member name="M:SideLoader.At.SetProp``1(``0,System.Type,System.Object,System.String)">
+            <summary>
+            Helper to set a private property, if possible to set.
+            </summary>
+            <typeparam name="T">The Type of value you are setting (only required if value is "null").</typeparam>
+            <param name="value">The value you want to set.</param>
+            <param name="type">The declaring class Type which contains this property.</param>
+            <param name="obj">The instance, for non-static members. If the member is static, use "null".</param>>
+            <param name="property">The name of the property you want to set.</param>
+        </member>
+        <member name="M:SideLoader.At.GetProp(System.Type,System.Object,System.String)">
+            <summary>
+            Helper to get the value from a private property.
+            </summary>
+            <param name="type">The declaring class Type which contains this property.</param>
+            <param name="obj">The instance, for non-static members. If the member is static, use "null".</param>>
+            <param name="property">The name of the property you want to get.</param>
+            <returns>The value from the property.</returns>
+        </member>
+    </members>
+</doc>

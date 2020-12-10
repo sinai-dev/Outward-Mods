@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_StatusEffect xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TargetStatusID>57</TargetStatusID>
+  <NewStatusID>820</NewStatusID>
+  <StatusIdentifier>Protection Bubble</StatusIdentifier>
+  <Name>Protection Bubble</Name>
+  <Lifespan>-1</Lifespan>
+  <LengthType>Long</LengthType>
+  <Tags />
+  <EffectBehaviour>DestroyEffects</EffectBehaviour>
+  <Effects>
+    
+  </Effects>
+</SL_StatusEffect>

@@ -143,7 +143,6 @@
     <Compile Include="NecromancyBase.cs" />
     <Compile Include="NPCLookFollow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RPCManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SkillManager.cs" />
     <Compile Include="SummonManager.cs" />

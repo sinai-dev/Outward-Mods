@@ -1,0 +1,75 @@
+{
+    "Summon_HealthCost": 0.10000000149011612,
+    "Summon_BurnsHealth": false,
+    "Summon_MaxSummons_NoArmyOfDeath": 1,
+    "Summon_MaxSummons_WithArmyOfDeath": 3,
+	"Summon_Summoned_Per_Cast_withArmyOfDeath": 1,
+    "ShootTendrils_Heal_NoPlagueAura": 2.5,
+	"Summon_MaxHealth": 75,
+	"Summon_HealthLoss": -0.75,
+	"StrongSummon_MaxHealth": 250,
+	"StrongSummon_HealthLoss": -2.5,
+    "ShootTendrils_Damage_NoPlagueAura": [
+        {
+            "Type": 2,
+            "Damage": 5.0
+        },
+        {
+            "Type": 0,
+            "Damage": 5.0
+        }
+    ],
+    "ShootTendrils_Knockback_NoPlagueAura": 15.0,
+    "ShootTendrils_Heal_InsideAura": 6.0,
+    "ShootTendrils_Damage_InsideAura": [
+        {
+            "Type": 2,
+            "Damage": 10.0
+        },
+        {
+            "Type": 1,
+            "Damage": 5.0
+        }
+    ],
+    "ShootTendrils_Knockback_InsideAura": 30.0,
+    "VitalAttunement_HealthBonus": 20.0,
+    "VitalAttunement_StaminaBonus": 20.0,
+    "LifeRitual_Heal_NoPlagueAura": 0.33000001311302187,
+    "LifeRitual_Heal_InsideAura": 0.6600000262260437,
+    "Transcendence_DamageBonus": 2.5,
+    "DeathRitual_WeakExplosionDamage": [
+        {
+            "Type": 2,
+            "Damage": 40.0
+        },
+        {
+            "Type": 1,
+            "Damage": 20.0
+        }
+    ],
+    "DeathRitual_WeakKnockback": 75.0,
+    "DeathRitual_StrongExplosionDamage": [
+        {
+            "Type": 2,
+            "Damage": 50.0
+        },
+        {
+            "Type": 1,
+            "Damage": 20.0
+        },
+        {
+            "Type": 4,
+            "Damage": 20.0
+        }
+    ],
+    "DeathRitual_StrongKnockback": 150.0,
+    "PlagueAura_SigilLifespan": 40.0,
+    "PlagueAura_TendrilInterval": 3.0,
+    "PlagueAura_TendrilDamage": [
+        {
+            "Type": 2,
+            "Damage": 15.0
+        }
+    ],
+    "PlagueAura_TendrilKnockback": 25.0
+}
