@@ -1,4 +1,4 @@
-# Outward-Mods [![Version](https://img.shields.io/badge/BepInEx-5.1-green.svg)](https://github.com/BepInEx/BepInEx)
+# Outward-Mods [![Version](https://img.shields.io/badge/BepInEx-5.4.1-green.svg)](https://github.com/BepInEx/BepInEx)
  
 Sinai's mods for Outward.
 
