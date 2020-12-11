@@ -119,16 +119,16 @@ namespace CombatHUD
             if (!manager)
                 return;
 
-            var healthBar = At.GetField("m_healthBar", manager) as Bar;
-            var manaBar = At.GetField("m_manaBar", manager) as Bar;
-            var stamBar = At.GetField("m_staminaBar", manager) as Bar;
+            var healthBar = At.GetField(manager, "m_healthBar") as Bar;
+            var manaBar = At.GetField(manager, "m_manaBar") as Bar;
+            var stamBar = At.GetField(manager, "m_staminaBar") as Bar;
 
             if (!healthBar || !manaBar || !stamBar)
                 return;
 
-            var healthText = At.GetField("m_lblValue", healthBar) as Text;
-            var manaText = At.GetField("m_lblValue", manaBar) as Text;
-            var stamText = At.GetField("m_lblValue", stamBar) as Text;
+            var healthText = At.GetField(healthBar, "m_lblValue") as Text;
+            var manaText = At.GetField(manaBar, "m_lblValue") as Text;
+            var stamText = At.GetField(stamBar, "m_lblValue") as Text;
 
             healthText.fontSize = 14;
             manaText.fontSize = 14;
@@ -157,7 +157,7 @@ namespace CombatHUD
                 return;
             }
 
-            var activeIcons = At.GetField("m_statusIcons", panel) as Dictionary<string, StatusEffectIcon>;
+            var activeIcons = At.GetField(panel, "m_statusIcons") as Dictionary<string, StatusEffectIcon>;
 
             foreach (var entry in activeIcons)
             {

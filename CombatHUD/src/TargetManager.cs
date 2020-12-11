@@ -27,7 +27,7 @@ namespace CombatHUD
         private Text m_infoboxName; // targeted enemy's name
         private Text m_infoboxHealth; // active health / max health
         private Text m_infoboxImpact; // impact res
-        private List<Text> m_infoboxDamageTexts = new List<Text>(); // [0] -> [5], enemy resistances, uses (DamageType.Types)int
+        private readonly List<Text> m_infoboxDamageTexts = new List<Text>(); // [0] -> [5], enemy resistances, uses (DamageType.Types)int
         private Text m_infoboxNoImmuneText; // the "none" text
         private Image m_infoboxBurningSprite; // Burning sprite
         private Image m_infoboxBleedingSprite; // Bleeding sprite
@@ -278,7 +278,7 @@ namespace CombatHUD
             // buildups
             if ((bool)CombatHUD.config.GetValue(Settings.EnemyBuildup))
             {
-                var dict = (IDictionary)At.GetField("m_statusBuildUp", target.StatusEffectMngr);
+                var dict = (IDictionary)At.GetField(target.StatusEffectMngr, "m_statusBuildUp");
 
                 foreach (string name in dict.Keys)
                 {
@@ -330,11 +330,11 @@ namespace CombatHUD
             // only update status immunities when we change targets.
             List<string> immunityTags = new List<string>();
 
-            var statusNaturalImmunities = (TagSourceSelector[])At.GetField("m_statusEffectsNaturalImmunity", target.Stats);
+            var statusNaturalImmunities = (TagSourceSelector[])At.GetField(target.Stats, "m_statusEffectsNaturalImmunity");
             foreach (var tagSelector in statusNaturalImmunities)
                 immunityTags.Add(tagSelector.Tag.TagName);
 
-            var statusImmunities = (Dictionary<Tag, List<string>>)At.GetField("m_statusEffectsImmunity", target.Stats);
+            var statusImmunities = (Dictionary<Tag, List<string>>)At.GetField(target.Stats, "m_statusEffectsImmunity");
             foreach (var entry in statusImmunities)
             {
                 if (entry.Value.Count > 0)

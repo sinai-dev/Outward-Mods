@@ -64,14 +64,14 @@ namespace NecromancerSkills
 
             // get "Trainer" component, and set the SkillTreeUID to our custom tree UID
             var trainerComp = trainertemplate.GetComponentInChildren<Trainer>();
-            At.SetField(SkillManager.NecromancerTree.UID, "m_skillTreeUID", trainerComp);
+            At.SetField(trainerComp, "m_skillTreeUID", SkillManager.NecromancerTree.UID);
 
             // setup dialogue tree
             var graphController = trainertemplate.GetComponentInChildren<DialogueTreeController>();
             var graph = graphController.graph;
 
             // the template comes with an empty ActorParameter, we can use that for our NPC actor.
-            var actors = At.GetField("_actorParameters", graph as DialogueTree) as List<DialogueTree.ActorParameter>;
+            var actors = At.GetField(graph as DialogueTree, "_actorParameters") as List<DialogueTree.ActorParameter>;
             actors[0].actor = necroActor;
             actors[0].name = necroActor.name;
 

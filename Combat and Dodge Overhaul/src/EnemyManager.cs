@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Reflection;
 using SharedModConfig;
 using HarmonyLib;
+using SideLoader;
 
 namespace CombatAndDodgeOverhaul
 {
@@ -255,7 +256,7 @@ namespace CombatAndDodgeOverhaul
             {
                 dict.Add(setting.Name, setting);
             }
-            At.SetValue(dict, typeof(ModConfig), m_currentSyncInfos, "m_Settings");
+            At.SetField(m_currentSyncInfos, "m_Settings", dict);
 
             if (modsEnabled)
             {
@@ -296,7 +297,7 @@ namespace CombatAndDodgeOverhaul
                     var healthStack = new StatStack(stackSource, (float)_config.GetValue(Settings.Enemy_Health) - 1);
                     _stats.RemoveStatStack(healthTag, stackSource, true);
                     _stats.AddStatStack(healthTag, healthStack, true);
-                    At.SetValue(_stats.CurrentHealth * (float)_config.GetValue(Settings.Enemy_Health), typeof(CharacterStats), _stats, "m_health");
+                    At.SetField(_stats, "m_health", _stats.CurrentHealth * (float)_config.GetValue(Settings.Enemy_Health));
                 }
 
                 // set impact resistance
@@ -312,7 +313,7 @@ namespace CombatAndDodgeOverhaul
                 _stats.AddStatStack(damageTag, damageStack, true);
 
                 // impact modifier
-                var impactModifier = At.GetValue(typeof(CharacterStats), _stats, "m_impactModifier") as Stat;
+                var impactModifier = At.GetField(_stats, "m_impactModifier") as Stat;
                 impactModifier.RemoveStack(stackSource, true);
                 impactModifier.AddStack(new StatStack(stackSource, (float)_config.GetValue(Settings.Enemy_ImpactDmg) * 0.01f), true);
 
@@ -344,7 +345,7 @@ namespace CombatAndDodgeOverhaul
                 m_character.TargetingSystem.AlliedToSameFaction = true;
 
                 Character.Factions[] targets = new Character.Factions[] { Character.Factions.Player };
-                At.SetValue(targets, typeof(TargetingSystem), m_character.TargetingSystem, "TargetableFactions");
+                At.SetField(m_character.TargetingSystem, "TargetableFactions", targets);
 
                 // fix skills
                 foreach (var uid in m_character.Inventory.SkillKnowledge.GetLearnedActiveSkillUIDs())

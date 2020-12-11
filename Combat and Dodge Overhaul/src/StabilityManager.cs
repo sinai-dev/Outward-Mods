@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 using HarmonyLib;
+using SideLoader;
 
 namespace CombatAndDodgeOverhaul
 {
@@ -32,13 +33,13 @@ namespace CombatAndDodgeOverhaul
                 var self = __instance;
                 var _base = self as Photon.MonoBehaviour;
 
-                if (At.GetValue(typeof(Character), self, "m_impactImmune") is bool m_impactImmune
-                    && At.GetValue(typeof(Character), self, "m_shieldStability") is float m_shieldStability
-                    && At.GetValue(typeof(Character), self, "m_stability") is float m_stability
-                    && At.GetValue(typeof(Character), self, "m_knockbackCount") is float m_knockbackCount
-                    && At.GetValue(typeof(Character), self, "m_knockHurtAllowed") is bool m_knockHurtAllowed
-                    && At.GetValue(typeof(Character), self, "m_currentlyChargingAttack") is bool m_currentlyChargingAttack
-                    && At.GetValue(typeof(Character), self, "m_animator") is Animator m_animator)
+                if (At.GetField(self, "m_impactImmune") is bool m_impactImmune
+                    && At.GetField(self, "m_shieldStability") is float m_shieldStability
+                    && At.GetField(self, "m_stability") is float m_stability
+                    && At.GetField(self, "m_knockbackCount") is float m_knockbackCount
+                    && At.GetField(self, "m_knockHurtAllowed") is bool m_knockHurtAllowed
+                    && At.GetField(self, "m_currentlyChargingAttack") is bool m_currentlyChargingAttack
+                    && At.GetField(self, "m_animator") is Animator m_animator)
                 {
                     // Begin actual stability hit function
                     var hit = _knockValue;
@@ -67,7 +68,7 @@ namespace CombatAndDodgeOverhaul
                             //Debug.LogError("Stamina autostagger called! hitToStagger: " + hitToStagger + ", hit: " + hit);
                         }
 
-                        At.SetValue(Time.time, typeof(Character), self, "m_timeOfLastStabilityHit");
+                        At.SetField(self, "m_timeOfLastStabilityHit", Time.time);
                         // Debug.Log("Set " + Time.time + " as character's last stability hit");
 
                         if (self.CharacterCamera != null && hit > 0f)
@@ -81,18 +82,18 @@ namespace CombatAndDodgeOverhaul
                             if (hit > m_shieldStability)
                             {
                                 var num2 = m_stability - (hit - m_shieldStability);
-                                At.SetValue(num2, typeof(Character), self, "m_stability");
+                                At.SetField(self, "m_stability", num2);
                                 m_stability = num2;
                             }
                             var num3 = Mathf.Clamp(m_shieldStability - hit, 0f, 50f);
-                            At.SetValue(num3, typeof(Character), self, "m_shieldStability");
+                            At.SetField(self, "m_shieldStability", num3);
                             m_shieldStability = num3;
                         }
                         // check non-blocking stability (unchanged)
                         else
                         {
                             var num2 = Mathf.Clamp(m_stability - hit, 0f, 100f);
-                            At.SetValue(num2, typeof(Character), self, "m_stability");
+                            At.SetField(self, "m_stability", num2);
                             m_stability = num2;
                         }
                         // if hit takes us below knockdown threshold, or if AI auto-knockdown stagger count was reached...
@@ -105,18 +106,15 @@ namespace CombatAndDodgeOverhaul
                             {
                                 _base.photonView.RPC("SendKnock", PhotonTargets.All, new object[]
                                 {
-                                true,
-                                m_stability
+                                    true,
+                                    m_stability
                                 });
                             }
                             else
                             {
-                                At.Call(self, "Knock", new object[]
-                                {
-                                true
-                                });
+                                At.Invoke(self, "Knock", true );
                             }
-                            At.SetValue(0f, typeof(Character), self, "m_stability");
+                            At.SetField(self, "m_stability", 0f);
                             m_stability = 0f;
                             if (self.IsPhotonPlayerLocal)
                             {
@@ -142,16 +140,13 @@ namespace CombatAndDodgeOverhaul
                             {
                                 _base.photonView.RPC("SendKnock", PhotonTargets.All, new object[]
                                 {
-                                false,
-                                m_stability
+                                    false,
+                                    m_stability
                                 });
                             }
                             else
                             {
-                                At.Call(self, "Knock", new object[]
-                                {
-                                false
-                                });
+                                At.Invoke(self, "Knock", true);
                             }
                             if (self.IsPhotonPlayerLocal && _block)
                             {
@@ -164,7 +159,7 @@ namespace CombatAndDodgeOverhaul
                             // Debug.Log("Value: " + _knockValue + ", new stability: " + m_stability);
                             if (m_knockHurtAllowed)
                             {
-                                At.SetValue(Character.HurtType.Hurt, typeof(Character), self, "m_hurtType");
+                                At.SetField(self, "m_hurtType", Character.HurtType.Hurt);
 
                                 if (m_currentlyChargingAttack)
                                 {
@@ -174,7 +169,7 @@ namespace CombatAndDodgeOverhaul
                                 m_animator.SetTrigger("Knockhurt");
                                 _base.StopCoroutine("KnockhurtRoutine");
 
-                                MethodInfo _knockhurtRoutine = self.GetType().GetMethod("KnockhurtRoutine", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                                MethodInfo _knockhurtRoutine = self.GetType().GetMethod("KnockhurtRoutine", BindingFlags.NonPublic | BindingFlags.Instance);
                                 IEnumerator _knockEnum = (IEnumerator)_knockhurtRoutine.Invoke(self, new object[] { hit });
                                 _base.StartCoroutine(_knockEnum);
                             }
@@ -204,7 +199,7 @@ namespace CombatAndDodgeOverhaul
         private void StaggerAttacker(Character self, Animator m_animator, Character _dealerChar)
         {
             // Debug.Log(self.Name + " blocked the attack. Shield stability: " + m_shieldStability);
-            At.SetValue(Character.HurtType.NONE, typeof(Character), self, "m_hurtType");
+            At.SetField(self, "m_hurtType", Character.HurtType.NONE);
             if (self.InLocomotion)
             {
                 m_animator.SetTrigger("BlockHit");
@@ -228,10 +223,10 @@ namespace CombatAndDodgeOverhaul
             {
                 var self = __instance;
 
-                if (At.GetValue(typeof(Character), self, "m_stability") is float m_stability
-                && At.GetValue(typeof(Character), self, "m_timeOfLastStabilityHit") is float m_timeOfLastStabilityHit
-                && At.GetValue(typeof(Character), self, "m_shieldStability") is float m_shieldStability
-                && At.GetValue(typeof(Character), self, "m_knockbackCount") is float m_knockbackCount)
+                if (At.GetField(self, "m_stability") is float m_stability
+                && At.GetField(self, "m_timeOfLastStabilityHit") is float m_timeOfLastStabilityHit
+                && At.GetField(self, "m_shieldStability") is float m_shieldStability
+                && At.GetField(self, "m_knockbackCount") is float m_knockbackCount)
                 {
                     // ----------- original method, unchanged other than to reflect custom values -------------
                     if ((bool)CombatOverhaul.config.GetValue(Settings.No_Stability_Regen_When_Blocking) && self.Blocking) // no stability regen while blocking! otherwise too op
@@ -243,19 +238,19 @@ namespace CombatAndDodgeOverhaul
                         if (m_stability < 100f)
                         {
                             var num2 = Mathf.Clamp(m_stability + (self.StabilityRegen * (float)CombatOverhaul.config.GetValue(Settings.Stability_Regen_Speed)) * Time.deltaTime, 0f, 100f);
-                            At.SetValue(num2, typeof(Character), self, "m_stability");
+                            At.SetField(self, "m_stability", num2);
 
                         }
                         else if (m_shieldStability < 50f)
                         {
                             var num2 = Mathf.Clamp(m_shieldStability + self.StabilityRegen * Time.deltaTime, 0f, 50f);
-                            At.SetValue(num2, typeof(Character), self, "m_shieldStability");
+                            At.SetField(self, "m_shieldStability", num2);
                         }
                         if (num > (float)CombatOverhaul.config.GetValue(Settings.Enemy_AutoKD_Reset_Time))
                         {
                             bool flag = m_knockbackCount > 0;
                             var num2 = Mathf.Clamp(m_knockbackCount - Time.deltaTime, 0f, 4f);
-                            At.SetValue(num2, typeof(Character), self, "m_knockbackCount");
+                            At.SetField(self, "m_knockbackCount", num2);
                             if (flag && num2 <= 0)
                             {
                                 // Debug.Log("Resetting AI stagger count for " + self.Name);
@@ -294,16 +289,19 @@ namespace CombatAndDodgeOverhaul
                 var self = __instance;
 
                 var _base = self as Photon.MonoBehaviour;
-                if (At.GetValue(typeof(Character), self, "m_stability") is float m_stability)
+                if (At.GetField(self, "m_stability") is float m_stability)
                 {
-                    //OLogger.Error("Autoknock, m_stability: " + m_stability);
+                    float staggerVal = Mathf.Clamp(m_stability - (float)CombatOverhaul.config.GetValue(Settings.Stagger_Threshold), 
+                                                    1f,
+                                                    100 - (float)CombatOverhaul.config.GetValue(Settings.Stagger_Threshold));
 
-                    At.Call(self, "StabilityHit", new object[] {
-                    (!_down) ? Mathf.Clamp(m_stability - (float)CombatOverhaul.config.GetValue(Settings.Stagger_Threshold), 1f, 100 - (float)CombatOverhaul.config.GetValue(Settings.Stagger_Threshold)) : m_stability,
-                    Vector3.Angle(_base.transform.forward, -_dir),
-                    _down,
-                    null
-                });
+                    At.Invoke(self, "StabilityHit", new object[] 
+                    {
+                        (!_down) ? staggerVal : m_stability,
+                        Vector3.Angle(_base.transform.forward, -_dir),
+                        _down,
+                        null
+                    });
                 }
 
                 return false;

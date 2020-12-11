@@ -25,7 +25,7 @@ namespace CombatHUD
             Hitbox hitbox = _hit.collider.GetComponent<Hitbox>();
             var owner = __instance.OwnerCharacter;
             var target = hitbox.OwnerChar;
-            var m_alreadyHitChars = (List<Character>)At.GetField("m_alreadyHitChars", __instance);
+            var m_alreadyHitChars = (List<Character>)At.GetField(__instance, "m_alreadyHitChars");
 
             if (!m_alreadyHitChars.Contains(target) && HookUtil.IsElligable(__instance, owner, target))
             {
@@ -38,7 +38,7 @@ namespace CombatHUD
                 }
                 if (!blocked)
                 {
-                    var attackID = (int)At.GetField("m_attackID", __instance);
+                    var attackID = (int)At.GetField(__instance, "m_attackID");
                     if (attackID >= 0)
                     {
                         DamageList damages = __instance.GetDamage(attackID).Clone();
@@ -60,8 +60,8 @@ namespace CombatHUD
         [HarmonyPrefix]
         public static bool Prefix(Weapon __instance, Character _hitCharacter, Vector3 _hitPos, Vector3 _dir, bool _blocked)
         {
-            var selfChar = At.GetField("m_ownerCharacter", __instance) as Character;
-            var alreadyhit = At.GetField("m_alreadyHitChars", __instance) as List<Character>;
+            var selfChar = At.GetField(__instance, "m_ownerCharacter") as Character;
+            var alreadyhit = At.GetField(__instance, "m_alreadyHitChars") as List<Character>;
 
             bool eligible = _hitCharacter && (_hitCharacter != selfChar) && (__instance.CanHitEveryoneButOwner || selfChar.TargetingSystem.IsTargetable(_hitCharacter));
 
@@ -92,7 +92,7 @@ namespace CombatHUD
         {
             if (_targetCharacter.Alive)
             {
-                var damageList = At.GetField("m_tempList", __instance) as DamageList;
+                var damageList = At.GetField(__instance, "m_tempList") as DamageList;
 
                 DamageList damages = damageList.Clone();
                 _targetCharacter.Stats.GetMitigatedDamage(null, ref damages);
@@ -110,7 +110,7 @@ namespace CombatHUD
         {
             if (_targetCharacter.Alive)
             {
-                var damageList = At.GetField("m_tempList", __instance) as DamageList;
+                var damageList = At.GetField(__instance, "m_tempList") as DamageList;
 
                 DamageList damages = damageList.Clone();
                 _targetCharacter.Stats.GetMitigatedDamage(null, ref damages);

@@ -105,7 +105,7 @@ namespace CustomMultiplayerLimit
                 //Due to spawning bugs, only allow disconnect if you are the master, or if you are a client with no splitscreen, force splitscreen to quit before disconnect
                 if (PhotonNetwork.isMasterClient || SplitScreenManager.Instance.LocalPlayerCount == 1)
                     //self.m_btnToggleNetwork.interactable = true;
-                    ((Button)At.GetField("m_btnToggleNetwork", self)).interactable = true;
+                    ((Button)At.GetField(self, "m_btnToggleNetwork")).interactable = true;
 
                 SetSplitButtonInteractable(self);
 
@@ -133,7 +133,7 @@ namespace CustomMultiplayerLimit
         {
             if (!PhotonNetwork.isMasterClient || !PhotonNetwork.isNonMasterClientInRoom)
                 //instance.m_btnSplit.interactable = true;
-                ((Button)At.GetField("m_btnSplit", instance)).interactable = true;
+                ((Button)At.GetField(instance, "m_btnSplit")).interactable = true;
         }
 
         // resting panel fix
@@ -145,13 +145,13 @@ namespace CustomMultiplayerLimit
             {
                 var self = __instance;
 
-                At.Call("RefreshSkylinePosition", __instance);
+                At.Invoke(__instance, "RefreshSkylinePosition");
 
                 int num = 0;
                 bool flag = true;
                 bool flag2 = true;
 
-                var m_otherPlayerUIDs = (List<UID>)At.GetField("m_otherPlayerUIDs", __instance);
+                var m_otherPlayerUIDs = (List<UID>)At.GetField(__instance, "m_otherPlayerUIDs");
 
                 if (Global.Lobby.PlayersInLobbyCount - 1 != m_otherPlayerUIDs.Count)
                 {
@@ -161,7 +161,7 @@ namespace CustomMultiplayerLimit
                 }
                 else
                 {
-                    var m_sldOtherPlayerCursors = (Slider[])At.GetField("m_sldOtherPlayerCursors", __instance);
+                    var m_sldOtherPlayerCursors = (Slider[])At.GetField(__instance, "m_sldOtherPlayerCursors");
 
                     for (int i = 0; i < m_otherPlayerUIDs.Count; i++)
                     {
@@ -195,9 +195,9 @@ namespace CustomMultiplayerLimit
                 }
                 flag2 = (flag2 && flag);
 
-                var m_restingCanvasGroup = (CanvasGroup)At.GetField("m_restingCanvasGroup", self);
-                var m_waitingForOthers = (Transform)At.GetField("m_waitingForOthers", self);
-                var m_waitingText = (Text)At.GetField("m_waitingText", self);
+                var m_restingCanvasGroup = (CanvasGroup)At.GetField(self, "m_restingCanvasGroup");
+                var m_waitingForOthers = (Transform)At.GetField(self, "m_waitingForOthers");
+                var m_waitingText = (Text)At.GetField(self, "m_waitingText");
 
                 m_restingCanvasGroup.interactable = (flag && !(self as UIElement).LocalCharacter.CharacterResting.DonePreparingRest);
                 if (m_waitingForOthers)
@@ -212,8 +212,8 @@ namespace CustomMultiplayerLimit
                     }
                 }
 
-                var m_restingActivityDisplays = (RestingActivityDisplay[])At.GetField("m_restingActivityDisplays", self);
-                var ActiveActivities = (RestingActivity.ActivityTypes[])At.GetField("ActiveActivities", self);
+                var m_restingActivityDisplays = (RestingActivityDisplay[])At.GetField(self, "m_restingActivityDisplays");
+                var ActiveActivities = (RestingActivity.ActivityTypes[])At.GetField(self, "ActiveActivities");
 
                 try
                 {
@@ -235,25 +235,25 @@ namespace CustomMultiplayerLimit
                 }
                 catch { }
 
-                var m_sldLocalPlayerCursor = (Slider)At.GetField("m_sldLocalPlayerCursor", self);
+                var m_sldLocalPlayerCursor = (Slider)At.GetField(self, "m_sldLocalPlayerCursor");
 
                 if (m_sldLocalPlayerCursor)
                 {
                     m_sldLocalPlayerCursor.value = (float)num;
                 }
 
-                var m_lastTotalRestTime = (int)At.GetField("m_lastTotalRestTime", self);
+                var m_lastTotalRestTime = (int)At.GetField(self, "m_lastTotalRestTime");
 
                 bool flag3 = false;
                 if (m_lastTotalRestTime != num)
                 {
                     flag3 = true;
-                    At.SetField(num, "m_lastTotalRestTime", self);
+                    At.SetField(self, "m_lastTotalRestTime", num);
                     self.OnConfirmTimeSelection(num);
                 }
 
-                var m_tryRest = (bool)At.GetField("m_tryRest", self);
-                At.Call("RefreshOverviews", self, null, new object[] { flag3 && !m_tryRest });
+                var m_tryRest = (bool)At.GetField(self, "m_tryRest");
+                At.Invoke(self, "RefreshOverviews", new object[] { flag3 && !m_tryRest });
 
                 return false;
             }

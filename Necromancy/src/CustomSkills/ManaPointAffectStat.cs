@@ -36,7 +36,7 @@ namespace NecromancerSkills
                                 null),
                             this.IsModifier
                         );
-                        At.SetField(m_statStack, "m_statStack", this as AffectStat);
+                        At.SetField(this as AffectStat, "m_statStack", m_statStack);
                     }
                 }
             }

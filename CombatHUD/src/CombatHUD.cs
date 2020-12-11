@@ -53,8 +53,8 @@ namespace CombatHUD
 
         internal void Update()
         {
-            m_hideUI = (bool)At.GetField("m_hideUI", Global.Instance);
-            m_playerShowHud = (bool[])At.GetField<OptionManager>("m_playerShowHUD", null);
+            m_hideUI = (bool)At.GetField(Global.Instance, "m_hideUI");
+            m_playerShowHud = (bool[])At.GetField<OptionManager>("m_playerShowHUD");
 
             if (!HUDCanvas || Global.Lobby.PlayersInLobbyCount < 1)
             {

@@ -22,7 +22,7 @@ namespace NecromancerSkills
             DestroyImmediate(frenzySkill.transform.Find("SummonSoul").gameObject);
 
             // set custom spellcast anim
-            At.SetField(Character.SpellCastType.Focus, "m_activateEffectAnimType", frenzySkill as Item);
+            At.SetField(frenzySkill as Item, "m_activateEffectAnimType", Character.SpellCastType.Focus);
 
             var effects = new GameObject("Effects");
             effects.transform.parent = frenzySkill.transform;
