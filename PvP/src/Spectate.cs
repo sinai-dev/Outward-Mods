@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SideLoader;
 using UnityEngine;
 
 namespace PvP
@@ -16,7 +17,7 @@ namespace PvP
             {
                 if (!m_camera)
                 {
-                    m_camera = (Camera)At.GetValue(typeof(VideoCamera), VideoCamera.Instance, "m_camera");
+                    m_camera = (Camera)At.GetField(VideoCamera.Instance, "m_camera");
                 }
                 return m_camera;
             }
@@ -53,11 +54,11 @@ namespace PvP
 
         private void SetFreeCam(bool active)
         {
-            At.Call(typeof(VideoCamera), VideoCamera.Instance, "SetCameraActive", null, active);
+            At.Invoke(VideoCamera.Instance, "SetCameraActive", active);
             
             if (active)
             {
-                At.SetValue(true, typeof(VideoCamera), VideoCamera.Instance, "m_flyMode");
+                At.SetField(VideoCamera.Instance, "m_flyMode", true);
                 Global.LockCursor(true);
             }
         }
@@ -77,10 +78,10 @@ namespace PvP
                 m_spectateTargetIndex = 0;
                 ReleaseTarget();
             }
-            else if (Input.GetKeyDown(KeyCode.Escape) && !PvPGUI.Instance.showGui)
+            else if (Input.GetKeyDown(KeyCode.Escape) && !PvPGUI.Instance.ShowGUI)
             {
                 ReleaseTarget();
-                PvPGUI.Instance.showGui = true;
+                PvPGUI.Instance.ShowGUI = true;
                 Global.LockCursor(false);
             }
 
@@ -131,8 +132,8 @@ namespace PvP
 
             RPCManager.Instance.SendUIMessageLocal(m_ownerCharacter, "Spectating " + target.Name);
 
-            At.SetValue(target.transform, typeof(VideoCamera), VideoCamera.Instance, "m_targetTrans");
-            At.SetValue(VideoCamera.VideoCamState.FOLLOW_POS, typeof(VideoCamera), VideoCamera.Instance, "m_state");
+            At.SetField(VideoCamera.Instance, "m_targetTrans", target.transform);
+            At.SetField(VideoCamera.Instance, "m_state", VideoCamera.VideoCamState.FOLLOW_POS);
         }
 
         private void ReleaseTarget()
@@ -140,8 +141,8 @@ namespace PvP
             hasTarget = false;
             m_target = null;
 
-            At.SetValue((Transform)null, typeof(VideoCamera), VideoCamera.Instance, "m_targetTrans");
-            At.SetValue(VideoCamera.VideoCamState.NORMAL, typeof(VideoCamera), VideoCamera.Instance, "m_state");
+            At.SetField(VideoCamera.Instance, "m_targetTrans", null);
+            At.SetField(VideoCamera.Instance, "m_state", VideoCamera.VideoCamState.NORMAL);
         }
 
         public void EndSpectate()

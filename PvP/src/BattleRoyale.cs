@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SideLoader;
 using UnityEngine;
 
 namespace PvP
@@ -54,9 +55,9 @@ namespace PvP
 
             if (IsGameplayEnding)
             {
-                if (PvPGUI.Instance.showGui == false)
+                if (PvPGUI.Instance.ShowGUI == false)
                 {
-                    PvPGUI.Instance.showGui = true;
+                    PvPGUI.Instance.ShowGUI = true;
                 }
                 return;
             }
@@ -260,7 +261,7 @@ namespace PvP
                     pouchContainer.SetKeepAlive();
                     pouchContainer.UID = "CustomPouch_" + c.UID;
                     pouchContainer.ProcessInit();
-                    At.SetValue(pouchContainer, typeof(CharacterInventory), c.Inventory, "m_inventoryPouch");
+                    At.SetField(c.Inventory, "m_inventoryPouch", pouchContainer);
 
                     if (PhotonNetwork.isNonMasterClientInRoom)
                     {
@@ -271,7 +272,7 @@ namespace PvP
                 {
                     var mk = new CharacterMapKnowledge();
                     mk.Init();
-                    At.SetValue(mk, typeof(CharacterInventory), c.Inventory, "m_mapKnowledge");
+                    At.SetField(c.Inventory, "m_mapKnowledge", mk);
                 }
                 c.Inventory.Equipment.ProcessStart();
 
@@ -318,10 +319,10 @@ namespace PvP
 
             // ========= set custom stats ==========
 
-            At.SetValue(new Stat(500f), typeof(CharacterStats), _char.Stats, "m_maxHealthStat");
-            At.SetValue(new Stat(200f), typeof(CharacterStats), _char.Stats, "m_maxStamina");
+            At.SetField(_char.Stats, "m_maxHealthStat", new Stat(500f));
+            At.SetField(_char.Stats, "m_maxStamina", new Stat(200f));
+            At.SetField(_char.Stats, "m_maxManaStat", new Stat(75f));
             _char.Stats.GiveManaPoint(1);
-            At.SetValue(new Stat(75f), typeof(CharacterStats), _char.Stats, "m_maxManaStat");
 
             // ========= finalize ==========
 
@@ -333,11 +334,11 @@ namespace PvP
             _char.Cheats.NeedsEnabled = true;
 
             // refresh stats
-            At.Call(typeof(CharacterStats), _char.Stats, "UpdateVitalStats", null, new object[0]);
+            At.Invoke(_char.Stats, "UpdateVitalStats");
             _char.Stats.Reset();
             _char.Stats.RestoreAllVitals();
 
-            if (At.GetValue(typeof(CharacterQuickSlotManager), _char.QuickSlotMngr, "m_quickSlots") is QuickSlot[] m_quickSlots)
+            if (At.GetField(_char.QuickSlotMngr, "m_quickSlots") is QuickSlot[] m_quickSlots)
             {
                 for (int i = 0; i < m_quickSlots.Count(); i++)
                 {
@@ -355,7 +356,7 @@ namespace PvP
             if (bag != null)
             {
                 _char.Inventory.TakeItem(bag.UID, false);
-                At.Call(typeof(CharacterEquipment), _char.Inventory.Equipment, "EquipWithoutAssociating", null, new object[] { bag, false });
+                At.Invoke(_char.Inventory.Equipment, "EquipWithoutAssociating", new object[] { bag, false });
 
                 // 1 random weapon, 1 random offhand
                 ItemContainer target = _char.Inventory.Pouch;
@@ -563,10 +564,10 @@ namespace PvP
                         });
                     }
 
-                    At.Call(typeof(TreasureChest), stash, "InitDrops", null, new object[0]);
+                    At.Invoke(stash, "InitDrops");
                     for (int i = 0; i < 5; i++)
                     {
-                        At.SetValue(false, typeof(TreasureChest), stash, "m_hasGeneratedContent");
+                        At.SetField(stash, "m_hasGeneratedContent", false);
                         stash.GenerateContents();
                     }
                 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.Reflection;
+using SideLoader;
 
 namespace PvP
 {
@@ -78,7 +79,7 @@ namespace PvP
         [PunRPC]
         public void StartGameplayRPC(int _mode, string messageToPlayers = "")
         {
-            if (PvPGUI.Instance.showGui) { PvPGUI.Instance.showGui = false; }
+            if (PvPGUI.Instance.ShowGUI) { PvPGUI.Instance.ShowGUI = false; }
 
             if (_mode == (int)PvP.GameModes.BattleRoyale)
             {
@@ -284,7 +285,7 @@ namespace PvP
                 {
                     value = 20;
                 }
-                At.SetValue(new Stat(value), typeof(CharacterStats), c.Stats, "m_maxHealthStat");
+                At.SetField(c.Stats, "m_maxHealthStat", new Stat(value));
 
                 //BattleRoyale.Instance..FixEnemyStats(c.Stats);
 

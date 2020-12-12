@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using HarmonyLib;
+using SideLoader;
 
 namespace PvP
 {
@@ -64,23 +65,21 @@ namespace PvP
                     if (self.GetComponentInParent<DeployableTrap>() is DeployableTrap trap)
                     {
                         //Debug.Log("setting trap factions");
-                        At.SetValue(Instance.AllFactions.ToArray(), typeof(DeployableTrap), trap, "m_targetFactions");
+                        At.SetField(trap, "m_targetFactions", Instance.AllFactions.ToArray());
                     }
 
-                    var m_charactersInTrigger = At.GetValue(typeof(TrapTrigger), self, "m_charactersInTrigger") as List<Character>;
+                    var m_charactersInTrigger = At.GetField(self, "m_charactersInTrigger") as List<Character>;
 
                     Character component = _other.GetComponent<Character>();
 
                     if (component != null && !m_charactersInTrigger.Contains(component))
                     {
                         m_charactersInTrigger.Add(component);
-                        At.SetValue(m_charactersInTrigger, typeof(TrapTrigger), self, "m_charactersInTrigger");
-                        if (!(bool)At.GetValue(typeof(TrapTrigger), self, "m_alreadyTriggered"))
+                        if (!(bool)At.GetField(self, "m_alreadyTriggered"))
                         {
-                            (self as TriggerColliderFlag).Trigger.ActivateBasicAction(component, self.OnEnterState - TrapTrigger.ToggleState.Off);
-                            //OLogger.Warning("Triggered custom trap!");
+                            self.Trigger.ActivateBasicAction(component, self.OnEnterState - TrapTrigger.ToggleState.Off);
                         }
-                        At.SetValue(true, typeof(TrapTrigger), self, "m_alreadyTriggered");
+                        At.SetField(self, "m_alreadyTriggered", true);
                     }
 
                     return false;

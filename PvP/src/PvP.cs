@@ -10,6 +10,8 @@ using System.IO;
 using BepInEx;
 using HarmonyLib;
 using UnityEngine.SceneManagement;
+using SideLoader;
+using SideLoader.Helpers;
 
 namespace PvP
 {
@@ -46,7 +48,7 @@ namespace PvP
         {
             Instance = this;
 
-            CustomKeybindings.AddAction(MenuKey, CustomKeybindings.KeybindingsCategory.Menus, CustomKeybindings.ControlType.Both, 5);
+            CustomKeybindings.AddAction(MenuKey, KeybindingsCategory.CustomKeybindings);
 
             LoadSettings();
 
@@ -105,11 +107,6 @@ namespace PvP
 
         internal void Update()
         {
-            if (Input.GetKeyDown(KeyCode.PageUp))
-            {
-                StartCoroutine(TestMethod());
-            }
-
             if ((MenuManager.Instance.IsReturningToMainMenu || Global.IsApplicationClosing) && CurrentGame != GameModes.NONE)
             {
                 CurrentGame = GameModes.NONE;
@@ -125,13 +122,9 @@ namespace PvP
                 return;
             }
 
-            // handle player input 
-            foreach (PlayerSystem ps in Global.Lobby.PlayersInLobby.Where(x => x.ControlledCharacter.IsLocalPlayer))
+            if (CustomKeybindings.GetKeyDown(MenuKey))
             {
-                if (CustomKeybindings.m_playerInputManager[ps.PlayerID].GetButtonDown(MenuKey))
-                {
-                    PvPGUI.Instance.showGui = !PvPGUI.Instance.showGui;
-                }
+                PvPGUI.Instance.ShowGUI = !PvPGUI.Instance.ShowGUI;
             }
 
             // update custom gameplay
@@ -188,7 +181,7 @@ namespace PvP
                 }
                 else
                 {
-                    if (At.GetValue(typeof(InteractionBase), self, "m_lastCharacter") is Character m_lastCharacter && m_lastCharacter.IsLocalPlayer)
+                    if (At.GetField(self as InteractionBase, "m_lastCharacter") is Character m_lastCharacter && m_lastCharacter.IsLocalPlayer)
                     {
                         RPCManager.Instance.SendUIMessageLocal(m_lastCharacter, "You cannot revive players during a game!");
                         Instance.StartCoroutine(Instance.FixReviveInteraction(self, self.OnActivationEvent));

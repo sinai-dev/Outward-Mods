@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
+using SideLoader;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
@@ -188,7 +189,7 @@ namespace PvP
                 }
 
                 //__instance.AffectHit(___cachedHitBox);
-                At.Call(typeof(Blast), __instance, "AffectHit", null, ___cachedHitBox);
+                At.Invoke(__instance, "AffectHit", ___cachedHitBox);
 
                 return false;
             }
@@ -251,7 +252,7 @@ namespace PvP
                 }
 
                 // __instance.OnProjectileHit(character, _hitPoint, _hitDir, blocked);
-                At.Call(typeof(Projectile), __instance, "OnProjectileHit", null, new object[] { character, _hitPoint, _hitDir, blocked });
+                At.Invoke(__instance, "OnProjectileHit", character, _hitPoint, _hitDir, blocked);
 
                 ___m_explodeInfos[0] = character;
                 ___m_explodeInfos[1] = _hitPoint;
@@ -265,7 +266,7 @@ namespace PvP
                         && (_collider == null || Global.FullEnvironmentMask == (Global.FullEnvironmentMask | 1 << _collider.gameObject.layer))))
                 {
                     // __instance.EndLife();
-                    At.Call(typeof(Projectile), __instance, "EndLife", null);
+                    At.Invoke(__instance, "EndLife");
                 }
 
                 return false;
@@ -313,7 +314,7 @@ namespace PvP
                 }
                 if (array.Length != 0)
                 {
-                    var ignoredChar = (Character)At.GetValue(typeof(Projectile), __instance, "m_ignoredCharacter");
+                    var ignoredChar = (Character)At.GetField(__instance as Projectile, "m_ignoredCharacter");
 
                     int num = -1;
                     for (int i = 0; i < array.Length; i++)

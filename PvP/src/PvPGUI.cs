@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SideLoader;
+using SideLoader.Helpers;
 using UnityEngine;
 
 namespace PvP
@@ -20,7 +22,21 @@ namespace PvP
         private Vector2 m_currentSize = Vector2.zero;
         public Matrix4x4 m_scaledMatrix;
 
-        public bool showGui = false;
+        public bool ShowGUI
+        {
+            get => m_showGUI;
+            set
+            {
+                m_showGUI = value;
+
+                if (m_showGUI)
+                    ForceUnlockCursor.AddUnlockSource();
+                else
+                    ForceUnlockCursor.RemoveUnlockSource();
+            }
+        }
+        private bool m_showGUI;
+
         public int guiPage = 0;
         public bool lastMenuToggle;
 
@@ -33,7 +49,7 @@ namespace PvP
 
         internal void Start()
         {
-            showGui = PvP.Instance.settings.Show_Menu_On_Startup;
+            ShowGUI = PvP.Instance.settings.Show_Menu_On_Startup;
         }
 
         internal void Update()
@@ -48,8 +64,6 @@ namespace PvP
             {
                 return;
             }
-
-            MenuMouseFix();
         }
 
         internal void OnGUI()
@@ -69,7 +83,7 @@ namespace PvP
                 m_windowRect = new Rect(50, 50, 500, 300);
             }
 
-            if (!ConfirmingBattleRoyale && showGui)
+            if (!ConfirmingBattleRoyale && ShowGUI)
             {
                 m_windowRect = GUI.Window(WINDOW_ID, m_windowRect, DrawWindow, "PvP " + PvP.VERSION);
             }
@@ -111,7 +125,7 @@ namespace PvP
 
             if (GUI.Button(new Rect(m_windowRect.width - 50, 0, 45, 20), "X"))
             {
-                showGui = false;
+                ShowGUI = false;
             }
 
             GUILayout.BeginArea(new Rect(3, 25, m_windowRect.width - 8, m_windowRect.height - 5));
@@ -335,7 +349,7 @@ namespace PvP
             if (GUILayout.Button("Yes, I'm sure!"))
             {
                 ConfirmingBattleRoyale = false;
-                showGui = false;
+                ShowGUI = false;
 
                 if (BattleRoyale.Instance.CheckCanStart())
                 {
@@ -363,7 +377,7 @@ namespace PvP
             {
                 BattleRoyale.Instance.StartBattleRoyale(true);
                 BattleRoyale.Instance.IsGameplayEnding = false;
-                showGui = false;
+                ShowGUI = false;
             }
 
             GUILayout.Space(30);
@@ -371,7 +385,7 @@ namespace PvP
             if (GUILayout.Button("End Lobby"))
             {
                 BattleRoyale.Instance.IsGameplayEnding = false;
-                showGui = false;
+                ShowGUI = false;
                 RPCManager.Instance.photonView.RPC("EndBattleRoyaleRPC", PhotonTargets.All, new object[0]);
             }
 
@@ -427,44 +441,6 @@ namespace PvP
             }
 
             GUILayout.EndArea();
-        }
-
-        private void MenuMouseFix()
-        {
-            // menu mouse fix
-            bool shouldUpdate = false;
-            if (!lastMenuToggle && showGui)
-            {
-                lastMenuToggle = true;
-                shouldUpdate = true;
-            }
-            else if (lastMenuToggle && !showGui)
-            {
-                lastMenuToggle = false;
-                shouldUpdate = true;
-            }
-            if (shouldUpdate)
-            {
-                Character c = CharacterManager.Instance.GetFirstLocalCharacter();
-
-                if (c.CharacterUI.PendingDemoCharSelectionScreen is Panel panel)
-                {
-                    if (lastMenuToggle)
-                        panel.Show();
-                    else
-                        panel.Hide();
-                }
-                else if (lastMenuToggle)
-                {
-                    GameObject obj = new GameObject();
-                    obj.transform.parent = c.transform;
-                    obj.SetActive(true);
-
-                    Panel newPanel = obj.AddComponent<Panel>();
-                    At.SetValue(newPanel, typeof(CharacterUI), c.CharacterUI, "PendingDemoCharSelectionScreen");
-                    newPanel.Show();
-                }
-            }
         }
 
         public Dictionary<Character.Factions, Color> TeamColors = new Dictionary<Character.Factions, Color>()

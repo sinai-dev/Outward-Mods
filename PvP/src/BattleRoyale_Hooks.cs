@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using System.IO;
 using HarmonyLib;
+using SideLoader;
 
 namespace PvP
 {
@@ -31,7 +32,7 @@ namespace PvP
                     //Debug.Log("Dropping player stuff!");
                     // custom player death (drop items)
 
-                    if (!PhotonNetwork.isNonMasterClientInRoom && At.GetValue(typeof(Character), self, "m_lastDealers") is List<Pair<UID, float>> lastDealers)
+                    if (!PhotonNetwork.isNonMasterClientInRoom && At.GetField(self, "m_lastDealers") is List<Pair<UID, float>> lastDealers)
                     {
                         float lowest = Time.time;
                         string uid = "";
@@ -46,7 +47,7 @@ namespace PvP
                         if (uid != "" && CharacterManager.Instance.GetCharacter(uid) is Character lastDealer)
                         {
                             lastDealers.Clear();
-                            At.SetValue(lastDealers, typeof(Character), self, "m_lastDealers");
+                            At.SetField(self, "m_lastDealers", lastDealer);
                             RPCManager.SendMessageToAll(lastDealer.Name + " has defeated " + self.Name);
                         }
                     }
@@ -130,11 +131,12 @@ namespace PvP
                             int id = Templates.Weapon_Skills[(int)(_item as Weapon).Type];
                             if (self.OwnerCharacter.Inventory.SkillKnowledge is CharacterSkillKnowledge skills && !skills.IsItemLearned(id))
                             {
-                                Item skill = ItemManager.Instance.GenerateItemNetwork(id);
+                                var skill = ItemManager.Instance.GenerateItemNetwork(id);
+
                                 skill.ChangeParent(skills.transform);
-                                List<Item> learnedItems = At.GetValue(typeof(CharacterKnowledge), skills, "m_learnedItems") as List<Item>;
-                                learnedItems.Add(skill as Item);
-                                At.SetValue(learnedItems, typeof(CharacterKnowledge), skills, "m_learnedItems");
+
+                                var learnedItems = At.GetField(skills as CharacterKnowledge, "m_learnedItems") as List<Item>;
+                                learnedItems.Add(skill);
                             }
                         }
                     }
