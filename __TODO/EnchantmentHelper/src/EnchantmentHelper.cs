@@ -25,16 +25,33 @@ namespace EnchantmentHelper
         private Rect m_rect = new Rect(5, 5, 350, 450);
         private Vector2 scroll = Vector2.zero;
 
-        public static bool ShowMenu = false;
+        public static bool ShowMenu
+        {
+            get => m_showMenu;
+            set
+            {
+                m_showMenu = value;
+                if (m_showMenu)
+                    SideLoader.Helpers.ForceUnlockCursor.AddUnlockSource();
+                else
+                    SideLoader.Helpers.ForceUnlockCursor.RemoveUnlockSource();
+            }
+        }
+        private static bool m_showMenu;
+
         public string SearchText = "";
         public Enchantment SelectedEnchant;
         private EquipmentSlot.EquipmentSlotIDs SelectedSlot = EquipmentSlot.EquipmentSlotIDs.RightHand;
+
+        internal const string MENU_TOGGLE_NAME = "Enchantment Helper Menu";
 
         // Setup
         internal void Awake()
         {
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
+
+            CustomKeybindings.AddAction(MENU_TOGGLE_NAME, KeybindingsCategory.CustomKeybindings);
         }
 
         // Patch to get cached dictionary of Enchantments
@@ -44,7 +61,7 @@ namespace EnchantmentHelper
             [HarmonyPostfix]
             public static void Postfix()
             {
-                var dict = (Dictionary<int, Enchantment>)At.GetValue(typeof(ResourcesPrefabManager), ResourcesPrefabManager.Instance, "ENCHANTMENT_PREFABS");
+                var dict = (Dictionary<int, Enchantment>)At.GetField(ResourcesPrefabManager.Instance, "ENCHANTMENT_PREFABS");
                 m_cachedEnchantments = new Dictionary<string, Enchantment>();
                 foreach (var entry in dict)
                 {
@@ -53,19 +70,12 @@ namespace EnchantmentHelper
             }
         }
 
-        // Keyboard shortcut: Ctrl+Alt+E
         internal void Update()
         {
-            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-                && (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)))
+            if (CustomKeybindings.GetKeyDown(MENU_TOGGLE_NAME))
             {
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    ShowMenu = !ShowMenu;
-                }
+                ShowMenu = !ShowMenu;
             }
-
-            MouseFix();
         }
 
         internal void OnGUI()
@@ -73,9 +83,9 @@ namespace EnchantmentHelper
             if (ShowMenu)
             {
                 var orig = GUI.skin;
-                GUI.skin = SideLoader.UI.UIStyles.WindowSkin;
+                //GUI.skin = SideLoader.UI.UIStyles.WindowSkin;
                 m_rect = GUI.Window(WINDOW_ID, m_rect, WindowFunction, "Enchantment Menu (Ctrl+Alt+E Toggle)");
-                GUI.skin = orig;
+                //GUI.skin = orig;
             }
         }
 
@@ -130,9 +140,9 @@ namespace EnchantmentHelper
                         if (GUILayout.Button("Remove Enchantment (" + enchant.Name + ")"))
                         {
                             enchant.UnapplyEnchantment();
-                            var ids = (List<int>)At.GetValue(typeof(Equipment), equipment, "m_enchantmentIDs");
+                            var ids = (List<int>)At.GetField(equipment, "m_enchantmentIDs");
                             ids.Clear();
-                            At.Call(typeof(Equipment), equipment, "RefreshEnchantmentModifiers", null, new object[0]);
+                            At.Invoke(equipment, "RefreshEnchantmentModifiers");
                         }
                     }
                     else if (SelectedEnchant != null)
@@ -190,55 +200,6 @@ namespace EnchantmentHelper
             if (newindex >= 0 && newindex < 9)
             {
                 value = (EquipmentSlot.EquipmentSlotIDs)newindex;
-            }
-        }
-
-        // =============== mouse fix ===============
-
-        private static bool m_mouseShowing = false;
-
-        public static void MouseFix()
-        {
-            var cha = CharacterManager.Instance.GetFirstLocalCharacter();
-
-            if (!cha)
-            {
-                return;
-            }
-
-            if (ShowMenu)
-            {
-                if (!m_mouseShowing)
-                {
-                    m_mouseShowing = true;
-                    ToggleDummyPanel(cha, true);
-                }
-            }
-            else if (m_mouseShowing)
-            {
-                m_mouseShowing = false;
-                ToggleDummyPanel(cha, false);
-            }
-        }
-
-        private static void ToggleDummyPanel(Character cha, bool show)
-        {
-            if (cha.CharacterUI.PendingDemoCharSelectionScreen is Panel panel)
-            {
-                if (show)
-                    panel.Show();
-                else
-                    panel.Hide();
-            }
-            else if (show)
-            {
-                GameObject obj = new GameObject();
-                obj.transform.parent = cha.transform;
-                obj.SetActive(true);
-
-                Panel newPanel = obj.AddComponent<Panel>();
-                At.SetValue(newPanel, typeof(CharacterUI), cha.CharacterUI, "PendingDemoCharSelectionScreen");
-                newPanel.Show();
             }
         }
     }

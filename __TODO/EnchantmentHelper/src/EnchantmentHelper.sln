@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnchantmentHelper", "EnchantmentHelper.csproj", "{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D65E7A3-4A64-41A1-9B9F-4C399668FB1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D195F080-5371-4A9A-A5D0-71A5982BD7CC}
+	EndGlobalSection
+EndGlobal
