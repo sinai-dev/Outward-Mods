@@ -141,19 +141,18 @@ namespace CustomMultiplayerLimit
         public class RestingMenu_UpdatePanel
         {
             [HarmonyPrefix]
-            public static bool Prefix(RestingMenu __instance)
+            public static bool Prefix(RestingMenu __instance, List<UID> ___m_otherPlayerUIDs, Slider[] ___m_sldOtherPlayerCursors,
+                ref CanvasGroup ___m_restingCanvasGroup, ref Transform ___m_waitingForOthers, ref Text ___m_waitingText,
+                RestingActivityDisplay[] ___m_restingActivityDisplays, RestingActivity.ActivityTypes[] ___ActiveActivities,
+                Slider ___m_sldLocalPlayerCursor, ref int ___m_lastTotalRestTime, bool ___m_tryRest)
             {
                 var self = __instance;
 
-                At.Invoke(__instance, "RefreshSkylinePosition");
-
+                At.Invoke(self, "RefreshSkylinePosition");
                 int num = 0;
                 bool flag = true;
                 bool flag2 = true;
-
-                var m_otherPlayerUIDs = (List<UID>)At.GetField(__instance, "m_otherPlayerUIDs");
-
-                if (Global.Lobby.PlayersInLobbyCount - 1 != m_otherPlayerUIDs.Count)
+                if (Global.Lobby.PlayersInLobby.Count - 1 != ___m_otherPlayerUIDs.Count)
                 {
                     self.InitPlayerCursors();
                     flag = false;
@@ -161,99 +160,80 @@ namespace CustomMultiplayerLimit
                 }
                 else
                 {
-                    var m_sldOtherPlayerCursors = (Slider[])At.GetField(__instance, "m_sldOtherPlayerCursors");
-
-                    for (int i = 0; i < m_otherPlayerUIDs.Count; i++)
+                    try
                     {
-                        Character characterFromPlayer = CharacterManager.Instance.GetCharacterFromPlayer(m_otherPlayerUIDs[i]);
-                        if (characterFromPlayer != null)
+                        for (int i = 0; i < ___m_otherPlayerUIDs.Count; i++)
                         {
-                            if (CharacterManager.Instance.RestingPlayerUIDs.Contains(characterFromPlayer.UID))
+                            Character characterFromPlayer = CharacterManager.Instance.GetCharacterFromPlayer(___m_otherPlayerUIDs[i]);
+                            if (characterFromPlayer != null)
                             {
-                                flag2 &= characterFromPlayer.CharacterResting.DonePreparingRest;
+                                if (CharacterManager.Instance.RestingPlayerUIDs.Contains(characterFromPlayer.UID))
+                                    flag2 &= characterFromPlayer.CharacterResting.DonePreparingRest;
+                                else
+                                    flag = false;
+                                ___m_sldOtherPlayerCursors[i].value = (float)characterFromPlayer.CharacterResting.TotalRestTime;
                             }
                             else
-                            {
                                 flag = false;
-                            }
-
-                            if (m_sldOtherPlayerCursors.Length - 1 >= i)
-                            {
-                                m_sldOtherPlayerCursors[i].value = (float)characterFromPlayer.CharacterResting.TotalRestTime;
-                            }
-                        }
-                        else
-                        {
-                            flag = false;
                         }
                     }
+                    catch { }
                 }
 
                 for (int j = 0; j < SplitScreenManager.Instance.LocalPlayerCount; j++)
                 {
-                    flag &= (SplitScreenManager.Instance.LocalPlayers[j].AssignedCharacter != null);
+                    try
+                    {
+                        flag &= (SplitScreenManager.Instance.LocalPlayers[j].AssignedCharacter != null);
+                    }
+                    catch { }
                 }
+
                 flag2 = (flag2 && flag);
 
-                var m_restingCanvasGroup = (CanvasGroup)At.GetField(self, "m_restingCanvasGroup");
-                var m_waitingForOthers = (Transform)At.GetField(self, "m_waitingForOthers");
-                var m_waitingText = (Text)At.GetField(self, "m_waitingText");
+                ___m_restingCanvasGroup.interactable = (flag && !self.LocalCharacter.CharacterResting.DonePreparingRest);
 
-                m_restingCanvasGroup.interactable = (flag && !(self as UIElement).LocalCharacter.CharacterResting.DonePreparingRest);
-                if (m_waitingForOthers)
+                if (___m_waitingForOthers)
                 {
-                    if (m_waitingForOthers.gameObject.activeSelf == m_restingCanvasGroup.interactable)
-                    {
-                        m_waitingForOthers.gameObject.SetActive(!m_restingCanvasGroup.interactable);
-                    }
-                    if (m_waitingText && m_waitingForOthers.gameObject.activeSelf)
-                    {
-                        m_waitingText.text = LocalizationManager.Instance.GetLoc((!flag2) ? "Sleep_Title_Waiting" : "Rest_Title_Resting");
-                    }
+                    if (___m_waitingForOthers.gameObject.activeSelf == ___m_restingCanvasGroup.interactable)
+                        ___m_waitingForOthers.gameObject.SetActive(!___m_restingCanvasGroup.interactable);
+
+                    if (___m_waitingText && ___m_waitingForOthers.gameObject.activeSelf)
+                        ___m_waitingText.text = LocalizationManager.Instance.GetLoc(flag2 ? "Rest_Title_Resting" : "Sleep_Title_Waiting");
                 }
 
-                var m_restingActivityDisplays = (RestingActivityDisplay[])At.GetField(self, "m_restingActivityDisplays");
-                var ActiveActivities = (RestingActivity.ActivityTypes[])At.GetField(self, "ActiveActivities");
-
-                try
+                for (int k = 0; k < ___m_restingActivityDisplays.Length; k++)
                 {
-                    for (int k = 0; k < m_restingActivityDisplays.Length; k++)
+                    try
                     {
-                        num += m_restingActivityDisplays[k].AssignedTime;
+                        num += ___m_restingActivityDisplays[k].AssignedTime;
                     }
-                    for (int l = 0; l < m_restingActivityDisplays.Length; l++)
+                    catch { }
+                }
+
+                for (int l = 0; l < ___m_restingActivityDisplays.Length; l++)
+                {
+                    try
                     {
-                        if (ActiveActivities[l] != RestingActivity.ActivityTypes.Guard || CharacterManager.Instance.BaseAmbushProbability > 0)
-                        {
-                            m_restingActivityDisplays[l].MaxValue = 24 - (num - m_restingActivityDisplays[l].AssignedTime);
-                        }
+                        if (___ActiveActivities[l] != RestingActivity.ActivityTypes.Guard || CharacterManager.Instance.BaseAmbushProbability > 0)
+                            ___m_restingActivityDisplays[l].MaxValue = 24 - (num - ___m_restingActivityDisplays[l].AssignedTime);
                         else
-                        {
-                            m_restingActivityDisplays[l].MaxValue = 0;
-                        }
+                            ___m_restingActivityDisplays[l].MaxValue = 0;
                     }
-                }
-                catch { }
-
-                var m_sldLocalPlayerCursor = (Slider)At.GetField(self, "m_sldLocalPlayerCursor");
-
-                if (m_sldLocalPlayerCursor)
-                {
-                    m_sldLocalPlayerCursor.value = (float)num;
+                    catch { }
                 }
 
-                var m_lastTotalRestTime = (int)At.GetField(self, "m_lastTotalRestTime");
+                if (___m_sldLocalPlayerCursor)
+                    ___m_sldLocalPlayerCursor.value = (float)num;
 
                 bool flag3 = false;
-                if (m_lastTotalRestTime != num)
+                if (___m_lastTotalRestTime != num)
                 {
                     flag3 = true;
-                    At.SetField(self, "m_lastTotalRestTime", num);
-                    self.OnConfirmTimeSelection(num);
+                    ___m_lastTotalRestTime = num;
                 }
 
-                var m_tryRest = (bool)At.GetField(self, "m_tryRest");
-                At.Invoke(self, "RefreshOverviews", new object[] { flag3 && !m_tryRest });
+                At.Invoke(self, "RefreshOverviews", new object[] { flag3 && !___m_tryRest });
 
                 return false;
             }

@@ -22,7 +22,7 @@ namespace CombatAndDodgeOverhaul
 
         public static ModConfig config;
 
-        public static string MenuKey = "Combat and Dodge Menu";
+        //public static string MenuKey = "Combat and Dodge Menu";
 
         internal void Awake()
         {

@@ -43,7 +43,7 @@ namespace CombatHUD
                     {
                         DamageList damages = __instance.GetDamage(attackID).Clone();
 
-                        target.Stats.GetMitigatedDamage(null, ref damages);
+                        target.Stats.GetMitigatedDamage(null, ref damages, false);
 
                         DamageLabels.AddDamageLabel(damages, _hit.point, target);
                     }
@@ -70,7 +70,7 @@ namespace CombatHUD
                 if (!_blocked)
                 {
                     DamageList damages = __instance.GetDamage(0);
-                    _hitCharacter.Stats.GetMitigatedDamage(null, ref damages);
+                    _hitCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
 
                     DamageLabels.AddDamageLabel(damages, _hitPos, _hitCharacter);
                 }
@@ -95,7 +95,7 @@ namespace CombatHUD
                 var damageList = At.GetField(__instance, "m_tempList") as DamageList;
 
                 DamageList damages = damageList.Clone();
-                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages);
+                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }
@@ -113,7 +113,7 @@ namespace CombatHUD
                 var damageList = At.GetField(__instance, "m_tempList") as DamageList;
 
                 DamageList damages = damageList.Clone();
-                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages);
+                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }

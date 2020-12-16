@@ -23,7 +23,6 @@ namespace CombatAndDodgeOverhaul
         private string m_currentHostUID = "";
         public float TimeOfLastSyncSend = -1f; // host set this when sends info
         private float m_timeOfLastSyncRequest = -5f; // non-host set this when receive info
-        //private Coroutine _FindHostCoroutine;
 
         internal void Awake()
         {
@@ -142,28 +141,6 @@ namespace CombatAndDodgeOverhaul
                 catch { }
             }
         }
-
-        //private IEnumerator DelayedOrigSelf(On.CharacterStats.orig_ApplyCoopStats orig, CharacterStats self)
-        //{
-        //    float start = Time.time;
-        //    while (Time.time - start < 5f && m_currentSyncInfos == null)
-        //    {
-        //        //Debug.Log("Delayed orig self - waiting for sync infos");
-        //        if (!NetworkLevelLoader.Instance.AllPlayerDoneLoading)
-        //        {
-        //            start += 1f;
-        //        }
-        //        yield return new WaitForSeconds(1.0f);
-        //    }
-        //    if (m_currentSyncInfos == null || !(bool)m_currentSyncInfos.GetValue(Settings.Enemy_Balancing))
-        //    {
-        //        try 
-        //        { 
-        //            orig(self);
-        //        }
-        //        catch { }
-        //    }
-        //}
 
         private bool UpdateSyncStats() // returns true if update is performed, false if no change.
         {

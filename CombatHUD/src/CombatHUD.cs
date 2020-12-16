@@ -25,8 +25,8 @@ namespace CombatHUD
         public static ModConfig config;
         public static GameObject HUDCanvas;
 
-        public static bool IsHudHidden(int playerID) => m_hideUI || m_playerShowHud[playerID];
-        internal static bool[] m_playerShowHud;
+        public static bool IsHudHidden(int playerID) => m_hideUI || !m_playerShowHud[playerID];
+        internal static bool[] m_playerShowHud = new bool[] { false, false };
         internal static bool m_hideUI;
 
         internal void Awake()
@@ -65,7 +65,9 @@ namespace CombatHUD
             if (!NetworkLevelLoader.Instance.IsOverallLoadingDone || !NetworkLevelLoader.Instance.AllPlayerReadyToContinue)
             {
                 if (HUDCanvas.activeSelf)
-                    HUDCanvas.SetActive(false);
+                {
+                    //HUDCanvas.SetActive(false);
+                }
             }
             else if (!HUDCanvas.activeSelf)
             {
@@ -75,8 +77,6 @@ namespace CombatHUD
 
         private void Setup()
         {
-            Logger.LogMessage("Combat HUD setting up");
-
             var packName = "CombatHUD";
 
             var pack = SL.GetSLPack(packName);
@@ -86,6 +86,7 @@ namespace CombatHUD
 
             HUDCanvas = UnityEngine.Object.Instantiate(canvasAsset);
             UnityEngine.Object.DontDestroyOnLoad(HUDCanvas);
+            HUDCanvas.hideFlags |= HideFlags.HideAndDontSave;
 
             // setup draw order
             var canvas = HUDCanvas.GetComponent<Canvas>();
@@ -109,6 +110,8 @@ namespace CombatHUD
             // ====== damage labels ======
             var damageLabels = HUDCanvas.transform.Find("DamageLabels");
             damageLabels.gameObject.AddComponent<DamageLabels>();
+
+            Logger.LogMessage("Combat HUD finished setting up");
         }
 
         private ModConfig SetupConfig()
