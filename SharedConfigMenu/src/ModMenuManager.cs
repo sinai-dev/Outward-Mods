@@ -48,7 +48,7 @@ namespace SharedModConfig
 
             SL.OnPacksLoaded += Setup;
 
-            CustomKeybindings.AddAction(MenuKey, KeybindingsCategory.CustomKeybindings, ControlType.Both, InputType.Button);
+            CustomKeybindings.AddAction(MenuKey, KeybindingsCategory.CustomKeybindings);
         }
 
         internal void Update()
