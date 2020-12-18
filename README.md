@@ -8,7 +8,10 @@ Big cleanup in progress.
 
 ## How to install mods
 
-* Requires [BepInEx](https://github.com/BepInEx/BepInEx).
-* Most mods require [SideLoader](https://github.com/sinai-dev/Outward-Sideloader) 
+All mods:
+* Require [BepInEx](https://github.com/BepInEx/BepInEx).
+* Require [SideLoader](https://github.com/sinai-dev/Outward-Sideloader) 
 
-WIP, please check back soon.
+To install a mod:
+* Download the `Release.zip` from the mod folder
+* Put the zip in your Outward folder and <b>Extract Here</b> (merge with existing folders)

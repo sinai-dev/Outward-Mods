@@ -22,9 +22,16 @@ namespace CombatHUD
         [HarmonyPrefix]
         public static bool Prefix(Weapon __instance, RaycastHit _hit, Vector3 _dir)
         {
-            Hitbox hitbox = _hit.collider.GetComponent<Hitbox>();
+            Hitbox hitbox = _hit.collider?.GetComponent<Hitbox>();
+            if (!hitbox)
+                return true;
+
             var owner = __instance.OwnerCharacter;
             var target = hitbox.OwnerChar;
+
+            if (!target || !owner)
+                return true;
+
             var m_alreadyHitChars = (List<Character>)At.GetField(__instance, "m_alreadyHitChars");
 
             if (!m_alreadyHitChars.Contains(target) && HookUtil.IsElligable(__instance, owner, target))
