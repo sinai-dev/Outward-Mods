@@ -105,7 +105,7 @@ namespace CustomWeight
                 }
                 else
                 {
-                    cap = (float)At.GetField(container, "m_baseContainerCapacity");
+                    cap = (float)At.GetField(container as ItemContainer, "m_baseContainerCapacity");
                     OrigCapacities.Add(bag.ItemID, cap);
                 }
 
@@ -120,7 +120,7 @@ namespace CustomWeight
                     cap += (float)config.GetValue(Settings.BagBonusFlat);
                 }
 
-                At.SetField(container, "m_baseContainerCapacity", cap);
+                At.SetField(container as ItemContainer, "m_baseContainerCapacity", cap);
             }
         }
 
