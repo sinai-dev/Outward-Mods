@@ -2,10 +2,6 @@
  
 Sinai's mods for Outward.
 
-## Note
-
-Big cleanup in progress.
-
 ## How to install mods
 
 All mods:
