@@ -25,7 +25,7 @@ namespace CustomMultiplayerLimit
     {
         public const string GUID = "com.sinai.CustomMultiplayerLimit";
         public const string NAME = "Custom Multiplayer Limit";
-        public const string VERSION = "3.0";
+        public const string VERSION = "3.1";
 
         public static ModConfig config;
 
@@ -98,16 +98,14 @@ namespace CustomMultiplayerLimit
         public class PauseMenu_Show
         {
             [HarmonyPostfix]
-            public static void PostFix(PauseMenu __instance)
+            public static void PostFix(Button ___m_btnSplit, Button ___m_btnToggleNetwork)
             {
-                var self = __instance;
-
-                //Due to spawning bugs, only allow disconnect if you are the master, or if you are a client with no splitscreen, force splitscreen to quit before disconnect
+                //Due to spawning bugs, only allow disconnect if you are the master,
+                //or if you are a client with no splitscreen, force splitscreen to quit before disconnect
                 if (PhotonNetwork.isMasterClient || SplitScreenManager.Instance.LocalPlayerCount == 1)
-                    //self.m_btnToggleNetwork.interactable = true;
-                    ((Button)At.GetField(self, "m_btnToggleNetwork")).interactable = true;
+                    ___m_btnToggleNetwork.interactable = true;
 
-                SetSplitButtonInteractable(self);
+                ___m_btnSplit.interactable = true;
 
                 //If this is used with a second splitscreen player both players load in missing inventory. Very BAD. Disabled for now.
                 //Button findMatchButton = typeof(PauseMenu).GetField("m_btnFindMatch", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance) as Button;
@@ -120,21 +118,46 @@ namespace CustomMultiplayerLimit
         [HarmonyPatch(typeof(PauseMenu), "Update")]
         public class PauseMenu_Update
         {
-            [HarmonyPostfix]
-            public static void PostFix(PauseMenu __instance)
+            [HarmonyPrefix]
+            public static bool Prefix(PauseMenu __instance, Button ___m_btnSplit, ref bool ___m_suicide, Button ___m_btnDie)
             {
-                var self = __instance;
+                //var self = __instance;
 
-                SetSplitButtonInteractable(self);
+                //((Button)At.GetField(__instance, "m_btnSplit")).interactable = true;
+
+                At.Invoke(__instance as Panel, "Update");
+
+                if (!___m_btnSplit.interactable)
+                    ___m_btnSplit.interactable = true;
+
+                if (__instance.LocalCharacter)
+                {
+                    //if (__instance.LocalCharacter.Alive && ___m_btnSplit.interactable != PhotonNetwork.offlineMode)
+                    //    ___m_btnSplit.interactable = PhotonNetwork.offlineMode;
+                    //else if (!__instance.LocalCharacter.Alive && ___m_btnSplit.interactable)
+                    //    ___m_btnSplit.interactable = false;
+                    
+                    if (!___m_suicide 
+                        && ((Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.U)) 
+                            || ControlsInput.GamepadUnstuckCheat(__instance.PlayerID)))
+                    {
+                        ___m_suicide = true;
+
+                        if (___m_btnDie && !___m_btnDie.gameObject.activeSelf)
+                            ___m_btnDie.gameObject.SetActive(true);
+                    }
+                }
+
+                return false;
             }
         }
 
-        public static void SetSplitButtonInteractable(PauseMenu instance)
-        {
-            if (!PhotonNetwork.isMasterClient || !PhotonNetwork.isNonMasterClientInRoom)
-                //instance.m_btnSplit.interactable = true;
-                ((Button)At.GetField(instance, "m_btnSplit")).interactable = true;
-        }
+        //public static void SetSplitButtonInteractable(PauseMenu instance)
+        //{
+        //    if (!PhotonNetwork.isMasterClient || !PhotonNetwork.isNonMasterClientInRoom)
+        //        //instance.m_btnSplit.interactable = true;
+                
+        //}
 
         // resting panel fix
         [HarmonyPatch(typeof(RestingMenu), "UpdatePanel")]

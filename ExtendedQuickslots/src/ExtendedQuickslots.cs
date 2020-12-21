@@ -43,8 +43,28 @@ namespace ExtendedQuickslots
             Settings.OnSettingsLoaded += Setup;
             Settings.Register();
 
+            SetupLocalization();
+
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
+        }
+
+        private void SetupLocalization()
+        {
+            var genLoc = References.GENERAL_LOCALIZATION;
+
+            for (int i = 0; i < SlotsToAdd; i++)
+            {
+                var key = "InputAction_QS_Instant" + (i + 12);
+                var loc = "QuickSlot " + (i + 9);
+
+                if (genLoc.ContainsKey(key))
+                    genLoc[key] = loc;
+                else
+                    genLoc.Add(key, loc);
+
+                //SL.Log("Set QuickSlot localization. Key: '" + key + "', Val: '" + loc + "'");
+            }
         }
 
         private void Setup()
