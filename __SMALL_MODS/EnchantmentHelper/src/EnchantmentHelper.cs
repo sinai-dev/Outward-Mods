@@ -75,6 +75,7 @@ namespace EnchantmentHelper
             if (CustomKeybindings.GetKeyDown(MENU_TOGGLE_NAME))
             {
                 ShowMenu = !ShowMenu;
+                SL.LogWarning("Show Enchantment Menu: " + ShowMenu);
             }
         }
 
@@ -82,7 +83,7 @@ namespace EnchantmentHelper
         {
             if (ShowMenu)
             {
-                var orig = GUI.skin;
+                //var orig = GUI.skin;
                 //GUI.skin = SideLoader.UI.UIStyles.WindowSkin;
                 m_rect = GUI.Window(WINDOW_ID, m_rect, WindowFunction, "Enchantment Menu (Ctrl+Alt+E Toggle)");
                 //GUI.skin = orig;

@@ -16,7 +16,7 @@ namespace Dismantler
         {
             //base.OnActivate();
 
-            var script = At.GetField(this, "m_deployableScript") as Deployable;
+            var script = At.GetField(this as InteractionDisassemble, "m_deployableScript") as Deployable;
 
             if (script)
             {

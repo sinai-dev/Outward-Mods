@@ -28,7 +28,7 @@ namespace BetterTargeting
             var harmony = new Harmony("com.sinai.bettertargeting");
             harmony.PatchAll();
 
-            CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.CustomKeybindings);
+            CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.CustomKeybindings, ControlType.Both);
         }
 
         internal void Update()

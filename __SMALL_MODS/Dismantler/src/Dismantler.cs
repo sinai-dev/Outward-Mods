@@ -74,7 +74,7 @@ namespace Dismantler
             {
                 var m_item = self.Item;
 
-                Debug.Log("DeployableManager: Adding InteractionDestroy to " + m_item.Name + " (" + m_item.UID + ")");
+                // Debug.Log("DeployableManager: Adding InteractionDestroy to " + m_item.Name + " (" + m_item.UID + ")");
 
                 var holder = m_item.InteractionHolder;
 
