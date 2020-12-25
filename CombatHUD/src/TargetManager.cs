@@ -20,7 +20,7 @@ namespace CombatHUD
         // Target HUD stuff
         private GameObject m_TargetHUDHolder; // Each SplitPlayer gets one of these.
         private Text m_targetHealthText; // holder for showing enemy's health text
-        private GameObject m_StatusHolder; // holds all the enemy status icon and text holders
+        private GameObject m_statusHolder; // holds all the enemy status icon and text holders
 
         // Infobox Stuff
         private GameObject m_infoboxHolder; // each SplitPlayer gets one of these.
@@ -42,15 +42,15 @@ namespace CombatHUD
             // Setup TargetHUD
             m_TargetHUDHolder = this.transform.Find("TargetHUD_Holder").gameObject;
             m_targetHealthText = m_TargetHUDHolder.transform.Find("text_Health").GetComponent<Text>();
-            m_StatusHolder = m_TargetHUDHolder.transform.Find("StatusEffects_Holder").gameObject;
-            for (int i = 0; i < m_StatusHolder.transform.childCount; i++)
+            m_statusHolder = m_TargetHUDHolder.transform.Find("StatusEffects_Holder").gameObject;
+            for (int i = 0; i < m_statusHolder.transform.childCount; i++)
             {
-                var child = m_StatusHolder.transform.GetChild(i);
+                var child = m_statusHolder.transform.GetChild(i);
                 child.gameObject.SetActive(false);
             }
 
             // setup new status effects
-            var baseStatus = m_StatusHolder.transform.GetChild(0);
+            var baseStatus = m_statusHolder.transform.GetChild(0);
             var names = new string[] { "Weaken", "Sapped" };
             for (int i = 0; i < 2; i++)
             {
@@ -95,24 +95,16 @@ namespace CombatHUD
             if (!m_LinkedCharacter)
             {
                 if (SplitScreenManager.Instance.LocalPlayerCount > Split_ID && SplitScreenManager.Instance.LocalPlayers[Split_ID].AssignedCharacter)
-                {
                     m_LinkedCharacter = SplitScreenManager.Instance.LocalPlayers[Split_ID].AssignedCharacter;
-                }
                 else
-                {
                     DisableHolders();   
-                }
             }
             else
             {
                 if (m_LinkedCharacter.TargetingSystem.Locked && m_LinkedCharacter.TargetingSystem.LockedCharacter)
-                {
                     UpdateTarget();
-                }
                 else
-                {
                     DisableHolders();
-                }
             }
         }
 
@@ -127,17 +119,13 @@ namespace CombatHUD
             }
 
             if (CombatHUD.IsHudHidden(this.Split_ID))
-            {
                 DisableHolders();
-            }
             else
             {
                 UpdateTargetHUD(target);
 
                 if ((bool)CombatHUD.config.GetValue(Settings.EnemyInfobox))
-                {
                     UpdateInfobox(target);
-                }
 
                 EnableHolders();
             }
@@ -160,9 +148,7 @@ namespace CombatHUD
 
             var rect = m_infoboxHolder.GetComponent<RectTransform>();
             if (m_startPos == Vector2.zero)
-            {
                 m_startPos = rect.position;
-            }
             if (m_currentOffset.x != x || m_currentOffset.y != y)
             {
                 m_currentOffset = new Vector2(x, y);
@@ -178,17 +164,11 @@ namespace CombatHUD
                 m_infoboxDamageTexts[i].text = Math.Round(value).ToString();
 
                 if (value > 0)
-                {
                     m_infoboxDamageTexts[i].color = new Color(0.3f, 1.0f, 0.3f);
-                }
                 else if (value < 0)
-                {
                     m_infoboxDamageTexts[i].color = new Color(1.0f, 0.4f, 0.4f);
-                }
                 else
-                {
                     m_infoboxDamageTexts[i].color = new Color(0.3f, 0.3f, 0.3f);
-                }
             }
         }
 
@@ -198,31 +178,26 @@ namespace CombatHUD
             if ((bool)CombatHUD.config.GetValue(Settings.EnemyHealth))
             {
                 if (!m_targetHealthText.gameObject.activeSelf)
-                {
                     m_targetHealthText.gameObject.SetActive(true);
-                }
                 m_targetHealthText.text = Math.Round(target.Stats.CurrentHealth) + " / " + Math.Round(target.Stats.ActiveMaxHealth);
                 m_targetHealthText.rectTransform.position = RectTransformUtility.WorldToScreenPoint(m_LinkedCharacter.CharacterCamera.CameraScript, target.UIBarPosition);
                 m_targetHealthText.rectTransform.position += Vector3.up * CombatHUD.Rel(10f, true);
             }
             else if (m_targetHealthText.gameObject.activeSelf)
-            {
                 m_targetHealthText.gameObject.SetActive(false);
-            }
 
             if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatus))
             {
-                if (!m_StatusHolder.activeSelf)
-                {
-                    m_StatusHolder.SetActive(true);
-                }
+                if (!m_statusHolder.activeSelf)
+                    m_statusHolder.SetActive(true);
                 UpdateStatuses(target);
             }
-            else if (m_StatusHolder.activeSelf)
-            {
-                m_StatusHolder.SetActive(false);
-            }
+            else if (m_statusHolder.activeSelf)
+                m_statusHolder.SetActive(false);
         }
+
+        internal static readonly Dictionary<string, Sprite> s_statusIcons = new Dictionary<string, Sprite>();
+        internal static Image[] s_cachedImages;
 
         private void UpdateStatuses(Character target)
         {
@@ -233,87 +208,114 @@ namespace CombatHUD
             var barPos = RectTransformUtility.WorldToScreenPoint(m_LinkedCharacter.CharacterCamera.CameraScript, target.UIBarPosition);
             var pos = barPos + new Vector2(CombatHUD.Rel(225f), 0);
 
-            for (int i = 0; i < m_StatusHolder.transform.childCount; i++)
+            var statuses = target.StatusEffectMngr.Statuses;
+
+            // Key: Status Identifier, float: Buildup / opacity
+            var displayDict = new Dictionary<string, float>();
+            foreach (var status in statuses)
             {
-                var obj = m_StatusHolder.transform.GetChild(i).gameObject;
-                string identifier = obj.name;
-                var status = target.StatusEffectMngr.Statuses.Find((x => x.IdentifierName == identifier));
+                if (!displayDict.ContainsKey(status.IdentifierName))
+                    displayDict.Add(status.IdentifierName, 100f);
+            }
 
-                if (!status)
+            if ((bool)CombatHUD.config.GetValue(Settings.EnemyBuildup))
+            {
+                var buildupDict = (IDictionary)At.GetField(target.StatusEffectMngr, "m_statusBuildUp");
+                foreach (string name in buildupDict.Keys)
                 {
-                    obj.SetActive(false);
-                }
-                else
-                {
-                    var parentRect = obj.GetComponent<RectTransform>();
-                    parentRect.position = new Vector3(pos.x, pos.y + offset);
+                    if (displayDict.ContainsKey(name) || buildupDict[name] == null)
+                        continue;
 
-                    var text = parentRect.transform.Find("Text").GetComponent<Text>();
-                    
-                    if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatusTimers))
-                    {
-                        TimeSpan t = TimeSpan.FromSeconds(status.RemainingLifespan);
-                        var s = $"{t.Minutes}:{t.Seconds:00}";
-                        text.text = s;
-                        text.color = Color.white;
+                    if (s_buildupField == null)
+                        s_buildupField = buildupDict[name].GetType().GetField("BuildUp");
 
-                        if (!text.gameObject.activeSelf)
-                        {
-                            text.gameObject.SetActive(true);
-                        }
-                        if (!obj.activeSelf)
-                        {
-                            obj.SetActive(true);
-                        }
+                    float value = (float)s_buildupField.GetValue(buildupDict[name]);
 
-                        offset -= offsetInterval;
-                    }
-                    else if (text.gameObject.activeSelf)
-                    {
-                        text.gameObject.SetActive(false);
-                    }
+                    if (value > 0 && value < 100)
+                        displayDict.Add(name, value);
                 }
             }
 
-            // buildups
-            if ((bool)CombatHUD.config.GetValue(Settings.EnemyBuildup))
+            for (int i = 0; i < m_statusHolder.transform.childCount; i++)
             {
-                var dict = (IDictionary)At.GetField(target.StatusEffectMngr, "m_statusBuildUp");
+                var holder = m_statusHolder.transform.GetChild(i);
 
-                foreach (string name in dict.Keys)
+                if (i >= displayDict.Count)
                 {
-                    if (dict[name] == null)
-                        continue;
+                    if (holder.gameObject.activeSelf)
+                        holder.gameObject.SetActive(false);
+                }
+                else
+                {
+                    var entry = displayDict.ElementAt(i);
 
-                    if (!(m_StatusHolder.transform.Find(name) is Transform t))
-                        continue;
-
-                    var holder = t.gameObject;
-                    if (holder.activeSelf)
+                    if (!s_statusIcons.ContainsKey(entry.Key))
                     {
-                        // status is already active (ie. its 100%)
-                        continue;
+                        var status = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(entry.Key);
+                        if (!status)
+                        {
+                            s_statusIcons.Add(entry.Key, null);
+                            continue;
+                        }
+
+                        var icon = status.OverrideIcon ?? status.StatusIcon;
+                        s_statusIcons.Add(entry.Key, icon);
                     }
 
-                    if (s_buildupField == null)
-                        s_buildupField = dict[name].GetType().GetField("BuildUp");
+                    var sprite = s_statusIcons[entry.Key];
+                    if (!sprite)
+                        continue;
 
-                    float value = (float)s_buildupField.GetValue(dict[name]);
+                    if (s_cachedImages == null)
+                    {
+                        s_cachedImages = new Image[m_statusHolder.transform.childCount];
+                        for (int j = 0; j < m_statusHolder.transform.childCount; j++)
+                            s_cachedImages[j] = m_statusHolder.transform.GetChild(j).Find("Image").GetComponent<Image>();
+                    }
 
-                    if (value > 0 && value < 100)
+                    if (s_cachedImages[i].sprite != sprite)
+                    {
+                        s_cachedImages[i].sprite = sprite;
+                    }
+
+                    holder.position = new Vector3(pos.x, pos.y + offset);
+
+                    var text = holder.Find("Text").GetComponent<Text>();
+
+                    if (!holder.gameObject.activeSelf)
+                        holder.gameObject.SetActive(true);
+
+                    if (displayDict[entry.Key] >= 100f)
+                    {
+                        if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatusTimers))
+                        {
+                            var status = statuses.Find(it => it.IdentifierName == entry.Key);
+
+                            TimeSpan t = TimeSpan.FromSeconds(status.RemainingLifespan);
+                            var s = $"{t.Minutes}:{t.Seconds:00}";
+                            text.text = s;
+                            text.color = Color.white;
+
+                            if (!text.gameObject.activeSelf)
+                                text.gameObject.SetActive(true);
+
+                            offset -= offsetInterval;
+                        }
+                        else if (text.gameObject.activeSelf)
+                            text.gameObject.SetActive(false);
+                    }
+                    else
                     {
                         var parentRect = holder.GetComponent<RectTransform>();
                         parentRect.position = new Vector3(pos.x, pos.y + offset);
                         offset -= offsetInterval;
 
-                        var text = holder.GetComponentInChildren<Text>();
-                        text.text = Math.Round(value) + "%";
-                        text.color = new Color(1.0f, 0.5f, 0.5f, value * 0.01f + 0.25f);
+                        var buildupTxt = holder.GetComponentInChildren<Text>();
+                        buildupTxt.text = Math.Round(displayDict[entry.Key]) + "%";
+                        buildupTxt.color = new Color(1.0f, 0.5f, 0.5f, displayDict[entry.Key] * 0.01f + 0.25f);
 
-                        if (!holder.activeSelf)
-                        {
-                            holder.SetActive(true);
-                        }
+                        if (!text.gameObject.activeSelf)
+                            text.gameObject.SetActive(true);
                     }
                 }
             }
@@ -354,9 +356,7 @@ namespace CombatHUD
                     offset += CombatHUD.Rel(22f);
                 }
                 else
-                {
                     m_infoboxBleedingSprite.gameObject.SetActive(false);
-                }
                 if (immunityTags.Contains("Burning"))
                 {
                     m_infoboxBurningSprite.gameObject.SetActive(true);
@@ -364,18 +364,14 @@ namespace CombatHUD
                     offset += CombatHUD.Rel(22f);
                 }
                 else
-                {
                     m_infoboxBurningSprite.gameObject.SetActive(false);
-                }
                 if (immunityTags.Contains("Poison"))
                 {
                     m_infoboxPoisonSprite.gameObject.SetActive(true);
                     m_infoboxPoisonSprite.rectTransform.position = new Vector3(pos.x + offset, pos.y - 2f, 0);
                 }
                 else
-                {
                     m_infoboxPoisonSprite.gameObject.SetActive(false);
-                }
             }
             else
             {
@@ -392,45 +388,33 @@ namespace CombatHUD
             if (MenuManager.Instance.IsMapDisplayed || m_LinkedCharacter.CharacterUI.GetCurrentMenu() is MenuPanel panel && panel.IsDisplayed)
             {
                 if (m_TargetHUDHolder.activeSelf)
-                {
                     m_TargetHUDHolder.SetActive(false);
-                }
             }
             else
             {
                 if (!m_TargetHUDHolder.activeSelf)
-                {
                     m_TargetHUDHolder.SetActive(true);
-                }
             }
 
             if (!(bool)CombatHUD.config.GetValue(Settings.EnemyInfobox))
             {
                 if (m_infoboxHolder.activeSelf)
-                {
                     m_infoboxHolder.SetActive(false);
-                }
             }
             else
             {
                 if (!m_infoboxHolder.activeSelf)
-                {
                     m_infoboxHolder.SetActive(true);
-                }
             }
         }
 
         private void DisableHolders()
         {
             if (m_TargetHUDHolder.activeSelf)
-            {
                 m_TargetHUDHolder.SetActive(false);
-            }
 
             if (m_infoboxHolder.activeSelf)
-            {
                 m_infoboxHolder.SetActive(false);
-            }
         }
     }
 }

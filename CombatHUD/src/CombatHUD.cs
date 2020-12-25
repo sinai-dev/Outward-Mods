@@ -17,7 +17,7 @@ namespace CombatHUD
     public class CombatHUD : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.combathud";
-        public const string VERSION = "4.5";
+        public const string VERSION = "4.6";
         public const string NAME = "Combat HUD";
 
         public static CombatHUD Instance;
