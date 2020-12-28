@@ -12,7 +12,7 @@ namespace ImbuedBows
 {
     [BepInPlugin(GUID, NAME, VERSION)]
     [BepInDependency("com.sinai.SideLoader", BepInDependency.DependencyFlags.HardDependency)]
-    public class ImbuedBows : BaseUnityPlugin
+    public class ManaBowMod : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.imbuedbows";
         public const string NAME = "Mana Bow";
