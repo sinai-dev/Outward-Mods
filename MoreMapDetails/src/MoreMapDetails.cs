@@ -505,53 +505,53 @@ namespace MoreMapDetails
 
 
 
-        /*
-         * TEMP DEBUG
-         * I used this to align the map offsets for the exterior regions more accurately. 
-         * PgDown (-) and PgDown (+) adjust the scale.
-         * Arrow keys adjust the X/Y offset.
-         * It will print the value (after changes) with Debug.Log()
-        */
+        ///*
+        // * TEMP DEBUG
+        // * I used this to align the map offsets for the exterior regions more accurately. 
+        // * PgDown (-) and PgDown (+) adjust the scale.
+        // * Arrow keys adjust the X/Y offset.
+        // * It will print the value (after changes) with Debug.Log()
+        //*/
 
-        internal void Update()
-        {
-            // adjust scale
-            if (Input.GetKey(KeyCode.PageUp))
-            {
-                AdjustConfig(Vector2.zero, Vector2.one * -0.001f);
-            }
-            if (Input.GetKey(KeyCode.PageDown))
-            {
-                AdjustConfig(Vector2.zero, Vector2.one * 0.001f);
-            }
+        //internal void Update()
+        //{
+        //    // adjust scale
+        //    if (Input.GetKey(KeyCode.PageUp))
+        //    {
+        //        AdjustConfig(Vector2.zero, Vector2.one * -0.001f);
+        //    }
+        //    if (Input.GetKey(KeyCode.PageDown))
+        //    {
+        //        AdjustConfig(Vector2.zero, Vector2.one * 0.001f);
+        //    }
 
-            // adjust offsets
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                AdjustConfig(new Vector2(0, -1), Vector2.zero);
-            }
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                AdjustConfig(new Vector2(0, 1), Vector2.zero);
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                AdjustConfig(new Vector2(1, 0), Vector2.zero);
-            }
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                AdjustConfig(new Vector2(-1, 0), Vector2.zero);
-            }
-        }
+        //    // adjust offsets
+        //    if (Input.GetKey(KeyCode.DownArrow))
+        //    {
+        //        AdjustConfig(new Vector2(0, -1), Vector2.zero);
+        //    }
+        //    if (Input.GetKey(KeyCode.UpArrow))
+        //    {
+        //        AdjustConfig(new Vector2(0, 1), Vector2.zero);
+        //    }
+        //    if (Input.GetKey(KeyCode.RightArrow))
+        //    {
+        //        AdjustConfig(new Vector2(1, 0), Vector2.zero);
+        //    }
+        //    if (Input.GetKey(KeyCode.LeftArrow))
+        //    {
+        //        AdjustConfig(new Vector2(-1, 0), Vector2.zero);
+        //    }
+        //}
 
-        private void AdjustConfig(Vector2 _offset, Vector2 scale)
-        {
-            MapDisplay.Instance.CurrentMapScene.MarkerOffset += _offset;
-            MapDisplay.Instance.CurrentMapScene.MarkerScale += scale;
-            MapConfigs[m_mapID].MarkerOffset = MapDisplay.Instance.CurrentMapScene.MarkerOffset;
-            MapConfigs[m_mapID].MarkerScale = MapDisplay.Instance.CurrentMapScene.MarkerScale;
-            Debug.Log("Offset: " + MapDisplay.Instance.CurrentMapScene.MarkerOffset + ", Scale: " + MapDisplay.Instance.CurrentMapScene.MarkerScale.ToString("0.000"));
-        }
+        //private void AdjustConfig(Vector2 _offset, Vector2 scale)
+        //{
+        //    MapDisplay.Instance.CurrentMapScene.MarkerOffset += _offset;
+        //    MapDisplay.Instance.CurrentMapScene.MarkerScale += scale;
+        //    MapConfigs[m_mapID].MarkerOffset = MapDisplay.Instance.CurrentMapScene.MarkerOffset;
+        //    MapConfigs[m_mapID].MarkerScale = MapDisplay.Instance.CurrentMapScene.MarkerScale;
+        //    Debug.Log("Offset: " + MapDisplay.Instance.CurrentMapScene.MarkerOffset + ", Scale: " + MapDisplay.Instance.CurrentMapScene.MarkerScale.ToString("0.000"));
+        //}
     }
 
     public class MapConfig

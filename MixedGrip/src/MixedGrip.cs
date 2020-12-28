@@ -37,7 +37,7 @@ namespace MixedGrip
             harmony.PatchAll();
 
             // custom keybindings
-            CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.CustomKeybindings);
+            CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.CustomKeybindings, ControlType.Both);
 
             config = SetupConfig();
             config.Register();
