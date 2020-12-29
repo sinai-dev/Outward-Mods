@@ -148,10 +148,7 @@ namespace CombatHUD
             {
                 // single player height is 1080
                 screenPos.y *= CombatHUD.Rel(1080f, true);
-
-                bool flag = screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= 1920f && screenPos.y >= y1 && screenPos.y <= y2;
-
-                return flag;
+                return screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= 1920f && screenPos.y >= y1 && screenPos.y <= y2;
             }
             else
             {
@@ -162,16 +159,12 @@ namespace CombatHUD
                 {
                     y1 = CombatHUD.Rel(540f, true);
                     screenPos.y += y1;
-
-                    bool flag = screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= CombatHUD.Rel(1920f) && screenPos.y >= y1 && screenPos.y <= y2;
-                    return flag;
+                    return screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= CombatHUD.Rel(1920f) && screenPos.y >= y1 && screenPos.y <= y2;
                 }
                 else
                 {
                     y2 = CombatHUD.Rel(540f, true);
-
-                    bool flag = screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= CombatHUD.Rel(1920f) && screenPos.y >= y1 && screenPos.y <= y2;
-                    return flag;
+                    return screenPos.z > 0f && screenPos.x >= 0f && screenPos.x <= CombatHUD.Rel(1920f) && screenPos.y >= y1 && screenPos.y <= y2;
                 }
             }
         }
@@ -179,18 +172,13 @@ namespace CombatHUD
         public static void AddDamageLabel(DamageList damageList, Vector3 hitPosition, Character target)
         {
             if (damageList.TotalDamage < (float)CombatHUD.config.GetValue(Settings.MinimumDamage))
-            {
                 return;
-            }
 
             if (target.IsAI && !(bool)CombatHUD.config.GetValue(Settings.PlayerDamageLabels))
-            {
                 return;
-            }
+            
             if (!target.IsAI && !(bool)CombatHUD.config.GetValue(Settings.EnemyDamageLabels))
-            {
                 return;
-            }
 
             Color damagecolor = Color.white;
             

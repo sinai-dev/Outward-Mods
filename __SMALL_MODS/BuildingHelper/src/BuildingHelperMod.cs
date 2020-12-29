@@ -22,7 +22,7 @@ namespace BuildingHelper
     {
         const string GUID = "com.sinai.buildinghelper";
         const string NAME = "Building Helper";
-        const string VERSION = "1.0";
+        const string VERSION = "1.0.2";
 
         public static BuildingHelperMod Instance;
 
@@ -37,12 +37,6 @@ namespace BuildingHelper
         internal void Awake()
         {
             Instance = this;
-
-            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2))
-            {
-                this.Logger.LogWarning("Not loading Building Helper, required DLC not owned.");
-                return;
-            }
 
             CustomKeybindings.AddAction(MENU_KEY, KeybindingsCategory.CustomKeybindings, ControlType.Keyboard);
 
@@ -91,9 +85,9 @@ namespace BuildingHelper
                 {
                     var settings = JsonUtility.FromJson<Settings>(File.ReadAllText(SETTINGS_PATH));
                     if (settings != null)
-                    {
                         this.settings = settings;
-                    }
+                    else
+                        throw new Exception();
                 }
                 catch
                 {

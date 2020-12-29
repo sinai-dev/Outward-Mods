@@ -101,8 +101,12 @@ namespace CombatHUD
             {
                 var damageList = At.GetField(__instance, "m_tempList") as DamageList;
 
+                bool ignoreBarrier = false;
+                if (__instance.ParentSynchronizer is StatusEffect status)
+                    ignoreBarrier = status.IgnoreBarrier;
+                
                 DamageList damages = damageList.Clone();
-                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
+                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, ignoreBarrier);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }

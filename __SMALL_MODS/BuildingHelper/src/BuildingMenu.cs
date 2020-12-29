@@ -71,10 +71,19 @@ namespace BuildingHelper
 
         internal static void WindowFunction(int id)
         {
+            if (!StoreManager.Instance)
+                return;
+
             GUI.DragWindow(new Rect(0, 0, s_windowRect.width - 35, 23));
             if (GUI.Button(new Rect(s_windowRect.width - 30, 2, 30, 20), "X"))
             {
                 Show = false;
+                return;
+            }
+
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2))
+            {
+                GUILayout.Label("You must own The Three Brothers DLC");
                 return;
             }
 

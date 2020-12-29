@@ -10,7 +10,9 @@ namespace BuildingHelper
         [HarmonyPrefix]
         public static bool Prefix(ref bool __result)
         {
-            if (!BuildingHelperMod.Instance.settings.ForceNoRequirements || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2)
+                || !BuildingHelperMod.Instance.settings.ForceNoRequirements 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return true;
 
             __result = true;
@@ -24,7 +26,9 @@ namespace BuildingHelper
         [HarmonyPrefix]
         public static void Prefix(Building __instance)
         {
-            if (!BuildingHelperMod.Instance.settings.AutoFinishBuildings || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2)
+                || !BuildingHelperMod.Instance.settings.AutoFinishBuildings 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return;
 
             int sanity = 5;
@@ -53,7 +57,9 @@ namespace BuildingHelper
         [HarmonyPrefix]
         public static bool CanSnapTo(BuildingUpgrade __instance, ref bool __result, Item _itemToSnapTo)
         {
-            if (!BuildingHelperMod.Instance.settings.ForceNoRequirements || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2) 
+                || !BuildingHelperMod.Instance.settings.ForceNoRequirements 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return true;
 
             __result = _itemToSnapTo
@@ -72,7 +78,9 @@ namespace BuildingHelper
         [HarmonyPrefix]
         public static bool Prefix(Blueprint __instance, Character _character, ref bool __result)
         {
-            if (!BuildingHelperMod.Instance.settings.ForceNoRequirements || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2) 
+                || !BuildingHelperMod.Instance.settings.ForceNoRequirements 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return true;
 
             __result = true;
@@ -87,7 +95,9 @@ namespace BuildingHelper
         [HarmonyPostfix]
         public static void Postfix(Building __instance)
         {
-            if (!BuildingHelperMod.Instance.settings.AutoFinishBuildings || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2) 
+                || !BuildingHelperMod.Instance.settings.AutoFinishBuildings 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return;
 
             At.SetField(__instance, "m_remainingConstructionTime", 0f);
@@ -105,7 +115,9 @@ namespace BuildingHelper
         [HarmonyPrefix]
         public static bool Prefix(ref bool __result)
         {
-            if (!BuildingHelperMod.Instance.settings.ForceNoRequirements || PhotonNetwork.isNonMasterClientInRoom)
+            if (!StoreManager.Instance.IsDlcInstalled(OTWStoreAPI.DLCs.DLC2) 
+                || !BuildingHelperMod.Instance.settings.ForceNoRequirements 
+                || PhotonNetwork.isNonMasterClientInRoom)
                 return true;
 
             __result = true;
