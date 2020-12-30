@@ -106,6 +106,33 @@ namespace MoreMapDetails
                     self.CurrentMapScene.MarkerScale = MapConfigs[Instance.m_mapID].MarkerScale;
                 }
 
+                // caldera node finder
+
+                //var nodes = Resources.FindObjectsOfTypeAll<Gatherable>()
+                //                     .Where(it => it.gameObject.scene.name == SceneManagerHelper.ActiveSceneName
+                //                               && it.Name.Contains("Unidentified")
+                //                               && !it.gameObject.GetComponent<MapWorldMarker>());
+
+                //foreach (var node in nodes)
+                //{
+                //    var parent = node.transform.parent.parent;
+                //    foreach (Transform child in parent)
+                //    {
+                //        if (child.name.Contains("Pos"))
+                //        {
+                //            string s;
+                //            if (node.Name.Contains("Molepig"))
+                //                s = "M";
+                //            else if (node.Name.Contains("Ore"))
+                //                s = "O";
+                //            else
+                //                s = "P";
+                //            var id = parent.name.Substring(parent.name.Length - 1, 1);
+                //            Instance.AddEnemyWorldMarker(child.gameObject, $"{s}{id}");
+                //        }
+                //    }
+                //}
+
                 var list = CharacterManager.Instance.Characters.Values
                     .Where(x =>
                         !x.GetComponentInChildren<MapWorldMarker>()

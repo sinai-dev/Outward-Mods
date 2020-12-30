@@ -148,7 +148,7 @@ namespace BuildingHelper
                             item.ChangeParent(player.Inventory.Pouch.transform);
                         }
                         else
-                            item = player.Inventory.Pouch.GetItemFromID(s_selectedBuildingToPlace.ItemID);
+                            item = player.Inventory.GetOwnedItems(s_selectedBuildingToPlace.ItemID)[0];
                         
                         // start deploy (harmony patches handle the rest)
                         if (item)
