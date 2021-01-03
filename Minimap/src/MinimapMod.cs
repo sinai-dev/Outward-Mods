@@ -18,7 +18,7 @@ namespace Minimap
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.2.0";
+        public const string VERSION = "1.3.0";
 
         private static readonly FieldInfo currentAreaHasMap 
             = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -31,9 +31,7 @@ namespace Minimap
         internal void Awake()
         {
             // setup keybinding
-            CustomKeybindings.AddAction(TOGGLE_KEY, 
-                KeybindingsCategory.Menus,
-                ControlType.Both);
+            CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.Menus, ControlType.Both);
 
             // setup harmony
             new Harmony(GUID).PatchAll();
@@ -63,20 +61,15 @@ namespace Minimap
 
             // enemies
             foreach (var character in CharacterManager.Instance.Characters.Values.Where(x => x.IsAI))
-            {
                 MarkerScript.AddMarker(character.gameObject, MarkerScript.Types.Enemy);
-            }
 
             // gatherables
             foreach (var loot in Resources.FindObjectsOfTypeAll<SelfFilledItemContainer>())
-            {
                 MarkerScript.AddMarker(loot.gameObject, MarkerScript.Types.Loot);
-            }
 
+            // npc
             foreach (var npc in Resources.FindObjectsOfTypeAll<SNPC>())
-            {
                 MarkerScript.AddMarker(npc.gameObject, MarkerScript.Types.NPC);
-            }
         }
 
         // custom keybinding input
@@ -95,9 +88,7 @@ namespace Minimap
             public static void Postfix(Character __instance)
             {
                 if (__instance.GetComponent<CharacterAI>())
-                {
                     return;
-                }
 
                 MarkerScript.AddMarker(__instance.gameObject, MarkerScript.Types.Player);
             }
@@ -139,9 +130,7 @@ namespace Minimap
                 {
                     var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                     if (minimap)
-                    {
                         minimap.OnShowBigMap();
-                    }
                 }
             }
         }
@@ -154,9 +143,7 @@ namespace Minimap
             {
                 var minimap = __instance.LocalCharacter?.GetComponentInChildren<MinimapScript>();
                 if (minimap)
-                {
                     minimap.OnHideBigMap();
-                }
             }
         }
 
@@ -169,9 +156,7 @@ namespace Minimap
             public static void Prefix(SplitScreenManager __instance)
             {
                 if (__instance.LocalPlayerCount == 1)
-                {
                     MinimapScript.P1_OnSplitBegin();
-                }
             }
         }
 
@@ -182,9 +167,7 @@ namespace Minimap
             public static void Prefix(SplitScreenManager __instance)
             {
                 if (__instance.LocalPlayerCount == 2)
-                {
                     MinimapScript.P1_OnSplitEnd();
-                }
             }
         }
     }

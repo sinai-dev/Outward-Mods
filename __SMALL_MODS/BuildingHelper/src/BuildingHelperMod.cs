@@ -15,6 +15,7 @@ namespace BuildingHelper
     {
         public bool AutoFinishBuildings = false;
         public bool ForceNoRequirements = false;
+        public int SpecialBuildingCap = 0;
     }
 
     [BepInPlugin(GUID, NAME, VERSION)]
@@ -22,7 +23,7 @@ namespace BuildingHelper
     {
         const string GUID = "com.sinai.buildinghelper";
         const string NAME = "Building Helper";
-        const string VERSION = "1.0.2";
+        const string VERSION = "1.0.3";
 
         public static BuildingHelperMod Instance;
 

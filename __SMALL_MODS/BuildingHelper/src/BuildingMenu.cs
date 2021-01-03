@@ -125,6 +125,14 @@ namespace BuildingHelper
             BuildingHelperMod.Instance.settings.ForceNoRequirements 
                 = GUILayout.Toggle(BuildingHelperMod.Instance.settings.ForceNoRequirements, "No requirements to build");
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Extra Specialized Buildings Cap:", GUILayout.Width(220));
+            var max = BuildingHelperMod.Instance.settings.SpecialBuildingCap.ToString();
+            max = GUILayout.TextField(max);
+            if (int.TryParse(max, out int newmax))
+                BuildingHelperMod.Instance.settings.SpecialBuildingCap = newmax;
+            GUILayout.EndHorizontal();
+
             if (s_selectedBuildingToPlace)
             {
                 if (GUILayout.Button("< Back"))

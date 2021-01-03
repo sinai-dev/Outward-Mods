@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SideLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -85,7 +87,8 @@ namespace Minimap
             m_hudTransform = character.CharacterUI.transform.Find("Canvas/GameplayPanels/HUD");
             m_mapTransform = MenuManager.Instance.transform.Find("GeneralMenus");
 
-            SceneManager.activeSceneChanged += ActiveSceneChanged;
+            //SceneManager.activeSceneChanged += ActiveSceneChanged;
+            SL.OnSceneLoaded += SL_OnSceneLoaded;
 
             // Setup actual minimap camera
             m_minimapCamera = new GameObject("MinimapCamera", typeof(Camera))
@@ -124,8 +127,6 @@ namespace Minimap
             SetZRotation();
 
             ApplyFromConfig();
-
-            Debug.Log("Done");
         }
 
         public void Update()
@@ -141,18 +142,21 @@ namespace Minimap
 
             // player 1 can align with Shift + Up/Down
             if (m_splitID == 0)
-            {
                 P1_ManualAlign();
-            }
         }
 
-        private void ActiveSceneChanged(Scene arg0, Scene arg1)
+        private void SL_OnSceneLoaded()
         {
             var scene = SceneManagerHelper.ActiveSceneName;
             if (scene == "LowMemory_TransitionScene" || scene == "MainMenu_Empty")
-            {
                 return;
-            }
+
+            StartCoroutine(SceneLoadCoroutine(scene));
+        }
+
+        private IEnumerator SceneLoadCoroutine(string scene)
+        {
+            yield return new WaitForSeconds(2f);
 
             SetZRotation();
 
@@ -193,13 +197,10 @@ namespace Minimap
             m_minimapCamera.orthographicSize = m_cameraOrthoSize;
 
             if (InOutdoorRegion)
-            {
                 m_minimapCamera.orthographicSize += m_outdoorExtraSize;
-            }
+
             if (ShowingBigMap)
-            {
                 m_minimapCamera.orthographicSize += BIG_MAP_EXTRA_OFFSET;
-            }
         }
 
         public void SetZRotation()
@@ -259,9 +260,7 @@ namespace Minimap
             pos.y -= P1_SPLIT_OFFSET;
 
             if (!ShowingBigMap)
-            {
                 Instances[0].m_mapImage.rectTransform.localPosition = pos;
-            }
         }
 
         public static void P1_OnSplitEnd()
@@ -270,9 +269,7 @@ namespace Minimap
             pos.y += P1_SPLIT_OFFSET;
 
             if (!ShowingBigMap)
-            {
                 Instances[0].m_mapImage.rectTransform.localPosition = pos;
-            }
         }
 
         public void P1_ManualAlign()
@@ -357,14 +354,5 @@ namespace Minimap
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
-
-        // ~~~~~~~~~~~~~~~~~~
-
-        //// Don't think this is necessary? idk
-
-        //public void OnDestroy()
-        //{
-        //    SceneManager.activeSceneChanged -= ActiveSceneChanged;
-        //}
     }
 }

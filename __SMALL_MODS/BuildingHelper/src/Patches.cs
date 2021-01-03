@@ -1,9 +1,20 @@
 ﻿using System;
 using HarmonyLib;
 using SideLoader;
+using UnityEngine;
 
 namespace BuildingHelper
 {
+    [HarmonyPatch(typeof(BuildingResourcesManager), "GetSpecializedBuildingCap")]
+    public class BuildingResourcesManager_GetSpecializedBuildingCap
+    {
+        [HarmonyPostfix]
+        public static void Postfix(ref int __result)
+        {
+            __result += Mathf.Min(BuildingHelperMod.Instance.settings.SpecialBuildingCap, 0);
+        }
+    }
+
     [HarmonyPatch(typeof(BuildingResourcesManager), "GetCanDeployNewBuilding")]
     public class BuildingResourcesManager_GetCanDeployNewBuilding
     {
