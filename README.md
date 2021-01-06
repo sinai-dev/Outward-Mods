@@ -2,6 +2,8 @@
  
 Sinai's mods for Outward.
 
+Join the Outward Modding discord: [![Discord](https://img.shields.io/badge/Discord-chat-blue?style=social&logo=discord)](https://discord.gg/zKyfGmy7TR)
+
 ## How to install mods
 
 All mods:
