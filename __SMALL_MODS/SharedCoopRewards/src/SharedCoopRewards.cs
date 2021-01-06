@@ -23,7 +23,7 @@ namespace SharedCoopRewards
     {
         const string GUID = "com.sinai.sharedcooprewards";
         const string NAME = "Shared Coop Rewards";
-        const string VERSION = "2.1";
+        const string VERSION = "2.2";
 
         public static ModConfig config;
 
