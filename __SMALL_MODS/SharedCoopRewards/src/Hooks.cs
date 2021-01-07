@@ -81,6 +81,9 @@ namespace SharedCoopRewards
         [HarmonyPrefix]
         public static bool Prefix(Dropable __instance, ItemContainer _container)
         {
+            if (__instance.GetComponentInParent<Merchant>())
+                return true;
+
             if (_container)
             {
                 int count = (bool)SharedCoopRewards.config.GetValue(Settings.Shared_World_Drops) ? Global.Lobby.PlayersInLobbyCount : 1;
