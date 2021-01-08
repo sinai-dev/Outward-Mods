@@ -8,11 +8,13 @@ using BepInEx;
 using HarmonyLib;
 using SharedModConfig;
 using SideLoader;
+using UnityEngine.UI;
 
 // ORIGINAL MOD BY ASHNAL AND STIMMEDCOW
 // CUSTOM KEYBINDINGS BY STIAN
 
 // Fixed by Sinai
+// Addition of limited controller support by HardLess
 
 namespace ExtendedQuickslots
 {
@@ -89,6 +91,28 @@ namespace ExtendedQuickslots
                 }
             }
 
+            foreach (SplitPlayer player in SplitScreenManager.Instance.LocalPlayers)
+            {
+                var character = player.AssignedCharacter;
+                int id = character.OwnerPlayerSys.PlayerID;
+                if (QuickSlotInstant9(id))
+                {
+                    character.QuickSlotMngr.QuickSlotInput(12);
+                }
+                if (QuickSlotInstant10(id))
+                {
+                    character.QuickSlotMngr.QuickSlotInput(13);
+                }
+                if (QuickSlotInstant11(id))
+                {
+                    character.QuickSlotMngr.QuickSlotInput(14);
+                }
+                if (QuickSlotInstant12(id))
+                {
+                    character.QuickSlotMngr.QuickSlotInput(15);
+                }
+            }
+
             if (!fixedDictionary && !LocalizationManager.Instance.IsLoading && LocalizationManager.Instance.Loaded)
             {
                 fixedDictionary = true;
@@ -100,7 +124,82 @@ namespace ExtendedQuickslots
             }
         }
 
+        internal bool QuickSlotInstant9(int _playerID)
+        {
+            return ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot1(_playerID);
+        }
+
+        internal bool QuickSlotInstant10(int _playerID)
+        {
+            return ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot2(_playerID);
+        }
+
+        internal bool QuickSlotInstant11(int _playerID)
+        {
+            return ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot3(_playerID);
+        }
+
+        internal bool QuickSlotInstant12(int _playerID)
+        {
+            return ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot4(_playerID);
+        }
+
+
         // ============== HOOKS ==============
+
+        [HarmonyPatch(typeof(SplitScreenManager), "Awake")]
+        public class SplitScreenManager_Awake
+        {
+
+            [HarmonyPostfix]
+            public static void Postfix(CharacterUI ___m_charUIPrefab)
+            {
+
+                if (SlotsToAdd < 4)
+                    return;
+
+
+                GameObject.DontDestroyOnLoad(___m_charUIPrefab.gameObject);
+
+                GameObject controllerQuickSlotMenu= ___m_charUIPrefab.transform
+                    .Find("Canvas/GameplayPanels/Menus/CharacterMenus/MainPanel/Content/MiddlePanel/QuickSlotPanel/PanelSwitcher/Controller")
+                    .gameObject;
+                Transform LT_RT = controllerQuickSlotMenu.transform.Find("LT-RT");
+                LT_RT.Find("LeftDecoration").gameObject.SetActive(false);
+                LT_RT.Find("RightDecoration").gameObject.SetActive(false);
+                Transform LT = LT_RT.Find("LT");
+                Transform RT = LT_RT.Find("RT");
+                LT.localPosition = new Vector3(-300f,0f,0f);
+                RT.localPosition = new Vector3(300f, 0f, 0f);
+                EditorQuickSlotDisplayPlacer[] quickSlotsLT = LT.GetComponentsInChildren<EditorQuickSlotDisplayPlacer>();
+                foreach (EditorQuickSlotDisplayPlacer displayPlacer in quickSlotsLT)
+                    displayPlacer.IsTemplate = true;
+
+                GameObject newTab = GameObject.Instantiate<GameObject>(LT.gameObject);
+                newTab.transform.Find("imgLT").localPosition = new Vector3(-25f,22.5f,0f);
+                GameObject imgRT = GameObject.Instantiate<GameObject>(RT.Find("imgRT").gameObject);
+                imgRT.transform.parent = newTab.transform;
+                imgRT.transform.localPosition = new Vector3(25f, 22.5f, 0f);
+                newTab.transform.parent = LT_RT;
+                newTab.transform.position = LT.transform.position;
+                LT.localPosition = new Vector3(0f, 0f, 0f);
+
+                EditorQuickSlotDisplayPlacer[] quickSlotsNewTab = newTab.GetComponentsInChildren<EditorQuickSlotDisplayPlacer>();
+                for (int i = 0; i < quickSlotsNewTab.Length; i++)
+                {
+                    quickSlotsNewTab[i].RefSlotID = 12 + i;
+                    quickSlotsNewTab[i].IsTemplate = false;
+                }
+                QuickSlotDisplay[] quickSlotsDisplayNewTab = newTab.GetComponentsInChildren<QuickSlotDisplay>();
+                for (int i = 0; i < quickSlotsDisplayNewTab.Length; i++)
+                {
+                    quickSlotsDisplayNewTab[i].RefSlotID = 12 + i;
+                }
+
+                foreach (EditorQuickSlotDisplayPlacer displayPlacer in quickSlotsLT)
+                    displayPlacer.IsTemplate = false;
+            }
+        }
 
         // Quickslot update hook, just for custom initialization
 
@@ -220,6 +319,257 @@ namespace ExtendedQuickslots
                 int s = 12;
                 for (int i = SlotsToAdd; i >= 1; i--)
                     self.DisplayOrder[length - i] = (QuickSlot.QuickSlotIDs)s++;
+            }
+        }
+
+        // Controller quickslot initialize hook. Add our custom slots.
+
+        [HarmonyPatch(typeof(QuickSlotPanelSwitcher), "StartInit")]
+        public class QSPanelSwitcher_Init
+        {
+            [HarmonyPrefix]
+            public static void Prefix(QuickSlotPanelSwitcher __instance, ref QuickSlotPanel[]  ___m_quickSlotPanels)
+            {
+                // For simplicity we need at least 4 more slots
+                if (SlotsToAdd < 4)
+                    return;
+
+                var self = __instance;
+
+                var length = ___m_quickSlotPanels.Length + 1;
+                Array.Resize(ref ___m_quickSlotPanels, length);
+
+                // Add the new tab
+
+                Transform LT = ___m_quickSlotPanels[0].transform;
+                EditorQuickSlotDisplayPlacer[] quickSlotsLT = LT.GetComponentsInChildren<EditorQuickSlotDisplayPlacer>();
+                foreach (EditorQuickSlotDisplayPlacer displayPlacer in quickSlotsLT)
+                    displayPlacer.IsTemplate = true;
+                GameObject newTab = GameObject.Instantiate<GameObject>(LT.gameObject);
+                newTab.transform.parent = LT.parent;
+                newTab.transform.position = LT.transform.position;
+
+                EditorQuickSlotDisplayPlacer[] quickSlotsNewTab = newTab.GetComponentsInChildren<EditorQuickSlotDisplayPlacer>();
+                for (int i = 0; i < quickSlotsNewTab.Length; i++)
+                {
+                    quickSlotsNewTab[i].RefSlotID = 12 + i;
+                    quickSlotsNewTab[i].IsTemplate = false;
+                }
+                QuickSlotDisplay[] quickSlotsDisplayNewTab = newTab.GetComponentsInChildren<QuickSlotDisplay>();
+                for (int i = 0; i < quickSlotsDisplayNewTab.Length; i++)
+                {
+                    quickSlotsDisplayNewTab[i].RefSlotID = 12 + i;
+                }
+
+                foreach (EditorQuickSlotDisplayPlacer displayPlacer in quickSlotsLT)
+                    displayPlacer.IsTemplate = false;
+
+
+                ___m_quickSlotPanels[length - 1] = newTab.GetComponent<QuickSlotPanel>();
+            }
+        }
+
+        // Controller quickslot custom update.
+
+        [HarmonyPatch(typeof(QuickSlotPanelSwitcher), "Update")]
+        public class QSPanelSwitcher_Update
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(QuickSlotPanelSwitcher __instance, ref QuickSlotPanel[] ___m_quickSlotPanels, ref int ___m_currentlyDisplayedPanel, ref Image[] ___m_panelIndicators)
+            {
+                // For simplicity we need at least 4 more slots
+                if (SlotsToAdd < 4)
+                    return true;
+
+                var self = __instance;
+
+                if (self.LocalCharacter != null)
+                {
+                    int previouslyDisplayedPanel = ___m_currentlyDisplayedPanel;
+                    bool flag = false;
+                    if (self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection1 && !self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection2)
+                    {
+                        ___m_currentlyDisplayedPanel = 0;
+                        flag = true;
+                    }
+                    else if (!self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection1 && self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection2)
+                    {
+                        ___m_currentlyDisplayedPanel = 1;
+                        flag = true;
+                    }
+                    else if (self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection1 && self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection2)
+                    {
+                        flag = true;
+                        if (SlotsToAdd >= 4)
+                        {
+                            ___m_currentlyDisplayedPanel = 2;
+                        }
+                        else
+                        {
+                            if (self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection1LastTime > self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection2LastTime)
+                            {
+                                ___m_currentlyDisplayedPanel = 0;
+                            }
+                            else if (self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection1LastTime < self.LocalCharacter.QuickSlotMngr.ShowQuickSlotSection2LastTime)
+                            {
+                                ___m_currentlyDisplayedPanel = 1;
+                            }
+                        }
+                    }
+                    Color color = Color.white;
+                    for (int i = 0; i < ___m_quickSlotPanels.Length; i++)
+                    {
+                        color = Color.white;
+                        if (i == ___m_currentlyDisplayedPanel)
+                        {
+                            if (flag)
+                            {
+                                color = self.ActiveColor;
+                            }
+                            if (___m_quickSlotPanels[i])
+                            {
+                                if (___m_quickSlotPanels[i].gameObject.activeSelf)
+                                {
+                                    ___m_quickSlotPanels[i].SetActive(true);
+                                }
+                                if (previouslyDisplayedPanel != ___m_currentlyDisplayedPanel)
+                                {
+                                    ___m_quickSlotPanels[i].ShowFront(false);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            color = self.DisabledColor;
+                            if (___m_quickSlotPanels[i])
+                            {
+                                if (___m_quickSlotPanels[i].gameObject.activeSelf)
+                                {
+                                    ___m_quickSlotPanels[i].SetActive(false);
+                                }
+                                if (i == previouslyDisplayedPanel)
+                                {
+                                    ___m_quickSlotPanels[i].PutBack(false);
+                                }
+                            }
+                        }
+                    }
+                    if (___m_currentlyDisplayedPanel == 2)
+                    {
+                        if (flag == true)
+                            color = self.ActiveColor;
+                        else
+                            color = self.DisabledColor;
+                        for (int i = 0; i < ___m_quickSlotPanels.Length - 1; i++)
+                            if (___m_panelIndicators[i] && ___m_panelIndicators[i].color != color)
+                                ___m_panelIndicators[i].color = Vector4.MoveTowards(___m_panelIndicators[i].color, color, 5f * Time.deltaTime);
+                    }
+                    else if (___m_currentlyDisplayedPanel < 2)
+                    {
+                        for (int i = 0; i < ___m_quickSlotPanels.Length - 1; i++)
+                        {
+                            if (i == ___m_currentlyDisplayedPanel && flag == true)
+                                color = self.ActiveColor;
+                            else if (i != ___m_currentlyDisplayedPanel)
+                                color = self.DisabledColor;
+
+                            if (___m_panelIndicators[i] && ___m_panelIndicators[i].color != color)
+                                ___m_panelIndicators[i].color = Vector4.MoveTowards(___m_panelIndicators[i].color, color, 5f * Time.deltaTime);
+                        }
+                    }
+                }
+
+
+                return false;
+            }
+        }
+
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant1")]
+        public class ControlsInput_QuickSlotInstant1
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs>  ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant1") || (ControlsInput.QuickSlotToggle2(_playerID) && !ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot1(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant2")]
+        public class ControlsInput_QuickSlotInstant2
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant2") || (ControlsInput.QuickSlotToggle2(_playerID) && !ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot2(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant3")]
+        public class ControlsInput_QuickSlotInstant3
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant3") || (ControlsInput.QuickSlotToggle2(_playerID) && !ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot3(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant4")]
+        public class ControlsInput_QuickSlotInstant4
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant4") || (ControlsInput.QuickSlotToggle2(_playerID) && !ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot4(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant5")]
+        public class ControlsInput_QuickSlotInstant5
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant1") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot1(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant6")]
+        public class ControlsInput_QuickSlotInstant6
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant2") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot2(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant7")]
+        public class ControlsInput_QuickSlotInstant7
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant3") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot3(_playerID));
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant8")]
+        public class ControlsInput_QuickSlotInstant8
+        {
+            [HarmonyPrefix]
+            public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
+            {
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant4") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot4(_playerID));
+                return false;
             }
         }
 
