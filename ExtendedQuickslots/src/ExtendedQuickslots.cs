@@ -35,8 +35,7 @@ namespace ExtendedQuickslots
         internal static int SlotsToAdd;
         internal static bool CenterSlots;
 
-        private static bool fixedDictionary;
-        private static readonly bool[] fixedPositions = new bool[2] { false, false };
+        private static readonly bool[] fixedKBPositions = new bool[2] { false, false };
 
         internal void Awake()
         {
@@ -45,10 +44,20 @@ namespace ExtendedQuickslots
             Settings.OnSettingsLoaded += Setup;
             Settings.Register();
 
-            SetupLocalization();
-
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
+        }
+
+        private void Setup()
+        {
+            SlotsToAdd = (int)(float)Settings.GetValue(SettingNames.QUICKSLOTS_TO_ADD);
+            CenterSlots = (bool)Settings.GetValue(SettingNames.CENTER_QUICKSLOTS);
+
+            // Add CustomKeybindings
+            for (int i = 0; i < SlotsToAdd; i++)
+                CustomKeybindings.AddAction($"QS_Instant{i + 12}", KeybindingsCategory.QuickSlot, ControlType.Both);
+
+            SetupLocalization();
         }
 
         private void SetupLocalization()
@@ -69,16 +78,6 @@ namespace ExtendedQuickslots
             }
         }
 
-        private void Setup()
-        {
-            SlotsToAdd = (int)(float)Settings.GetValue(SettingNames.QUICKSLOTS_TO_ADD);
-            CenterSlots = (bool)Settings.GetValue(SettingNames.CENTER_QUICKSLOTS);
-
-            // Add CustomKeybindings
-            for (int i = 0; i < SlotsToAdd; i++)
-                CustomKeybindings.AddAction($"QS_Instant{i + 12}", KeybindingsCategory.QuickSlot, ControlType.Both);
-        }
-
         internal void Update()
         {
             for (int i = 0; i < SlotsToAdd; i++)
@@ -95,32 +94,15 @@ namespace ExtendedQuickslots
             {
                 var character = player.AssignedCharacter;
                 int id = character.OwnerPlayerSys.PlayerID;
+
                 if (QuickSlotInstant9(id))
-                {
                     character.QuickSlotMngr.QuickSlotInput(12);
-                }
                 if (QuickSlotInstant10(id))
-                {
                     character.QuickSlotMngr.QuickSlotInput(13);
-                }
                 if (QuickSlotInstant11(id))
-                {
                     character.QuickSlotMngr.QuickSlotInput(14);
-                }
                 if (QuickSlotInstant12(id))
-                {
                     character.QuickSlotMngr.QuickSlotInput(15);
-                }
-            }
-
-            if (!fixedDictionary && !LocalizationManager.Instance.IsLoading && LocalizationManager.Instance.Loaded)
-            {
-                fixedDictionary = true;
-
-                var genLoc = SideLoader.References.GENERAL_LOCALIZATION;
-
-                for (int i = 0; i < SlotsToAdd; i++)
-                    genLoc[$"InputAction_QS_Instant{i + 12}"] = $"Quick Slot {i + 9}";
             }
         }
 
@@ -150,14 +132,11 @@ namespace ExtendedQuickslots
         [HarmonyPatch(typeof(SplitScreenManager), "Awake")]
         public class SplitScreenManager_Awake
         {
-
             [HarmonyPostfix]
             public static void Postfix(CharacterUI ___m_charUIPrefab)
             {
-
                 if (SlotsToAdd < 4)
                     return;
-
 
                 GameObject.DontDestroyOnLoad(___m_charUIPrefab.gameObject);
 
@@ -228,7 +207,6 @@ namespace ExtendedQuickslots
                             At.Invoke(___m_quickSlotDisplays[i], "SetInputTargetAlpha", new object[] { (!___m_active) ? 0f : 1f });
                     }
                 }
-
                 // custom initialize setup
                 else if (self.LocalCharacter != null)
                 {
@@ -253,7 +231,7 @@ namespace ExtendedQuickslots
 
         private static void SetupKeyboardQuickslotDisplay(UIElement slot, QuickSlotDisplay[] m_quickSlotDisplays)
         {
-            if (fixedPositions[slot.PlayerID] == false)
+            if (fixedKBPositions[slot.PlayerID] == false)
             {
                 var stabilityDisplay = Resources.FindObjectsOfTypeAll<StabilityDisplay_Simple>()
                     .ToList()
@@ -282,7 +260,8 @@ namespace ExtendedQuickslots
                 {
                     // Get first two quickslots to calculate margins.
                     List<Vector3[]> matrix = new List<Vector3[]> { new Vector3[4], new Vector3[4] };
-                    for (int i = 0; i < 2; i++) { m_quickSlotDisplays[i].RectTransform.GetWorldCorners(matrix[i]); }
+                    for (int i = 0; i < 2; i++) 
+                        m_quickSlotDisplays[i].RectTransform.GetWorldCorners(matrix[i]);
 
                     // do some math
                     var iconW = matrix[0][2].x - matrix[0][1].x;             // The width of each icon
@@ -298,7 +277,7 @@ namespace ExtendedQuickslots
                     );
                 }
 
-                fixedPositions[slot.PlayerID] = true;
+                fixedKBPositions[slot.PlayerID] = true;
             }
         }
 
@@ -333,8 +312,6 @@ namespace ExtendedQuickslots
                 // For simplicity we need at least 4 more slots
                 if (SlotsToAdd < 4)
                     return;
-
-                var self = __instance;
 
                 var length = ___m_quickSlotPanels.Length + 1;
                 Array.Resize(ref ___m_quickSlotPanels, length);
@@ -479,11 +456,9 @@ namespace ExtendedQuickslots
                     }
                 }
 
-
                 return false;
             }
         }
-
 
         [HarmonyPatch(typeof(ControlsInput), "QuickSlotInstant1")]
         public class ControlsInput_QuickSlotInstant1
