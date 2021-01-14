@@ -130,18 +130,18 @@ namespace Combat_Dummy
                             m_dummyCharacter = dummy;
                             m_windowPage = 1;
                         }
-                        GUILayout.Label("AI:", GUILayout.Width(20));
-                        GUI.color = Color.green;
-                        if (GUILayout.Button("Enable", GUILayout.Width(60)))
-                        {
-                            dummy.SetAIEnabled(true);
-                        }
-                        GUI.color = Color.red;
-                        if (GUILayout.Button("Disable", GUILayout.Width(60)))
-                        {
-                            dummy.SetAIEnabled(false);
-                        }
-                        GUI.color = Color.white;
+                        //GUILayout.Label("AI:", GUILayout.Width(20));
+                        //GUI.color = Color.green;
+                        //if (GUILayout.Button("Enable", GUILayout.Width(60)))
+                        //{
+                        //    dummy.SetAIEnabled(true);
+                        //}
+                        //GUI.color = Color.red;
+                        //if (GUILayout.Button("Disable", GUILayout.Width(60)))
+                        //{
+                        //    dummy.SetAIEnabled(false);
+                        //}
+                        //GUI.color = Color.white;
                         GUILayout.EndHorizontal();
                     }
                 }
@@ -160,7 +160,7 @@ namespace Combat_Dummy
             }
             else
             {
-                AIButtons();
+                //AIButtons();
 
                 if (!m_dummyCharacter.CharacterExists)
                 {
@@ -197,17 +197,19 @@ namespace Combat_Dummy
 
         private void EditInspectingDummy()
         {
-            var cfg = m_dummyCharacter.Config;
-
             BoldTitle("Setup Dummy: " + m_dummyCharacter.Name);
 
-            IntEdit("Weapon ID", ref cfg.Weapon);
-            IntEdit("Shield ID", ref cfg.Shield);
+            m_dummyCharacter.AddCombatAI = GUILayout.Toggle(m_dummyCharacter.AddCombatAI, "Add Combat AI?");
+
+            var cfg = m_dummyCharacter.Template;
+
+            IntEdit("Weapon ID", ref cfg.Weapon_ID);
+            IntEdit("Shield ID", ref cfg.Shield_ID);
 
             FactionEdit(cfg);
 
-            cfg.CanDodge = GUILayout.Toggle(cfg.CanDodge, "Can Dodge");
-            cfg.CanBlock = GUILayout.Toggle(cfg.CanBlock, "Can Block");
+            m_dummyCharacter.CanDodge = GUILayout.Toggle(m_dummyCharacter.CanDodge, "Can Dodge");
+            m_dummyCharacter.CanBlock = GUILayout.Toggle(m_dummyCharacter.CanBlock, "Can Block");
 
             BoldTitle("Stats");
 
@@ -219,26 +221,26 @@ namespace Combat_Dummy
             DamageTypesEdit(ref cfg.Damage_Bonus);
         }
 
-        private void AIButtons()
-        {
-            if (m_dummyCharacter != null && m_dummyCharacter.CharacterExists)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Combat AI:");
-                GUI.color = Color.green;
-                if (GUILayout.Button("Enable"))
-                {
-                    m_dummyCharacter.SetAIEnabled(true);
-                }
-                GUI.color = Color.red;
-                if (GUILayout.Button("Disable"))
-                {
-                    m_dummyCharacter.SetAIEnabled(false);
-                }
-                GUI.color = Color.white;
-                GUILayout.EndHorizontal();
-            }
-        }
+        //private void AIButtons()
+        //{
+        //    if (m_dummyCharacter != null && m_dummyCharacter.CharacterExists)
+        //    {
+        //        GUILayout.BeginHorizontal();
+        //        GUILayout.Label("Combat AI:");
+        //        GUI.color = Color.green;
+        //        if (GUILayout.Button("Enable"))
+        //        {
+        //            m_dummyCharacter.SetAIEnabled(true);
+        //        }
+        //        GUI.color = Color.red;
+        //        if (GUILayout.Button("Disable"))
+        //        {
+        //            m_dummyCharacter.SetAIEnabled(false);
+        //        }
+        //        GUI.color = Color.white;
+        //        GUILayout.EndHorizontal();
+        //    }
+        //}
 
         public void BoldTitle(string label)
         {
@@ -248,7 +250,7 @@ namespace Combat_Dummy
             GUI.skin.label.alignment = orig;
         }
 
-        public void FloatEdit(string label, ref float stat)
+        public void FloatEdit(string label, ref float? stat)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label, GUILayout.Width(100));
@@ -261,7 +263,7 @@ namespace Combat_Dummy
             GUILayout.EndHorizontal();
         }
 
-        public void IntEdit(string label, ref int stat)
+        public void IntEdit(string label, ref int? stat)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(label, GUILayout.Width(100));
@@ -296,25 +298,25 @@ namespace Combat_Dummy
             GUI.skin.label.alignment = TextAnchor.UpperLeft;
         }
 
-        private void FactionEdit(DummyConfig config)
+        private void FactionEdit(SL_Character template)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Faction:", GUILayout.Width(100));
             if (GUILayout.Button("<"))
             {
-                if ((int)config.Faction > 1)
+                if ((int)template.Faction > 1)
                 {
-                    config.Faction -= 1;
+                    template.Faction -= 1;
                 }
             }
             if (GUILayout.Button(">"))
             {
-                if ((int)config.Faction < Enum.GetNames(typeof(Character.Factions)).Length - 1)
+                if ((int)template.Faction < Enum.GetNames(typeof(Character.Factions)).Length - 1)
                 {
-                    config.Faction += 1;
+                    template.Faction += 1;
                 }
             }
-            GUILayout.Label(config.Faction.ToString(), GUILayout.Width(180));
+            GUILayout.Label(template.Faction.ToString(), GUILayout.Width(180));
             GUILayout.EndHorizontal();
         }
     }

@@ -18,8 +18,6 @@ namespace Combat_Dummy
 
         public const string MenuKey = "Combat Dummy Menu";
 
-        private static bool m_mouseShowing = false;
-
         internal void Awake()
         {
             Instance = this;
@@ -47,7 +45,14 @@ namespace Combat_Dummy
             var dummy = new DummyCharacter
             {
                 Name = name,
-                Config = new DummyConfig()
+                Template = new SL_Character()
+                {
+                    Name = name,
+                    UID = $"com.sinai.CombatDummy.{name}",
+                    Faction = Character.Factions.Bandits,
+                    AI = new SL_CharacterAIMelee(),
+                    Weapon_ID = 2000010,
+                }
             };
 
             ActiveDummies.Add(dummy);

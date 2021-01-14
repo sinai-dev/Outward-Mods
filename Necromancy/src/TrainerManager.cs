@@ -32,7 +32,7 @@ namespace NecromancerSkills
             Chest_ID = 3200040,
             Helmet_ID = 3200041,
             Boots_ID = 3200042,
-            AddCombatAI = false,
+            //AddCombatAI = false,
         };
 
         internal void Awake()

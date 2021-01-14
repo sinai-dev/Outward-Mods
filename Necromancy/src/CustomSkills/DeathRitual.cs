@@ -124,7 +124,7 @@ namespace NecromancerSkills
                 // fix for cooldown not working on this skill for some reason
                 var skill = this.ParentItem as Skill;
                 At.SetField(skill, "m_lastActivationTime", Time.time);
-                At.SetField(skill, "m_lastCooldownProgress", -1);
+                At.SetField(skill, "m_lastReceivedCooldownProgress", -1);
 
                 // plague aura interaction
                 if (PlagueAuraProximityCondition.IsInsidePlagueAura(summonChar.transform.position))
