@@ -57,20 +57,28 @@ namespace Dismantler
                 yield return null;
             }
 
-            foreach (var deployable in ItemManager.Instance.WorldItems.Values.Where(x => x.GetExtension("Deployable") != null))
+            try
             {
-                var comp = deployable.GetComponent<Deployable>();
-
-                if (comp.IsDeployed && comp.PackedStateItemPrefab == null)
+                foreach (var deployable in ItemManager.Instance.WorldItems.Values.Where(x => x.GetExtension("Deployable") != null))
                 {
-                    AddDestroyInteraction(comp);
+                    var comp = deployable.GetComponent<Deployable>();
+
+                    if (comp.IsDeployed && comp.PackedStateItemPrefab == null)
+                    {
+                        AddDestroyInteraction(comp);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                SL.LogWarning("Exception applying Dismantler interactions");
+                SL.LogInnerException(ex);
             }
         }
 
         private void AddDestroyInteraction(Deployable self)
         {
-            if (self.PackedStateItemPrefab == null)
+            if (!self.PackedStateItemPrefab)
             {
                 var m_item = self.Item;
 

@@ -95,6 +95,7 @@ namespace Minimap
                                 .GetComponent<Camera>();
 
             m_minimapCamera.transform.parent = m_ownerCharacter.transform;
+            SetHeightAndCull(SceneManager.GetActiveScene().name == "Caldera");
 
             m_minimapCamera.orthographic = true;
             m_minimapCamera.rect = new Rect(0, 0, 1, 1);

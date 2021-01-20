@@ -8,7 +8,7 @@ using SideLoader;
 
 namespace NecromancerSkills
 {
-    public class SummonSkeleton : Effect // Inherits from the game's "Effect" class, so it works with those systems automatically.
+    public class SummonSkeleton : SpawnSLCharacter // Inherits from the game's "Effect" class, so it works with those systems automatically.
     {
         // Setup (called from SkillManager init)
         #region Summon Skill Setup
@@ -44,8 +44,15 @@ namespace NecromancerSkills
         }
         #endregion
 
+        internal void Awake()
+        {
+            this.GenerateRandomUIDForSpawn = true;
+            this.TryFollowCaster = true;
+            this.SpawnOffset = new Vector3(1, 0.25f, 1);
+        }
 
-        protected override bool TryTriggerConditions() // The game checks this before it activates the effect. Note that any mana/stamina/item costs will already be consumed.
+        // The game checks this before it activates the effect. Note that any mana/stamina/item costs will already be consumed.
+        protected override bool TryTriggerConditions() 
         {
             float healthcost = NecromancerBase.settings.Summon_HealthCost * this.m_affectedCharacter.Stats.MaxHealth;
             // check player has enough HP
@@ -68,7 +75,8 @@ namespace NecromancerSkills
 
         protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
-            if (SummonManager.Instance == null) { return; }
+            if (SummonManager.Instance == null)
+                return; 
 
             bool armyOfDeathLearned = _affectedCharacter.Inventory.SkillKnowledge.IsItemLearned(8890108);
 
@@ -84,9 +92,7 @@ namespace NecromancerSkills
                     while (diff < NecromancerBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath)
                     {
                         if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
-                        {
                             SummonManager.DestroySummon(summon);
-                        }
 
                         diff++;
                     }
@@ -94,9 +100,7 @@ namespace NecromancerSkills
                 else
                 {
                     if (list.Count == MaxSummons && SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
-                    {
                         SummonManager.DestroySummon(summon);
-                    }
                 }
             }
 
@@ -109,22 +113,20 @@ namespace NecromancerSkills
             // only host should do this
             if (!PhotonNetwork.isNonMasterClientInRoom)
             {
-
                 bool insidePlagueAura = PlagueAuraProximityCondition.IsInsidePlagueAura(_affectedCharacter.transform.position);
 
+                var template = insidePlagueAura ? SummonManager.Ghost : SummonManager.Skeleton;
+                this.SLCharacter_UID = template.UID;
+
+                CustomCharacters.Templates.TryGetValue(this.SLCharacter_UID, out m_charTemplate);
+
+                this.ExtraRpcData = _affectedCharacter.UID.ToString();
+
                 if (armyOfDeathLearned)
-                {
                     for (int i = 0; i < NecromancerBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; i++)
-                    {
-                        var uid = UID.Generate().ToString();
-                        SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
-                    }
-                }
+                        base.ActivateLocally(_affectedCharacter, _infos);
                 else
-                {
-                    var uid = UID.Generate().ToString();
-                    SummonManager.Instance.SummonSpawn(_affectedCharacter, uid, insidePlagueAura);
-                }
+                    base.ActivateLocally(_affectedCharacter, _infos);
             }
         }
     }

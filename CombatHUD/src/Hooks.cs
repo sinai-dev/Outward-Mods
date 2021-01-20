@@ -16,6 +16,8 @@ namespace CombatHUD
         }
     }
 
+    // todo AffectHealth, maybe falling
+
     [HarmonyPatch(typeof(Weapon), "HasHit")]
     public class Weapon_HasHit
     {

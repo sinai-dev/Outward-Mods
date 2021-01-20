@@ -34,10 +34,7 @@ namespace NecromancerSkills
             Chest_ID = 3200030,
             Helmet_ID = 3200031,
             Boots_ID = 3200032,
-            AI = new SL_CharacterAIMelee()
-            {
-                Wander_FollowPlayer = false,
-            },
+            AI = new SL_CharacterAIMelee(),
         };
 
         public static readonly SL_Character Ghost = new SL_Character
@@ -58,27 +55,23 @@ namespace NecromancerSkills
             Helmet_ID = 3200041,
             Boots_ID = 3200042,
             Backpack_ID = 5400010,
-            AI = new SL_CharacterAIMelee()
-            {
-                Wander_FollowPlayer = false,
-            },
+            AI = new SL_CharacterAIMelee(),
         };
 
-        // Only host calls this directly. This is the Main function for creating a summon. In our case, a skeleton minion.
-        // See the "SummonSkeleton" class for an example of how this works.
-        public GameObject SummonSpawn(Character caster, string summonUID, bool insidePlagueAura)
+        internal void Awake()
         {
-            Vector3 spawnPos = caster.transform.position + (Vector3.forward * 0.5f);
+            Instance = this;
 
-            var template = insidePlagueAura ? Ghost : Skeleton;
+            Ghost.Prepare();
+            Skeleton.Prepare();
 
-            var character = CustomCharacters.SpawnCharacter(template, spawnPos, Vector3.zero, summonUID, caster.UID.ToString())
-                                            .GetComponent<Character>();
+            Ghost.OnSpawn += OnSpawn;
+            Skeleton.OnSpawn += OnSpawn;
+        }
 
-            // unsheathe
-            character.SheatheInput();
-
-            return character.gameObject;
+        public static void DestroySummon(Character summon)
+        {
+            CustomCharacters.DestroyCharacterRPC(summon);
         }
 
         private void OnSpawn(Character character, string rpcData)
@@ -102,11 +95,11 @@ namespace NecromancerSkills
                 {
                     var owner = CharacterManager.Instance.GetCharacter(ownerUID);
 
-                    foreach (var wander in character.GetComponentsInChildren<AISWander>())
-                    {
-                        wander.FollowTransform = owner.transform;
-                        wander.FollowOffset = new Vector3(1.5f, 0f, 1.5f);
-                    }
+                    //foreach (var wander in character.GetComponentsInChildren<AISWander>())
+                    //{
+                    //    wander.FollowTransform = owner.transform;
+                    //    wander.FollowOffset = new Vector3(1.5f, 0f, 1.5f);
+                    //}
 
                     // add auto-teleport component
                     var tele = character.gameObject.AddComponent<SummonTeleport>();
@@ -158,69 +151,6 @@ namespace NecromancerSkills
             }
 
             return character;
-        }
-
-        // ========= internal ==========
-
-        internal void Awake()
-        {
-            Instance = this;
-
-            Ghost.Prepare();
-            Skeleton.Prepare();
-
-            Ghost.OnSpawn += OnSpawn;
-            Skeleton.OnSpawn += OnSpawn;
-        }
-
-        //// the tick update is limited to 0.5 secs, since its just for cleaning up dead summons and low priority stuff.
-        //internal void Update()
-        //{
-        //    if (SummonedCharacters.Count > 0 && Time.time - lastUpdateTime > 0.5f)
-        //    {
-        //        lastUpdateTime = Time.time;
-        //        UpdateSummonedCharacters();
-        //    }
-        //}
-
-        //private void UpdateSummonedCharacters()
-        //{
-        //    foreach (var entry in SummonedCharacters)
-        //    {
-        //        List<string> toRemove = new List<string>();
-
-        //        foreach (string uid in entry.Value)
-        //        {
-        //            if (CharacterManager.Instance.GetCharacter(uid) is Character c)
-        //            {
-        //                // clear dead resurrects
-        //                if (c.IsDead)
-        //                {
-        //                    //OLogger.Warning(c.Name + " is dead! Removing from list and destroying object.");
-        //                    DestroySummon(c);
-        //                    toRemove.Add(uid);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                //OLogger.Warning("CharacterManager GetCharacter " + uid + " is null! Removing from list.");
-        //                toRemove.Add(uid);
-        //            }
-        //        }
-
-        //        if (toRemove.Count > 0)
-        //        {
-        //            foreach (string uid in toRemove)
-        //            {
-        //                entry.Value.Remove(uid);
-        //            }
-        //        }
-        //    }
-        //}
-
-        public static void DestroySummon(Character summon)
-        {
-            CustomCharacters.DestroyCharacterRPC(summon);
         }
     }
 }

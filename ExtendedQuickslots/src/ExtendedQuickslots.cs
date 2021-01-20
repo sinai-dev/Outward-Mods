@@ -80,6 +80,9 @@ namespace ExtendedQuickslots
 
         internal void Update()
         {
+            if (NetworkLevelLoader.Instance.IsGameplayPaused || !SplitScreenManager.Instance || SplitScreenManager.Instance.LocalPlayers == null)
+                return;
+
             for (int i = 0; i < SlotsToAdd; i++)
             {
                 if (CustomKeybindings.GetKeyDown($"QS_Instant{i + 12}", out int playerID))

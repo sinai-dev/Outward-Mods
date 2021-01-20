@@ -18,7 +18,9 @@ namespace Minimap
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.3.0";
+        public const string VERSION = "1.4.0";
+
+        internal static MinimapMod Instance;
 
         private static readonly FieldInfo currentAreaHasMap 
             = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -30,6 +32,8 @@ namespace Minimap
 
         internal void Awake()
         {
+            Instance = this;
+
             // setup keybinding
             CustomKeybindings.AddAction(TOGGLE_KEY, KeybindingsCategory.Menus, ControlType.Both);
 
@@ -45,6 +49,8 @@ namespace Minimap
             // Load bundle
             var bundle = AssetBundle.LoadFromFile(ASSETBUNDLE_PATH);
             AlwaysOnTopMaterial = bundle.LoadAsset<Material>("UI_AlwaysOnTop");
+            GameObject.DontDestroyOnLoad(AlwaysOnTopMaterial);
+            AlwaysOnTopMaterial.hideFlags |= HideFlags.HideAndDontSave;
         }
 
         private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
@@ -113,8 +119,15 @@ namespace Minimap
             [HarmonyPostfix]
             public static void Postfix(Character _character)
             {
-                _character.gameObject.AddComponent<MinimapScript>()
-                                     .Init(_character);
+                Instance.StartCoroutine(DelayedInit(_character));
+            }
+
+            private static IEnumerator DelayedInit(Character character)
+            {
+                yield return new WaitForSeconds(1.0f);
+
+                character.gameObject.AddComponent<MinimapScript>()
+                    .Init(character);
             }
         }
 
