@@ -8,7 +8,7 @@ using SideLoader;
 
 namespace NecromancerSkills
 {
-    public class SummonSkeleton : SpawnSLCharacter // Inherits from the game's "Effect" class, so it works with those systems automatically.
+    public class SummonSkeleton : SpawnSLCharacter 
     {
         // Setup (called from SkillManager init)
         #region Summon Skill Setup
@@ -80,27 +80,21 @@ namespace NecromancerSkills
 
             bool armyOfDeathLearned = _affectedCharacter.Inventory.SkillKnowledge.IsItemLearned(8890108);
 
-            int MaxSummons = armyOfDeathLearned ? NecromancerBase.settings.Summon_MaxSummons_WithArmyOfDeath : NecromancerBase.settings.Summon_MaxSummons_NoArmyOfDeath;
+            int maxSummons = armyOfDeathLearned 
+                                ? NecromancerBase.settings.Summon_MaxSummons_WithArmyOfDeath 
+                                : NecromancerBase.settings.Summon_MaxSummons_NoArmyOfDeath;
 
             if (SummonManager.Instance.SummonedCharacters.ContainsKey(_affectedCharacter.UID))
             {
                 var list = SummonManager.Instance.SummonedCharacters[_affectedCharacter.UID];
-                int diff = MaxSummons - list.Count;
+                int toDestroy = list.Count - maxSummons;
 
-                if (armyOfDeathLearned)
+                while (toDestroy >= 0)
                 {
-                    while (diff < NecromancerBase.settings.Summon_Summoned_Per_Cast_withArmyOfDeath)
-                    {
-                        if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
-                            SummonManager.DestroySummon(summon);
-
-                        diff++;
-                    }
-                }
-                else
-                {
-                    if (list.Count == MaxSummons && SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+                    if (SummonManager.Instance.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
                         SummonManager.DestroySummon(summon);
+
+                    toDestroy--;
                 }
             }
 

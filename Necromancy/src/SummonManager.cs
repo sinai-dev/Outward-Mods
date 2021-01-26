@@ -71,12 +71,24 @@ namespace NecromancerSkills
 
         public static void DestroySummon(Character summon)
         {
+            if (PhotonNetwork.isNonMasterClientInRoom)
+                return;
+
+            foreach (var spawnList in Instance.SummonedCharacters)
+            {
+                if (spawnList.Value.Contains(summon.UID))
+                {
+                    spawnList.Value.Remove(summon.UID);
+                    break;
+                }
+            }
+
             CustomCharacters.DestroyCharacterRPC(summon);
         }
 
         private void OnSpawn(Character character, string rpcData)
         {
-            //SL.Log("Necromancy SummonManager.OnSpawn, character: " + character?.name + ", rpcData: " + rpcData);
+            SL.Log("Necromancy SummonManager.OnSpawn, character: " + character?.name + ", rpcData: " + rpcData);
 
             try
             {
@@ -117,17 +129,9 @@ namespace NecromancerSkills
         {
             yield return new WaitForSeconds(1.0f);
 
-            foreach (var spawnList in SummonedCharacters)
-            {
-                if (spawnList.Value.Contains(UID))
-                {
-                    spawnList.Value.Remove(UID);
-                    break;
-                }
-            }
-
-            if (!PhotonNetwork.isNonMasterClientInRoom)
-                CustomCharacters.DestroyCharacterRPC(UID);
+            var character = CharacterManager.Instance.GetCharacter(UID);
+            if (character)
+                DestroySummon(character);
         }
 
         // find the weakest current summon for a character. can be used arbitrarily by anything.
