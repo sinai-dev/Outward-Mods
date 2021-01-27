@@ -513,7 +513,7 @@ namespace ExtendedQuickslots
             [HarmonyPrefix]
             public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
             {
-                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant1") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot1(_playerID));
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant5") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot1(_playerID));
                 return false;
             }
         }
@@ -524,7 +524,7 @@ namespace ExtendedQuickslots
             [HarmonyPrefix]
             public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
             {
-                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant2") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot2(_playerID));
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant6") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot2(_playerID));
                 return false;
             }
         }
@@ -535,7 +535,7 @@ namespace ExtendedQuickslots
             [HarmonyPrefix]
             public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
             {
-                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant3") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot3(_playerID));
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant7") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot3(_playerID));
                 return false;
             }
         }
@@ -546,7 +546,7 @@ namespace ExtendedQuickslots
             [HarmonyPrefix]
             public static bool Prefix(int _playerID, ref bool __result, Dictionary<int, RewiredInputs> ___m_playerInputManager)
             {
-                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant4") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot4(_playerID));
+                __result = ___m_playerInputManager[_playerID].GetButtonDown("QS_Instant8") || (!ControlsInput.QuickSlotToggle2(_playerID) && ControlsInput.QuickSlotToggle1(_playerID) && ControlsInput.QuickSlot4(_playerID));
                 return false;
             }
         }
