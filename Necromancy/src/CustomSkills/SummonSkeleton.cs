@@ -75,6 +75,8 @@ namespace NecromancerSkills
 
         protected override void ActivateLocally(Character _affectedCharacter, object[] _infos)
         {
+            SL.Log("summoning...");
+
             if (SummonManager.Instance == null)
                 return; 
 
