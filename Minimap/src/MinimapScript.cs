@@ -88,7 +88,7 @@ namespace Minimap
             m_mapTransform = MenuManager.Instance.transform.Find("GeneralMenus");
 
             //SceneManager.activeSceneChanged += ActiveSceneChanged;
-            SL.OnSceneLoaded += SL_OnSceneLoaded;
+            SL.OnGameplayResumedAfterLoading += SL_OnSceneLoaded;
 
             // Setup actual minimap camera
             m_minimapCamera = new GameObject("MinimapCamera", typeof(Camera))

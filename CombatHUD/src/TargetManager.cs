@@ -49,21 +49,21 @@ namespace CombatHUD
                 child.gameObject.SetActive(false);
             }
 
-            // setup new status effects
-            var baseStatus = m_statusHolder.transform.GetChild(0);
-            var names = new string[] { "Weaken", "Sapped" };
-            for (int i = 0; i < 2; i++)
-            {
-                var newHolder = Instantiate(baseStatus.gameObject);
-                DontDestroyOnLoad(newHolder);
-                newHolder.transform.SetParent(baseStatus.parent, false);
-                newHolder.name = names[i];
+            //// setup new status effects
+            //var baseStatus = m_statusHolder.transform.GetChild(0);
+            //var names = new string[] { "Weaken", "Sapped" };
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    var newHolder = Instantiate(baseStatus.gameObject);
+            //    DontDestroyOnLoad(newHolder);
+            //    newHolder.transform.SetParent(baseStatus.parent, false);
+            //    newHolder.name = names[i];
 
-                var status = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(names[i]);
+            //    var status = ResourcesPrefabManager.Instance.GetStatusEffectPrefab(names[i]);
 
-                var icon = newHolder.GetComponentInChildren<Image>();
-                icon.sprite = status.StatusIcon;
-            }
+            //    var icon = newHolder.GetComponentInChildren<Image>();
+            //    icon.sprite = status.StatusIcon;
+            //}
 
             // Setup Infobox
             m_infoboxHolder = this.transform.Find("InfoboxHolder").gameObject;
