@@ -16,7 +16,7 @@ namespace BlacksmithsToolbox
     {
         const string GUID = "com.sinai.blacksmithstoolbox";
         const string NAME = "Blacksmith's Toolbox";
-        const string VERSION = "2.1";
+        const string VERSION = "2.3";
 
         public static Settings settings = new Settings();
         private const string SAVE_PATH = @"Mods\BlacksmithsToolbox.json";
@@ -24,12 +24,39 @@ namespace BlacksmithsToolbox
         public const int TOOLBOX_ID = 5850750;
         public Item ToolboxPrefab;
 
+        public static readonly string DROPTABLE_UID = GUID + "_droptable";
+
         internal void Awake()
         {
             LoadSettings();
 
-            SL.OnPacksLoaded += Setup;
-            SL.OnSceneLoaded += OnSceneChange;
+            SL.OnPacksLoaded += OnPacksLoadedSetup;
+
+            var table = new SL_DropTable
+            {
+                UID = DROPTABLE_UID,
+                GuaranteedDrops = new List<SL_ItemDrop>
+                {
+                    new SL_ItemDrop { DroppedItemID = TOOLBOX_ID }
+                }
+            };
+            table.ApplyTemplate();
+
+            var source = new SL_DropTableAddition
+            {
+                SelectorTargets = new List<string>
+                {
+                    "3Rx_R0XDLUmYaNWm66SVCQ", // Default blacksmiths
+                    "Zdg-qTDRa0-qOzzNSbtvzg", // Howard Brock
+                    "EYhBqM653UGhDd5kcdMFXg", // Master-Smith Tokuga (2)
+                    "QyJwLKySB0epxpEG3EBICQ_3-Finished", // Sal-Dumas
+                },
+                DropTableUIDsToAdd = new List<string>
+                {
+                    DROPTABLE_UID
+                },
+            };
+            source.ApplyTemplate();
         }
 
         private void LoadSettings()
@@ -44,14 +71,9 @@ namespace BlacksmithsToolbox
             }
         }
 
-        private void Setup()
+        private void OnPacksLoadedSetup()
         {
             SetupToolboxItem();
-        }
-
-        private void OnSceneChange()
-        {
-            SetupBlacksmith();
         }
 
         // Set up the Toolbox item prefab
@@ -76,23 +98,6 @@ namespace BlacksmithsToolbox
             var effects = new GameObject("Effects");
             effects.transform.parent = item.transform;
             effects.AddComponent<ToolboxEffect>();
-        }
-
-        // Function for setting up Blacksmith NPCs whenever a scene is loaded. Just adds our item to their pouch, if they dont already have it.
-
-        private void SetupBlacksmith()
-        {
-            List<GameObject> list = Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.name == "HumanSNPC_Blacksmith").ToList();
-
-            foreach (GameObject obj in list)
-            {
-                if (obj.GetComponentInChildren<MerchantPouch>(true) is MerchantPouch pouch
-                    && !pouch.ContainsOfSameID(TOOLBOX_ID))
-                {
-                    Item item = ItemManager.Instance.GenerateItemNetwork(TOOLBOX_ID);
-                    item.transform.parent = pouch.transform;
-                }
-            }
         }
     }
 
