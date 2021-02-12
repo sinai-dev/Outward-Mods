@@ -62,15 +62,15 @@ namespace CombatHUD
 
                 UpdateVitalText(player);
 
-                if ((bool)CombatHUD.config.GetValue(Settings.PlayerStatusTimers))
+                if (HUDConfig.Player_StatusTimers.Value)
                 {
                     try
                     {
                         UpdatePlayerStatuses(i, ref statusInfos);
                     }
-                    catch //(Exception e)
+                    catch (Exception e)
                     {
-                        //Debug.LogError("Error updating statuses: " + e.Message);
+                        Debug.LogError("[CombatHUD] Error updating statuses: " + e.Message);
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace CombatHUD
             // update text holders
             for (int i = 0; i < m_labelHolders.Count; i++)
             {
-                if (i >= statusInfos.Count || !(bool)CombatHUD.config.GetValue(Settings.PlayerStatusTimers))
+                if (i >= statusInfos.Count || !HUDConfig.Player_StatusTimers.Value)
                 {
                     if (m_labelHolders[i].activeSelf)
                     {
@@ -134,9 +134,9 @@ namespace CombatHUD
             manaText.fontSize = 14;
             stamText.fontSize = 14;
 
-            healthBar.TextValueDisplayed = (bool)CombatHUD.config.GetValue(Settings.PlayerVitals);
-            manaBar.TextValueDisplayed = (bool)CombatHUD.config.GetValue(Settings.PlayerVitals);
-            stamBar.TextValueDisplayed = (bool)CombatHUD.config.GetValue(Settings.PlayerVitals);
+            healthBar.TextValueDisplayed = HUDConfig.Player_NumericalVitals.Value;
+            manaBar.TextValueDisplayed = HUDConfig.Player_NumericalVitals.Value;
+            stamBar.TextValueDisplayed = HUDConfig.Player_NumericalVitals.Value;
         }
 
         private void UpdatePlayerStatuses(int splitID, ref List<StatusEffectInfo> statusInfos)

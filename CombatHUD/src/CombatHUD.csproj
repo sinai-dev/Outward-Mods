@@ -18,7 +18,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Release\BepInEx\plugins\CombatHUD\</OutputPath>
+    <OutputPath>..\Release\BepInEx\plugins\sinai-dev CombatHUD\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -59,12 +59,8 @@
       <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\Outward_Data\Managed\netstandard.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharedModConfig">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SharedModConfig\SharedModConfig.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SideLoader">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SideLoader.dll</HintPath>
+      <HintPath>..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\sinai-dev SideLoader\SideLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -123,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HUDConfig.cs" />
     <Compile Include="DamageLabels.cs" />
     <Compile Include="CombatHUD.cs" />
     <Compile Include="Hooks.cs" />

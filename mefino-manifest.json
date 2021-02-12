@@ -1,0 +1,20 @@
+{
+    "author": "sinai-dev",
+	"packages": [
+		{
+          "name": "CombatHUD",
+          "version": "5.0.0",
+          "description": "Provides some extra combat-related HUD features such as damage labels, numerical vitals, target enemy infobox, etc.",
+          "tags": [
+            "UI"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": ""
+        }
+	]
+}

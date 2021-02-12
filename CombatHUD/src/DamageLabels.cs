@@ -43,7 +43,7 @@ namespace CombatHUD
         internal void Update()
         {
             //cleanup dead labels first
-            var maxLifespan = (float)CombatHUD.config.GetValue(Settings.LabelLifespan);
+            var maxLifespan = HUDConfig.DamageLabel_Lifespan.Value;
             for (int z = 0; z < ActiveLabels.Count; z++)
             {
                 if (Time.time - ActiveLabels[z].CreationTime > maxLifespan || !ActiveLabels[z].Target)
@@ -53,9 +53,9 @@ namespace CombatHUD
                 }
             }
 
-            float ceiling = (float)CombatHUD.config.GetValue(Settings.DamageCeiling);
-            int minsize = (int)(float)CombatHUD.config.GetValue(Settings.MinFontSize);
-            int maxsize = (int)(float)CombatHUD.config.GetValue(Settings.MaxFontSize);
+            float ceiling = HUDConfig.DamageLabel_DamageCeiling.Value;
+            int minsize = HUDConfig.DamageLabel_MinFontSize.Value;
+            int maxsize = HUDConfig.DamageLabel_MaxFontSize.Value;
 
             if (maxsize < minsize)
                 maxsize = minsize;
@@ -94,7 +94,7 @@ namespace CombatHUD
                         var labelInfo = ActiveLabels[j - offset];
                         var labelHolder = LabelHolders[j];
 
-                        var pos = (bool)CombatHUD.config.GetValue(Settings.LabelsStayAtHitPos) ? labelInfo.HitWorldPos : labelInfo.Target.CenterPosition;
+                        var pos = HUDConfig.DamageLabel_StayAtHitPos.Value ? labelInfo.HitWorldPos : labelInfo.Target.CenterPosition;
 
                         float damageStrength = (float)((decimal)labelInfo.Damage / (decimal)ceiling); // set damage "strength"
                         float time = Time.time - labelInfo.CreationTime;
@@ -103,7 +103,7 @@ namespace CombatHUD
                         var screenPos = camera.WorldToViewportPoint(pos + new Vector3(0, timeOffset));
                         float distance = Vector3.Distance(player.AssignedCharacter.transform.position, pos);
 
-                        if (IsScreenPosVisible(ref screenPos, i) && distance < (float)CombatHUD.config.GetValue(Settings.MaxDistance))
+                        if (IsScreenPosVisible(ref screenPos, i) && distance < HUDConfig.DamageLabel_MaxDistance.Value)
                         {
                             screenPos += new Vector3
                             (
@@ -171,18 +171,18 @@ namespace CombatHUD
 
         public static void AddDamageLabel(DamageList damageList, Vector3 hitPosition, Character target)
         {
-            if (damageList.TotalDamage < (float)CombatHUD.config.GetValue(Settings.MinimumDamage))
+            if (damageList.TotalDamage < HUDConfig.DamageLabel_MinimumDamage.Value)
                 return;
 
-            if (target.IsAI && !(bool)CombatHUD.config.GetValue(Settings.PlayerDamageLabels))
+            if (target.IsAI && !HUDConfig.Player_DamageLabels.Value)
                 return;
             
-            if (!target.IsAI && !(bool)CombatHUD.config.GetValue(Settings.EnemyDamageLabels))
+            if (!target.IsAI && !HUDConfig.Enemy_DamageLabels.Value)
                 return;
 
             Color damagecolor = Color.white;
             
-            if (!(bool)CombatHUD.config.GetValue(Settings.DisableColors))
+            if (!HUDConfig.DamageLabel_DisableColors.Value)
             {
                 float highest = 0f;
                 foreach (DamageType type in damageList.List)

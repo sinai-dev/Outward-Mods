@@ -124,7 +124,7 @@ namespace CombatHUD
             {
                 UpdateTargetHUD(target);
 
-                if ((bool)CombatHUD.config.GetValue(Settings.EnemyInfobox))
+                if (HUDConfig.Enemy_Infobox.Value)
                     UpdateInfobox(target);
 
                 EnableHolders();
@@ -137,13 +137,13 @@ namespace CombatHUD
             float y;
             if (Split_ID == 0)
             {
-                x = (float)CombatHUD.config.GetValue(Settings.Infobox_P1_X);
-                y = (float)CombatHUD.config.GetValue(Settings.Infobox_P1_Y);
+                x = HUDConfig.Player1_InfoboxHorizontal.Value;
+                y = HUDConfig.Player1_InfoboxVertical.Value;
             }
             else
             {
-                x = (float)CombatHUD.config.GetValue(Settings.Infobox_P2_X);
-                y = (float)CombatHUD.config.GetValue(Settings.Infobox_P2_Y);
+                x = HUDConfig.Player2_InfoboxHorizontal.Value;
+                y = HUDConfig.Player2_InfoboxVertical.Value;
             }
 
             var rect = m_infoboxHolder.GetComponent<RectTransform>();
@@ -175,7 +175,7 @@ namespace CombatHUD
         private void UpdateTargetHUD(Character target)
         {
             // update health text
-            if ((bool)CombatHUD.config.GetValue(Settings.EnemyHealth))
+            if (HUDConfig.Enemy_ShowHealth.Value)
             {
                 if (!m_targetHealthText.gameObject.activeSelf)
                     m_targetHealthText.gameObject.SetActive(true);
@@ -186,7 +186,7 @@ namespace CombatHUD
             else if (m_targetHealthText.gameObject.activeSelf)
                 m_targetHealthText.gameObject.SetActive(false);
 
-            if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatus))
+            if (HUDConfig.Enemy_ShowStatuses.Value)
             {
                 if (!m_statusHolder.activeSelf)
                     m_statusHolder.SetActive(true);
@@ -218,7 +218,7 @@ namespace CombatHUD
                     displayDict.Add(status.IdentifierName, 100f);
             }
 
-            if ((bool)CombatHUD.config.GetValue(Settings.EnemyBuildup))
+            if (HUDConfig.Enemy_StatusBuildup.Value)
             {
                 var buildupDict = (IDictionary)At.GetField(target.StatusEffectMngr, "m_statusBuildUp");
                 foreach (string name in buildupDict.Keys)
@@ -287,7 +287,7 @@ namespace CombatHUD
 
                     if (displayDict[entry.Key] >= 100f)
                     {
-                        if ((bool)CombatHUD.config.GetValue(Settings.EnemyStatusTimers))
+                        if (HUDConfig.Enemy_StatusTimers.Value)
                         {
                             var status = statuses.Find(it => it.IdentifierName == entry.Key);
 
@@ -396,7 +396,7 @@ namespace CombatHUD
                     m_TargetHUDHolder.SetActive(true);
             }
 
-            if (!(bool)CombatHUD.config.GetValue(Settings.EnemyInfobox))
+            if (!HUDConfig.Enemy_Infobox.Value)
             {
                 if (m_infoboxHolder.activeSelf)
                     m_infoboxHolder.SetActive(false);
