@@ -9,6 +9,7 @@ Sinai's mods for Outward.
 - [CombatHUD](#combathud)
 - [Combat Dummy](#combat-dummy)
 - [Mana Bow](#mana-bow)
+- [Necromancer](#necromancer)
 
 ## CombatHUD
 Combat HUD provides a number of combat-related HUD tools, all of which can be toggled on/off and customized:
