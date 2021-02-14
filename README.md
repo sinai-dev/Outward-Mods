@@ -8,6 +8,7 @@ Sinai's mods for Outward.
 ### Contents
 - [CombatHUD](#combathud)
 - [Combat Dummy](#combat-dummy)
+- [Custom Multiplayer Limit](#custom-multiplayer-limit)
 - [Mana Bow](#mana-bow)
 - [Necromancer](#necromancer)
 
