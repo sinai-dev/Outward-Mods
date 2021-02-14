@@ -15,7 +15,7 @@
           "conflicts_with": [
           ],
           "require_sync": false,
-          "download_filename": "CombatHUD"
+          "download_filename": ""
         },
 		
 		{
@@ -32,7 +32,24 @@
           "conflicts_with": [
           ],
           "require_sync": false,
-          "download_filename": "Combat.Dummy"
+          "download_filename": ""
+        },
+		
+		{
+          "name": "Custom Multiplayer Limit",
+          "version": "3.1.0",
+          "required_version": "3.1.0",
+          "description": "Allows you to set a custom player limit for online co-op when you are the host.",
+          "tags": [
+            "Utility"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": ""
         },
 		
 		{
@@ -49,7 +66,7 @@
           "conflicts_with": [
           ],
           "require_sync": false,
-          "download_filename": "Mana.Bow"
+          "download_filename": ""
         },
 		
 		{
@@ -66,7 +83,7 @@
           "conflicts_with": [
           ],
           "require_sync": false,
-          "download_filename": "Necromancer"
+          "download_filename": ""
         }
 	]
 }

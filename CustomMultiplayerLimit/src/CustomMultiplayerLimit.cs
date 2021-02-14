@@ -4,13 +4,12 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using SharedModConfig;
 using HarmonyLib;
-using SideLoader;
 using BepInEx;
-using SideLoader.Helpers;
 using UnityEngine.UI;
 using UnityEngine;
+using BepInEx.Configuration;
+using SideLoader;
 
 namespace CustomMultiplayerLimit
 {
@@ -27,25 +26,22 @@ namespace CustomMultiplayerLimit
         public const string NAME = "Custom Multiplayer Limit";
         public const string VERSION = "3.1";
 
-        public static ModConfig config;
-
-        internal static int s_limitInt;
-
-        static void UpdateLimit() 
-        {
-            s_limitInt = (int)(float)config.GetValue(Settings.PlayerLimit); 
-        }
+        internal static int PlayerLimit => s_playerLimit?.Value ?? 2;
+        internal static ConfigEntry<int> s_playerLimit;
 
         internal void Awake()
         {
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
 
-            config = SetupConfig();
-            config.Register();
+            s_playerLimit = Config.Bind("Player Limit Settings", "Max players in room", 4, 
+                new ConfigDescription("The maximum amount of allowed players in your room, when you are the host.", new AcceptableValueRange<int>(1, 32)));
 
-            UpdateLimit();
-            config.OnSettingsSaved += UpdateLimit;
+            //config = SetupConfig();
+            //config.Register();
+
+            //UpdateLimit();
+            //config.OnSettingsSaved += UpdateLimit;
         }
 
         internal void Update()
@@ -57,39 +53,13 @@ namespace CustomMultiplayerLimit
             if (PhotonNetwork.inRoom && PhotonNetwork.isMasterClient)
             {
                 // if the room limit is not set to our custom value, do that.
-                if (PhotonNetwork.room.MaxPlayers != s_limitInt)
-                    PhotonNetwork.room.MaxPlayers = s_limitInt;
+                if (PhotonNetwork.room.MaxPlayers != PlayerLimit)
+                    PhotonNetwork.room.MaxPlayers = PlayerLimit;
 
                 // not sure if this is necessary
-                if (!PhotonNetwork.room.IsOpen && PhotonNetwork.room.PlayerCount < s_limitInt)
+                if (!PhotonNetwork.room.IsOpen && PhotonNetwork.room.PlayerCount < PlayerLimit)
                     PhotonNetwork.room.IsOpen = true;
             }
-        }
-
-        // =========== settings =============
-
-        private ModConfig SetupConfig()
-        {
-            var newConfig = new ModConfig
-            {
-                ModName = "Custom Multiplayer Limit",
-                SettingsVersion = 1.0,
-                Settings = new List<BBSetting>
-                {
-                    new FloatSetting
-                    {
-                        Name = Settings.PlayerLimit,
-                        Description = "Max number of Players in room (when you are host)",
-                        DefaultValue = 4f,
-                        RoundTo = 0,
-                        MinValue = 1f,
-                        MaxValue = 20f,
-                        ShowPercent = false
-                    }
-                }
-            };
-
-            return newConfig;
         }
 
         // pause menu hook credit to Ashnal and Faedar
