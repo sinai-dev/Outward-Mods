@@ -28,6 +28,13 @@ This mod allows you to spawn customizable Combat Dummies, either for testing bui
 * Once you have loaded a character and set the keybinding, press it to open the menu and start practicing / testing against dummies. There is no limit to how many you can spawn at once.
 * There is quite a bit of freedom in what you can set on the dummy, including making it an Ally or Enemy, setting its weapon, etc.
 
+## Custom Multiplayer Limit
+Allows you to set a custom multiplayer limit for online play when you are the host.
+
+The config can be managed through the [Configuration Manager](https://github.com/Mefino/BepInEx.ConfigurationManager), or by editing the file at `BepInEx\config\com.sinai.custommultiplayerlimit.cfg`.
+
+This mod makes no changes to game mechanics or balancing, the only thing it does is raise the player cap and attempts to fix some bugs.
+
 ## Mana Bow
 The Mana Bow mod adds the items `Mana Bow`, `Horror Mana Bow` and `Mana Arrow` to the game.
 
