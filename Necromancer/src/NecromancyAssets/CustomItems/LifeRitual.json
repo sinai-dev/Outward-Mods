@@ -1,0 +1,29 @@
+{
+    "New_ItemID": 8890105,
+    "CloneTarget_ItemID": 8100150,
+    "AssetBundle_Name": "",
+    "VisualPrefabName": "",
+    "ArmorVisualPrefabName": "",
+    "HelmetHideFace": false,
+    "HelmetHideHair": false,
+    "ItemIconName": "SummonedFrenzyIcon",
+	"SkillTreeIconName": "SummonedFrenzySmall",
+    "Visual_PosOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Visual_RotOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Name": "Life Ritual",
+    "Description": "Channel life-force into your current Summon, healing them and sending them into a frenzied rage.\n\nIf you have multiple summons, the weakest will be chosen.",
+    "Durability": 1,
+    "BaseValue": 1,
+    "Weight": 1.0,
+	"Cooldown": 30.0,
+	"ManaCost": 15.0,
+	"StaminaCost": 0
+}

@@ -1,0 +1,26 @@
+{
+    "New_ItemID": 8999050,
+    "CloneTarget_ItemID": 8000050,
+    "AssetBundle_Name": "",
+    "VisualPrefabName": "",
+    "ArmorVisualPrefabName": "",
+    "HelmetHideFace": false,
+    "HelmetHideHair": false,
+    "ItemIconName": "DeathCloudIcon",
+	"SkillTreeIconName": "DeathCloudSmall",
+    "Visual_PosOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Visual_RotOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Name": "Plague Aura Stone",
+    "Description": "Supposed to be an activated item (plague aura).",
+    "Durability": 1,
+    "BaseValue": 1,
+    "Weight": 1.0
+}

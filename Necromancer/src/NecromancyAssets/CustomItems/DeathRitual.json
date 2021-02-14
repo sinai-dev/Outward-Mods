@@ -1,0 +1,29 @@
+{
+    "New_ItemID": 8890106,
+    "CloneTarget_ItemID": 8100220,
+    "AssetBundle_Name": "",
+    "VisualPrefabName": "",
+    "ArmorVisualPrefabName": "",
+    "HelmetHideFace": false,
+    "HelmetHideHair": false,
+    "ItemIconName": "DetonationIcon",
+	"SkillTreeIconName": "DetonationSmall",
+    "Visual_PosOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Visual_RotOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Name": "Death Ritual",
+    "Description": "Sacrifice your Summon to produce a violent magical explosion from its corpse.\n\nIf you have multiple Summons, the weakest will be chosen.",
+    "Durability": 1,
+    "BaseValue": 1,
+    "Weight": 1.0,
+	"Cooldown": 15.0,
+	"ManaCost": 15.0,
+	"StaminaCost": 0
+}

@@ -1,0 +1,29 @@
+{
+    "New_ItemID": 8890103,
+    "CloneTarget_ItemID": 8100150,
+    "AssetBundle_Name": "",
+    "VisualPrefabName": "",
+    "ArmorVisualPrefabName": "",
+    "HelmetHideFace": false,
+    "HelmetHideHair": false,
+    "ItemIconName": "ResurrectIcon",
+	"SkillTreeIconName": "ResurrectSmall",
+    "Visual_PosOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Visual_RotOffset": {
+        "x": -1.0,
+        "y": -1.0,
+        "z": -1.0
+    },
+    "Name": "Summon",
+    "Description": "Syphon some of your life into a Skeleton Ally to fight alongside you.\n\nCosts 10% of your maximum Health, but will not burn your Health.",
+    "Durability": 1,
+    "BaseValue": 1,
+    "Weight": 1.0,
+	"Cooldown": 10.0,
+	"ManaCost": 10.0,
+	"StaminaCost": 0
+}

@@ -5,7 +5,7 @@
           "name": "CombatHUD",
           "version": "5.0.0",
           "required_version": "5.0.0",
-          "description": "Provides some extra combat-related HUD features such as damage labels, numerical vitals, target enemy infobox, etc.",
+          "description": "Provides some extra combat-related HUD features such as damage labels, numerical vitals, target enemy infobox, etc. Everything can be customized and toggled.",
           "tags": [
             "UI"
           ],
@@ -15,7 +15,58 @@
           "conflicts_with": [
           ],
           "require_sync": false,
-          "download_filename": ""
+          "download_filename": "CombatHUD"
+        },
+		
+		{
+          "name": "Combat Dummy",
+          "version": "1.1.0",
+          "required_version": "1.1.0",
+          "description": "Allows you to spawn customizable Combat Dummies for testing or practice. Set an in-game keybinding to access the menu.",
+          "tags": [
+            "Characters", "Utility"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": "Combat.Dummy"
+        },
+		
+		{
+          "name": "Mana Bow",
+          "version": "2.0.0",
+          "required_version": "2.0.0",
+          "description": "Adds Mana Bows to the game: special bows which require no Arrows, but instead consume Mana to shoot.",
+          "tags": [
+            "Items", "Mechanics"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": "Mana.Bow"
+        },
+		
+		{
+          "name": "Necromancer",
+          "version": "3.0.0",
+          "required_version": "3.0.0",
+          "description": "Adds a new skill tree focused on summoning undead creatures to fight with you.",
+          "tags": [
+            "Classes", "Skills", "Mechanics"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": "Necromancer"
         }
 	]
 }

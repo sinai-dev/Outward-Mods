@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Skill xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <EffectBehaviour>NONE</EffectBehaviour>
+  <Target_ItemID>8200040</Target_ItemID>
+  <New_ItemID>8890100</New_ItemID>
+  <Name>Noxious Tendrils</Name>
+  <Description>Release a torrent of magical tendrils. Resurrected enemies under your control will also cast this spell.
+  
+Successful hits will heal you by a small amount.</Description>
+  <LegacyItemID>-1</LegacyItemID>
+  <IsPickable>false</IsPickable>
+  <IsUsable>false</IsUsable>
+  <QtyRemovedOnUse>0</QtyRemovedOnUse>
+  <GroupItemInDisplay>false</GroupItemInDisplay>
+  <HasPhysicsWhenWorld>false</HasPhysicsWhenWorld>
+  <RepairedInRest>true</RepairedInRest>
+  <BehaviorOnNoDurability>NotSet</BehaviorOnNoDurability>
+  <CastType>Spark</CastType>
+  <CastModifier>Immobilized</CastModifier>
+  <CastLocomotionEnabled>false</CastLocomotionEnabled>
+  <MobileCastMovementMult>-1</MobileCastMovementMult>
+  <CastSheatheRequired>0</CastSheatheRequired>
+  <Tags />
+  <EffectTransforms />
+  <Cooldown>2</Cooldown>
+  <StaminaCost>0</StaminaCost>
+  <ManaCost>5</ManaCost>
+  <DurabilityCost>0</DurabilityCost>
+  <DurabilityCostPercent>0</DurabilityCostPercent>
+  <RequiredItems />
+  <AmmunitionTypes />
+  <RequiredOffHandTypes />
+  <RequiredWeaponTypes />
+  <RequiredWeaponTags />
+  <RequireImbue>false</RequireImbue>
+</SL_Skill>
