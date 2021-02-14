@@ -3,7 +3,8 @@
 	"packages": [
 		{
           "name": "CombatHUD",
-          "version": "5.0.0",
+          "version": "5.0.1",
+          "required_version": "5.0.0",
           "description": "Provides some extra combat-related HUD features such as damage labels, numerical vitals, target enemy infobox, etc.",
           "tags": [
             "UI"

@@ -74,7 +74,7 @@ namespace CombatHUD
 
         private void Setup()
         {
-            var packName = "CombatHUD";
+            var packName = "sinai-dev CombatHUD";
 
             var pack = SL.GetSLPack(packName);
             var bundle = pack.AssetBundles["combathud"];
