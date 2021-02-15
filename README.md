@@ -14,6 +14,7 @@ Sinai's mods for Outward.
 - [Mixed Grip](#mixed-grip)
 - [More Map Details](#more-map-details)
 - [Necromancer](#necromancer)
+- [Speedrun Timer](#speedrun-timer)
 
 ## CombatHUD
 Combat HUD provides a number of combat-related HUD tools, all of which can be toggled on/off and customized:
