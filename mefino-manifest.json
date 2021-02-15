@@ -36,6 +36,23 @@
         },
 		
 		{
+          "name": "Combat Tweaks",
+          "version": "3.0.0",
+          "required_version": "3.0.0",
+          "description": "Some tweaks to combat that I prefer to play with, such as allowing dodge cancelling and adjusting the hit-stop effect.",
+          "tags": [
+            "Balancing", "Mechanics", "Utility"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": false,
+          "download_filename": ""
+        },
+		
+		{
           "name": "Custom Multiplayer Limit",
           "version": "3.1.0",
           "required_version": "3.1.0",
@@ -48,7 +65,7 @@
           ],
           "conflicts_with": [
           ],
-          "require_sync": false,
+          "require_sync": true,
           "download_filename": ""
         },
 		
@@ -59,6 +76,40 @@
           "description": "Adds Mana Bows to the game: special bows which require no Arrows, but instead consume Mana to shoot.",
           "tags": [
             "Items", "Mechanics"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": true,
+          "download_filename": ""
+        },
+		
+		{
+          "name": "Mixed Grip",
+          "version": "3.3.0",
+          "required_version": "2.0.0",
+          "description": "Allows you to swap between 1H and 2H grip for Melee weapons, similar to Dark Souls.",
+          "tags": [
+            "Mechanics"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": true,
+          "download_filename": ""
+        },
+		
+		{
+          "name": "More Map Details",
+          "version": "1.5.0",
+          "required_version": "1.5.0",
+          "description": "Adds extra details to the region maps such as Player and Enemy markers, Bag markers, etc.",
+          "tags": [
+            "Utility"
           ],
           "dependencies": [
             "sinai-dev SideLoader"
@@ -82,7 +133,40 @@
           ],
           "conflicts_with": [
           ],
-          "require_sync": false,
+          "require_sync": true,
+          "download_filename": ""
+        },
+		
+		{
+          "name": "PvP",
+          "version": "2.5.0",
+          "required_version": "2.5.0",
+          "description": "A helper for PvP and Friendly Fire in Outward, including deathmatch and battle royale.",
+          "tags": [
+            "Utility", "Mechanics"
+          ],
+          "dependencies": [
+            "sinai-dev SideLoader"
+          ],
+          "conflicts_with": [
+          ],
+          "require_sync": true,
+          "download_filename": ""
+        },
+		
+		{
+          "name": "Speedrun Timer",
+          "version": "2.0.0",
+          "required_version": "2.5.0",
+          "description": "An in-game speedrun timer which pauses when loading. Cannot run if any other mods are enabled (apart from Configuration Manager), or if Debug Mode is enabled.",
+          "tags": [
+            "Utility"
+          ],
+          "dependencies": [
+          ],
+          "conflicts_with": [;
+          ],
+          "require_sync": true,
           "download_filename": ""
         }
 	]

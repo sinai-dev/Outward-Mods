@@ -63,6 +63,8 @@ namespace CombatHUD
                 new ConfigDescription("Maximum distance from player to show damage labels", new AcceptableValueRange<float>(0f, 250f)));
             DamageLabel_DamageCeiling = config.Bind(CTG_LABELS, "Damage Scale Ceiling", 50f, 
                 new ConfigDescription("Highest damage number you want to scale to (for label size and speed)", new AcceptableValueRange<float>(10f, 500f)));
+            DamageLabel_MinimumDamage = config.Bind(CTG_LABELS, "Minimum damage", 0f,
+                new ConfigDescription("The minimum damage to display. Anything below this value will be hidden.", new AcceptableValueRange<float>(0f, 100f)));
             DamageLabel_Lifespan = config.Bind(CTG_LABELS, "Label Lifespan", 2.5f, 
                 new ConfigDescription("How long damage labels are shown for", new AcceptableValueRange<float>(0.5f, 5f)));
 

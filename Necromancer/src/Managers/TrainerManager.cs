@@ -49,7 +49,7 @@ namespace Necromancer
 
             // get "Trainer" component, and set the SkillTreeUID to our custom tree UID
             var trainerComp = trainer.GetComponentInChildren<Trainer>();
-            At.SetField(trainerComp, "m_skillTreeUID", "com.sinai.necromancer");
+            At.SetField(trainerComp, "m_skillTreeUID", new UID("com.sinai.necromancer"));
 
             // setup dialogue tree
             var graphController = trainer.GetComponentInChildren<DialogueTreeController>();
