@@ -87,9 +87,6 @@ namespace SpeedrunTimer
 
         private static IEnumerator DelayedSetupCoroutine()
         {
-            while (ResourcesPrefabManager.Instance == null || !ResourcesPrefabManager.Instance.Loaded)
-                yield return new WaitForSeconds(1f);
-
             s_doneInitCheck = true;
 
             if (Global.CheatsEnabled)
