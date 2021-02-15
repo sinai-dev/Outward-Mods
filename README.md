@@ -14,6 +14,7 @@ Sinai's mods for Outward.
 - [Mixed Grip](#mixed-grip)
 - [More Map Details](#more-map-details)
 - [Necromancer](#necromancer)
+- [PvP](#pvp)
 - [Speedrun Timer](#speedrun-timer)
 
 ## CombatHUD
