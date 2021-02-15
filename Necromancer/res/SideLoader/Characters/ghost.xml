@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Character xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  <!-- The UID is important! Make sure you set a unique identifier. -->
+  <!-- This UID is used by OnSpawn callbacks, and can also be used for the actual Character UID. -->
+  <UID>com.sinai.necromancer.ghost</UID>
+
+  <!-- One of: Temporary, Scene or Follower -->
+  <SaveType>Follower</SaveType>
+
+  <!-- Character's Name -->
+  <Name>Ghost</Name>
+  
+  <DestroyOnDeath>true</DestroyOnDeath>
+  
+  <!-- Generally use either "NONE", "Player" or "Bandits", there are other options too (Character.Factions) -->
+  <Faction>Player</Faction>
+  
+  <!-- Human character visual data. Corresponds to Character Creation options. -->
+  <CharacterVisualsData>
+    <Gender>Male</Gender>
+    <!-- Skin Index is ethnicity (0 aurai / 1 tramon / 2 kazite, -999 trog) -->
+    <SkinIndex>1</SkinIndex>
+    <HeadVariationIndex>3</HeadVariationIndex>
+    <HairColorIndex>1</HairColorIndex>
+    <HairStyleIndex>2</HairStyleIndex>
+  </CharacterVisualsData>
+
+  <!-- Choose the gear item IDs here -->
+  <Weapon_ID>2598500</Weapon_ID>
+  <Shield_ID>-1</Shield_ID>
+  <Helmet_ID>3200041</Helmet_ID>
+  <Chest_ID>3200040</Chest_ID>
+  <Boots_ID>3200042</Boots_ID>
+  <Backpack_ID>5400010</Backpack_ID>
+
+  <!-- Set Character Stats here -->
+  <Health>250</Health>
+  <HealthRegen>-2.5</HealthRegen>
+  <ImpactResist>0</ImpactResist>
+  <Protection>0</Protection>
+  <Barrier>0</Barrier>
+  
+  <Damage_Resists>
+    <float>0</float> <!-- phys -->
+    <float>0</float> <!-- ether -->
+    <float>40</float> <!-- decay -->
+    <float>0</float> <!-- light -->
+    <float>0</float> <!-- frost -->
+    <float>0</float> <!-- fire -->
+  </Damage_Resists>
+  
+  <Damage_Bonus>
+    <float>0</float> <!-- phys -->
+    <float>0</float> <!-- ether -->
+    <float>0</float> <!-- decay -->
+    <float>0</float> <!-- light -->
+    <float>0</float> <!-- frost -->
+    <float>0</float> <!-- fire -->
+  </Damage_Bonus>
+  
+  <!-- This corresponds to Tags on statuses (eg Bleeding, Poison)... -->
+  <Status_Immunity>
+    <string>Bleeding</string>
+    <string>Poison</string>
+  </Status_Immunity>
+  
+  <AI xsi:type="SL_CharacterAIMelee">
+    <CanDodge>true</CanDodge>
+    <CanBlock>true</CanBlock>
+    <CanWanderFar>true</CanWanderFar>
+    <ForceNonCombat>false</ForceNonCombat>
+    <AIContagionRange>20</AIContagionRange>
+    <Wander_Speed>1.1</Wander_Speed>
+    <Wander_FollowPlayer>false</Wander_FollowPlayer>
+    <Wander_Type>Wander</Wander_Type>
+    <Suspicious_Speed>1.75</Suspicious_Speed>
+    <Suspicious_Duration>5</Suspicious_Duration>
+    <Suspicious_Range>30</Suspicious_Range>
+    <Suspicious_TurnModif>0.9</Suspicious_TurnModif>
+    <Combat_ChargeTime>
+      <x>4</x>
+      <y>8</y>
+    </Combat_ChargeTime>
+    <Combat_TargetVulnerableChargeModifier>0.5</Combat_TargetVulnerableChargeModifier>
+    <Combat_ChargeAttackRangeMulti>1</Combat_ChargeAttackRangeMulti>
+    <Combat_ChargeTimeToAttack>0.4</Combat_ChargeTimeToAttack>
+    <Combat_ChargeStartRangeMult>
+      <x>0.8</x>
+      <y>3</y>
+    </Combat_ChargeStartRangeMult>
+    <Combat_SpeedModifiers>
+      <float>0.8</float>
+      <float>1.3</float>
+      <float>1.7</float>
+    </Combat_SpeedModifiers>
+    <Combat_ChanceToAttack>75</Combat_ChanceToAttack>
+    <Combat_KnowsUnblockable>true</Combat_KnowsUnblockable>
+    <Combat_DodgeCooldown>3</Combat_DodgeCooldown>
+    <Combat_AttackPatterns>
+      <AttackPattern>
+        <ID>0</ID>
+        <Chance>20</Chance>
+        <CurrentChance>0</CurrentChance>
+        <Range>
+          <x>0.9</x>
+          <y>2.5</y>
+        </Range>
+        <HPPercent>
+          <x>-1</x>
+          <y>-1</y>
+        </HPPercent>
+        <Attacks>
+          <AtkTypes>Normal</AtkTypes>
+        </Attacks>
+      </AttackPattern>
+      <AttackPattern>
+        <ID>1</ID>
+        <Chance>15</Chance>
+        <CurrentChance>0</CurrentChance>
+        <Range>
+          <x>0</x>
+          <y>2.9</y>
+        </Range>
+        <HPPercent>
+          <x>-1</x>
+          <y>-1</y>
+        </HPPercent>
+        <Attacks>
+          <AtkTypes>Normal</AtkTypes>
+          <AtkTypes>Normal</AtkTypes>
+        </Attacks>
+      </AttackPattern>
+      <AttackPattern>
+        <ID>2</ID>
+        <Chance>30</Chance>
+        <CurrentChance>0</CurrentChance>
+        <Range>
+          <x>0</x>
+          <y>1.5</y>
+        </Range>
+        <HPPercent>
+          <x>-1</x>
+          <y>-1</y>
+        </HPPercent>
+        <Attacks>
+          <AtkTypes>Special</AtkTypes>
+        </Attacks>
+      </AttackPattern>
+      <AttackPattern>
+        <ID>3</ID>
+        <Chance>30</Chance>
+        <CurrentChance>0</CurrentChance>
+        <Range>
+          <x>0</x>
+          <y>1.5</y>
+        </Range>
+        <HPPercent>
+          <x>-1</x>
+          <y>-1</y>
+        </HPPercent>
+        <Attacks>
+          <AtkTypes>Normal</AtkTypes>
+          <AtkTypes>Special</AtkTypes>
+        </Attacks>
+      </AttackPattern>
+      <AttackPattern>
+        <ID>4</ID>
+        <Chance>30</Chance>
+        <CurrentChance>0</CurrentChance>
+        <Range>
+          <x>0</x>
+          <y>1.3</y>
+        </Range>
+        <HPPercent>
+          <x>-1</x>
+          <y>-1</y>
+        </HPPercent>
+        <Attacks>
+          <AtkTypes>Normal</AtkTypes>
+          <AtkTypes>Normal</AtkTypes>
+          <AtkTypes>Special</AtkTypes>
+        </Attacks>
+      </AttackPattern>
+    </Combat_AttackPatterns>
+  </AI>
+  
+</SL_Character>

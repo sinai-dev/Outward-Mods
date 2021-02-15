@@ -36,14 +36,9 @@ namespace Combat_Dummy
         internal void OnGUI()
         {
             if (!ShowMenu)
-            {
                 return;
-            }
 
-            //var orig = GUI.skin;
-            //GUI.skin = SideLoader.UI.UIStyles.WindowSkin;
             m_rect = GUI.Window(-5, m_rect, WindowFunction, "Combat Dummy Menu");
-            //GUI.skin = orig;
         }
 
         private void WindowFunction(int id)
@@ -59,6 +54,7 @@ namespace Combat_Dummy
                     return;
                 }
             }
+
             if (GUI.Button(new Rect(m_rect.width - 33, 2, 30, 20), "X"))
             {
                 ShowMenu = !ShowMenu;
@@ -71,13 +67,9 @@ namespace Combat_Dummy
             var inmenu = !NetworkLevelLoader.Instance.AllPlayerDoneLoading || SceneManagerHelper.ActiveSceneName.ToLower().Contains("mainmenu");
 
             if (m_windowPage == 0)
-            {
                 MainPage(inmenu);
-            }
             else
-            {
                 InspectPage(inmenu);
-            }
 
             GUILayout.EndScrollView();
 
@@ -130,18 +122,6 @@ namespace Combat_Dummy
                             m_dummyCharacter = dummy;
                             m_windowPage = 1;
                         }
-                        //GUILayout.Label("AI:", GUILayout.Width(20));
-                        //GUI.color = Color.green;
-                        //if (GUILayout.Button("Enable", GUILayout.Width(60)))
-                        //{
-                        //    dummy.SetAIEnabled(true);
-                        //}
-                        //GUI.color = Color.red;
-                        //if (GUILayout.Button("Disable", GUILayout.Width(60)))
-                        //{
-                        //    dummy.SetAIEnabled(false);
-                        //}
-                        //GUI.color = Color.white;
                         GUILayout.EndHorizontal();
                     }
                 }
@@ -160,27 +140,19 @@ namespace Combat_Dummy
             }
             else
             {
-                //AIButtons();
-
                 if (!m_dummyCharacter.CharacterExists)
                 {
                     if (inmenu)
-                    {
                         m_windowPage = 0;
-                    }
 
                     GUILayout.Label("Character has despawned...");
                 }
                 else
-                {
                     EditInspectingDummy();
-                }
 
                 GUI.color = Color.green;
                 if (GUILayout.Button("Spawn / Apply"))
-                {
                     m_dummyCharacter.SpawnOrReset();
-                }
 
                 GUILayout.Space(10);
 
@@ -220,27 +192,6 @@ namespace Combat_Dummy
             BoldTitle("Damage Bonus");
             DamageTypesEdit(ref cfg.Damage_Bonus);
         }
-
-        //private void AIButtons()
-        //{
-        //    if (m_dummyCharacter != null && m_dummyCharacter.CharacterExists)
-        //    {
-        //        GUILayout.BeginHorizontal();
-        //        GUILayout.Label("Combat AI:");
-        //        GUI.color = Color.green;
-        //        if (GUILayout.Button("Enable"))
-        //        {
-        //            m_dummyCharacter.SetAIEnabled(true);
-        //        }
-        //        GUI.color = Color.red;
-        //        if (GUILayout.Button("Disable"))
-        //        {
-        //            m_dummyCharacter.SetAIEnabled(false);
-        //        }
-        //        GUI.color = Color.white;
-        //        GUILayout.EndHorizontal();
-        //    }
-        //}
 
         public void BoldTitle(string label)
         {

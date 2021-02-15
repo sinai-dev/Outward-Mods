@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NecromancerSkills
+namespace Necromancer
 {
     public class Settings
     {
@@ -13,10 +13,6 @@ namespace NecromancerSkills
         public int Summon_MaxSummons_NoArmyOfDeath = 1;
         public int Summon_MaxSummons_WithArmyOfDeath = 3;
         public int Summon_Summoned_Per_Cast_withArmyOfDeath = 1;
-        public float Summon_MaxHealth = 75f;
-        public float Summon_HealthLoss = -0.75f;
-        public float StrongSummon_MaxHealth = 250;
-        public float StrongSummon_HealthLoss = -2.5f;
 
         // Shoot Tendrils
         public float ShootTendrils_Heal_NoPlagueAura = 2.5f;

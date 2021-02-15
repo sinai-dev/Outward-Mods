@@ -15,7 +15,7 @@ namespace Combat_Dummy
         public string Name { get; set; }
         public SL_Character Template { get; set; }
 
-        public bool CharacterExists { get => m_character != null; }
+        public bool CharacterExists { get => m_character; }
         private Character m_character;
 
         public bool AddCombatAI;
@@ -66,65 +66,5 @@ namespace Combat_Dummy
         {
             SpawnOrReset();
         }
-
-        //private IEnumerator ResetCoroutine(Vector3 pos, bool newSpawn)
-        //{
-        //    yield return new WaitForSeconds(0.5f);
-
-        //    // set and apply stats
-        //    Template.ApplyToCharacter(m_character);
-
-        //    if (newSpawn)
-        //    {
-        //        SetAIEnabled(false);
-        //    }
-
-        //    // heal or resurrect
-        //    HealCharacter();
-
-        //    // try repair
-        //    try { m_character.Inventory.RepairEverything(); } catch { }
-
-        //    // teleport
-        //    try { m_character.Teleport(pos, Quaternion.identity); } catch { }
-        //}
-
-        //public void SetAIEnabled(bool enabled)
-        //{
-        //    if (m_character == null)
-        //    {
-        //        return;
-        //    }
-
-        //    var ai = m_character.GetComponent<CharacterAI>();
-        //    ai.enabled = enabled;
-
-        //    foreach (var state in ai.AiStates)
-        //    {
-        //        state.enabled = enabled;
-
-        //        if (state is AISCombat aiscombat)
-        //        {
-        //            aiscombat.CanDodge = enabled ? Template.CanDodge : false;
-        //        }
-        //    }
-        //}
-
-        //public void HealCharacter()
-        //{
-        //    At.Invoke(m_character.Stats, "RefreshVitalMaxStat", new object[] { false });
-
-        //    if (m_character.IsDead)
-        //    {
-        //        m_character.Resurrect();
-        //    }
-
-        //    if (m_character.StatusEffectMngr != null)
-        //    {
-        //        m_character.StatusEffectMngr.Purge();
-        //    }
-
-        //    m_character.Stats.RestoreAllVitals();
-        //}
     }
 }

@@ -19,7 +19,6 @@ namespace CustomMultiplayerLimit
     }
 
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInDependency("com.sinai.SharedModConfig", BepInDependency.DependencyFlags.HardDependency)]
     public class CustomMultiplayerLimit : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.CustomMultiplayerLimit";
