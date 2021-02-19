@@ -82,10 +82,11 @@ namespace Necromancer.Skills.Effects
 
                 this.ExtraRpcData = _affectedCharacter.UID.ToString();
 
-                if (armyOfDeathLearned)
-                    for (int i = 0; i < NecromancerMod.settings.Summon_Summoned_Per_Cast_withArmyOfDeath; i++)
-                        base.ActivateLocally(_affectedCharacter, _infos);
-                else
+                int amtToSummon = armyOfDeathLearned
+                                    ? NecromancerMod.settings.Summon_MaxSummons_WithArmyOfDeath
+                                    : NecromancerMod.settings.Summon_MaxSummons_NoArmyOfDeath;
+
+                for (int i = 0; i < amtToSummon; i++)
                     base.ActivateLocally(_affectedCharacter, _infos);
             }
         }

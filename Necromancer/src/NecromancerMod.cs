@@ -53,10 +53,17 @@ namespace Necromancer
             string legacySettingsPath = @"Mods\NecromancerSkills.xml";
             if (File.Exists(legacySettingsPath))
             {
-                File.Move(legacySettingsPath, SAVE_PATH);
-                SL.Log("Moved Necromancy settings from '" + legacySettingsPath + "' to '" + SAVE_PATH + "'");
+                if (File.Exists(SAVE_PATH))
+                {
+                    File.Delete(legacySettingsPath);
+                    SL.Log($"[Necromancer] Deleted legacy settings because new settings exist. Deleted: '{legacySettingsPath}'");
+                }
+                else
+                {
+                    File.Move(legacySettingsPath, SAVE_PATH);
+                    SL.Log($"[Necromancer] Moved Necromancer settings from '{legacySettingsPath}' to '{SAVE_PATH}'");
+                }
             }
-
 
             bool makeNew = true;
 
