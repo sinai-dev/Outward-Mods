@@ -134,7 +134,3 @@ The config can be managed through the [Configuration Manager](https://github.com
 
 You **cannot** use this mod with any other mods enabled (other than Configuration Manager), or if Debug Mode is enabled.
 
------------------------------------
-
-### Mefino Tag
-`outward mefino mod`

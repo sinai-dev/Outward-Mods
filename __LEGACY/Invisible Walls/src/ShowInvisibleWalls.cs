@@ -5,37 +5,22 @@ using System.Text;
 using UnityEngine;
 using BepInEx;
 using HarmonyLib;
-using SharedModConfig;
+using BepInEx.Configuration;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 namespace ShowInvisibleWalls
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInDependency(SharedModConfig.SharedModConfig.GUID)]
     public class ShowInvisibleWalls : BaseUnityPlugin
     {
         const string GUID = "com.sinai.invisiblewalls";
         const string NAME = "InvisibleWallMod";
         const string VERSION = "1.1.0";
 
-        private static readonly ModConfig config = new ModConfig
-        {
-            ModName = NAME,
-            Settings = new List<BBSetting>
-            {
-                new BoolSetting
-                {
-                    Name = Settings.Disable,
-                    DefaultValue = true,
-                    Description = "Disable invisible boundaries"
-                },
-                new BoolSetting
-                {
-                    Name = Settings.Reveal,
-                    DefaultValue = false,
-                    Description = "Reveal invisible boundaries (overrides 'Disable Boundaries')",
-                }
-            },
-        };
+        internal const string CTG_NAME = "Settings";
+        public ConfigEntry<bool> RevealBoundaries;
+        //public ConfigEntry<bool> DisableBoundaryColliders;
 
         private class Settings
         {
@@ -45,68 +30,59 @@ namespace ShowInvisibleWalls
 
         internal void Awake()
         {
-            config.Register();
+            SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
 
-            config.OnSettingsSaved += OnSceneChange;
-            SideLoader.SL.OnSceneLoaded += OnSceneChange;
+            RevealBoundaries = Config.Bind(CTG_NAME, "Reveal invisible boundaries?", true, "Puts a semi-transparent pink shader on every invisible boundary.");
+            //DisableBoundaryColliders = Config.Bind(CTG_NAME, "Disable boundary colliders?", false, "Disables the colliders on all invisible boundaries.");
+
+            RevealBoundaries.SettingChanged += RevealBoundaries_SettingChanged;
+            //DisableBoundaryColliders.SettingChanged += RevealBoundaries_SettingChanged;
         }
 
-        private void OnSceneChange()
+        private void RevealBoundaries_SettingChanged(object sender, EventArgs e)
         {
+            SetWalls();
+        }
+
+        private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+        {
+            StartCoroutine(WaitForSceneLoaded());
+        }
+
+        private IEnumerator WaitForSceneLoaded()
+        {
+            while (NetworkLevelLoader.Instance.IsGameplayPaused || !NetworkLevelLoader.Instance.AllPlayerReadyToContinue)
+                yield return new WaitForSeconds(1f);
+
             SetWalls();
         }
 
         private void SetWalls()
         {
-            foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>())
+            foreach (GameObject obj in Resources.FindObjectsOfTypeAll<GameObject>()
+                                                .Where(it => it.scene.name == SceneManagerHelper.ActiveSceneName))
             {
-                if (obj.scene.name != SceneManagerHelper.ActiveSceneName)
-                {
-                    continue;
-                }
-
                 string s = obj.name.ToLower();
                 if (s.Contains("cube") || s.Contains("collision") || s.Contains("collider") || s.Contains("bounds"))
                 {
-                    // put this more costly check here
                     if (obj.GetComponentInParent<Item>())
-                    {
                         continue;
-                    }
 
-                    Debug.Log(s);
+                    //Debug.Log(s);
 
-                    //obj.SetActive(!(bool)config.GetValue(Settings.Disable));
-                    if (obj.GetComponent<Collider>() is Collider col)
+                    //if (DisableBoundaryColliders.Value)
+                    //{
+                    //    if (obj.GetComponent<Collider>() is Collider col)
+                    //        col.enabled = false;
+                    //}
+                    
+                    if (RevealBoundaries.Value)
                     {
-                        col.enabled = !(bool)config.GetValue(Settings.Disable);
-                    }
-
-                    var renderer = obj.GetOrAddComponent<MeshRenderer>();
-                    if ((bool)config.GetValue(Settings.Reveal))
-                    {
+                        var renderer = obj.GetOrAddComponent<MeshRenderer>();
                         renderer.material = null;
-                    }
-                    else
-                    {
-                        DestroyImmediate(renderer);
                     }
                 }
             }
         }
-
-
-        //private void DisableVisuals(Character c)
-        //{
-        //    c.Visuals.Head.gameObject.SetActive(false);
-        //    c.Visuals.ActiveVisualsBody.gameObject.SetActive(false);
-        //    c.Visuals.ActiveVisualsFoot.gameObject.SetActive(false);
-        //    c.Visuals.ActiveVisualsHelmOrHead.gameObject.SetActive(false);
-        //    if (c.Inventory.EquippedBag && c.Inventory.EquippedBag.LoadedVisual)
-        //    {
-        //        c.Inventory.EquippedBag.LoadedVisual.gameObject.SetActive(false);
-        //    }
-        //}
-
     }
 }
