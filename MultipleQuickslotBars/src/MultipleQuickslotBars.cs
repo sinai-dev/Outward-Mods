@@ -74,7 +74,7 @@ namespace MultipleQuickslotBars
         {
             int max = cfg_NumberOfExtraBars.Value;
 
-            Debug.Log("Cycling QS (forward: " + cycleForward + ", max: " + max + ")");
+            //Debug.Log("Cycling QS (forward: " + cycleForward + ", max: " + max + ")");
 
             if (max < 1)
                 return;
@@ -90,7 +90,7 @@ namespace MultipleQuickslotBars
             else if (desired > max)
                 desired = 0;
 
-            Debug.Log("setting desired ActiveBarIndex: " + desired);
+            //Debug.Log("setting desired ActiveBarIndex: " + desired);
 
             ext.ActiveBarIndex = desired;
 

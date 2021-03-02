@@ -51,19 +51,19 @@ namespace MultipleQuickslotBars
 
                 int add = qs ? qs.ItemID : -1;
 
-                Debug.Log("Quickslot " + i + " is " + add);
+                // Debug.Log("Quickslot " + i + " is " + add);
 
                 data += add.ToString();
             }
 
-            Debug.Log("Saving data as: " + data);
+            // Debug.Log("Saving data as: " + data);
 
             QuickslotData[ActiveBarIndex] = data;
         }
 
         public static void ApplySaveToCharacter(Character character)
         {
-            Debug.Log("Applying QS save to character");
+            //Debug.Log("Applying QS save to character");
 
             var ext = MultipleQuickslotBars.GetOrCreateSave(character.UID);
 
@@ -99,7 +99,7 @@ namespace MultipleQuickslotBars
             {
                 try
                 {
-                    Debug.Log("Setting quickslot " + i + " to character as item id " + itemIDs[i]);
+                    // Debug.Log("Setting quickslot " + i + " to character as item id " + itemIDs[i]);
 
                     qsMgr.ClearQuickSlot(i);
 

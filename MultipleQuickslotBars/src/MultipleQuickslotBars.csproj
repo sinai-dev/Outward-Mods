@@ -50,7 +50,7 @@
     </Reference>
     <Reference Include="netstandard" />
     <Reference Include="SideLoader">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\sinai-dev SideLoader\SideLoader.dll</HintPath>
+      <HintPath>..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\sinai-dev-SideLoader-3.3.6\SideLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
