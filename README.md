@@ -76,6 +76,14 @@ More Map Details adds some extra details to the region maps, all of which can be
 * Enemy positions (the markers show as an 'X' until you hover over them)
 * Soroborean Caravanner position
 
+## Multiple Quickslot Bars
+
+Allows you to add extra quickslot bars which you can cycle through with custom keybinds.
+
+Set the custom keybinds in the in-game keybinding menu, and the amount of extra bars can be set with [Configuration Manager](https://github.com/Mefino/BepInEx.ConfigurationManager), or by editing the file at `BepInEx\config\com.sinai.multiplequickslotbars.cfg`.
+
+This mod does not add extra slots, but instead swaps out the entire bar for alternate bars. You can configure the mod to add as many extra bars as you want, but currently you can only cycle between them one at a time (no direct hotkeys to jump to a specific bar, etc).
+
 ## Necromancer
 Necromancer is a new skill tree focused on summoning undead creatures to fight alongside you, and sacrificing them to produce more powerful effects. The design was loosely based around the Necromancer class in Diablo.
 

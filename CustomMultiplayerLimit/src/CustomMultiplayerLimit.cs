@@ -9,7 +9,6 @@ using BepInEx;
 using UnityEngine.UI;
 using UnityEngine;
 using BepInEx.Configuration;
-using SideLoader;
 
 namespace CustomMultiplayerLimit
 {
@@ -27,6 +26,8 @@ namespace CustomMultiplayerLimit
 
         internal static int PlayerLimit => s_playerLimit?.Value ?? 2;
         internal static ConfigEntry<int> s_playerLimit;
+
+        internal static readonly BindingFlags s_flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
         internal void Awake()
         {
@@ -87,6 +88,8 @@ namespace CustomMultiplayerLimit
         [HarmonyPatch(typeof(PauseMenu), "Update")]
         public class PauseMenu_Update
         {
+            internal static MethodInfo s_Panel_Update = typeof(Panel).GetMethod("Update");
+
             [HarmonyPrefix]
             public static bool Prefix(PauseMenu __instance, Button ___m_btnSplit, ref bool ___m_suicide, Button ___m_btnDie)
             {
@@ -94,7 +97,8 @@ namespace CustomMultiplayerLimit
 
                 //((Button)At.GetField(__instance, "m_btnSplit")).interactable = true;
 
-                At.Invoke(__instance as Panel, "Update");
+                //At.Invoke(__instance as Panel, "Update");
+                s_Panel_Update.Invoke(__instance, new object[0]);
 
                 if (!___m_btnSplit.interactable)
                     ___m_btnSplit.interactable = true;
@@ -132,6 +136,9 @@ namespace CustomMultiplayerLimit
         [HarmonyPatch(typeof(RestingMenu), "UpdatePanel")]
         public class RestingMenu_UpdatePanel
         {
+            internal static MethodInfo s_RestingMenu_RefreshSkylinePosition = typeof(RestingMenu).GetMethod("RefreshSkylinePosition", s_flags);
+            internal static MethodInfo s_RestingMenu_RefreshOverviews = typeof(RestingMenu).GetMethod("RefreshOverviews", s_flags);
+
             [HarmonyPrefix]
             public static bool Prefix(RestingMenu __instance, List<UID> ___m_otherPlayerUIDs, Slider[] ___m_sldOtherPlayerCursors,
                 ref CanvasGroup ___m_restingCanvasGroup, ref Transform ___m_waitingForOthers, ref Text ___m_waitingText,
@@ -140,7 +147,9 @@ namespace CustomMultiplayerLimit
             {
                 var self = __instance;
 
-                At.Invoke(self, "RefreshSkylinePosition");
+                // At.Invoke(self, "RefreshSkylinePosition");
+                s_RestingMenu_RefreshSkylinePosition.Invoke(self, new object[0]);
+
                 int num = 0;
                 bool flag = true;
                 bool flag2 = true;
@@ -225,7 +234,8 @@ namespace CustomMultiplayerLimit
                     ___m_lastTotalRestTime = num;
                 }
 
-                At.Invoke(self, "RefreshOverviews", new object[] { flag3 && !___m_tryRest });
+                // At.Invoke(self, "RefreshOverviews", new object[] { flag3 && !___m_tryRest });
+                s_RestingMenu_RefreshOverviews.Invoke(self, new object[] { flag3 && !___m_tryRest });
 
                 return false;
             }

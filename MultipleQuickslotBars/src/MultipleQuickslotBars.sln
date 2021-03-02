@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultipleQuickslotBars", "MultipleQuickslotBars.csproj", "{7E393061-1F13-4490-BF36-B2EE580F7516}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E393061-1F13-4490-BF36-B2EE580F7516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E393061-1F13-4490-BF36-B2EE580F7516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E393061-1F13-4490-BF36-B2EE580F7516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E393061-1F13-4490-BF36-B2EE580F7516}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E1AA4D6B-E8B3-47E0-9932-DD0B512D6003}
+	EndGlobalSection
+EndGlobal
