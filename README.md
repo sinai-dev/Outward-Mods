@@ -10,6 +10,7 @@ Sinai's mods for Outward.
 - [Mana Bow](#mana-bow)
 - [Mixed Grip](#mixed-grip)
 - [More Map Details](#more-map-details)
+- [Multiple Quickslot Bars](#multiple-quickslot-bars)
 - [Necromancer](#necromancer)
 - [PvP](#pvp)
 - [Speedrun Timer](#speedrun-timer)
