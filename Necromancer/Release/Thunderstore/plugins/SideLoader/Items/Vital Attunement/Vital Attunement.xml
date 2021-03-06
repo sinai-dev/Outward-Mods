@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Item xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Target_ItemID>8205100</Target_ItemID>
+  <New_ItemID>8890101</New_ItemID>
+  <Name>Vital Attunement</Name>
+  <Description>Increases your maximum Health and Stamina by 20.</Description>
+  <LegacyItemID>-1</LegacyItemID>
+  <IsPickable>false</IsPickable>
+  <IsUsable>false</IsUsable>
+  <QtyRemovedOnUse>1</QtyRemovedOnUse>
+  <GroupItemInDisplay>false</GroupItemInDisplay>
+  <HasPhysicsWhenWorld>false</HasPhysicsWhenWorld>
+  <RepairedInRest>true</RepairedInRest>
+  <BehaviorOnNoDurability>NotSet</BehaviorOnNoDurability>
+  <CastLocomotionEnabled>false</CastLocomotionEnabled>
+  <MobileCastMovementMult>-1</MobileCastMovementMult>
+  <CastModifier>Immobilized</CastModifier>
+  <CastSheatheRequired>1</CastSheatheRequired>
+  <Tags />
+  <EffectBehaviour>Destroy</EffectBehaviour>
+  <EffectTransforms>
+    <SL_EffectTransform>
+      <TransformName>Passive</TransformName>
+      <Effects>
+        <SL_Effect xsi:type="SL_AffectStat">
+          <Stat_Tag>MaxHealth</Stat_Tag>
+          <Stat_ID>77</Stat_ID>
+          <AffectQuantity>20</AffectQuantity>
+          <IsModifier>false</IsModifier>
+        </SL_Effect>
+        <SL_Effect xsi:type="SL_AffectStat">
+          <Stat_Tag>MaxStamina</Stat_Tag>
+          <Stat_ID>79</Stat_ID>
+          <AffectQuantity>20</AffectQuantity>
+          <IsModifier>false</IsModifier>
+        </SL_Effect>
+      </Effects>
+      <ChildEffects />
+    </SL_EffectTransform>
+  </EffectTransforms>
+</SL_Item>

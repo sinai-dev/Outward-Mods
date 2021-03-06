@@ -1,0 +1,10 @@
+{
+    "name": "More_Map_Details",
+    "version_number": "1.4.0",
+    "website_url": "https://github.com/sinai-dev/Outward-Mods",
+    "description": "Marks Players, Enemies, Player Bags and the Soroborean Caravanner on world maps.",
+    "dependencies": [
+		"sinai-dev-SideLoader-3.3.6",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}

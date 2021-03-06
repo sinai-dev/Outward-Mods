@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_CharacterTrainer xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- The UID is important! Make sure you set a unique identifier. -->
+  <!-- This UID is used by OnSpawn callbacks, and can also be used for the actual Character UID. -->
+  <UID>com.sinai.necromancer.trainer</UID>
+
+  <!-- One of: Temporary, Scene or Follower -->
+  <SaveType>Scene</SaveType>
+
+  <!-- Character's Name -->
+  <Name>Spectral Wanderer</Name>
+  
+  <!-- I'm setting up the dialogue through C# -->
+  <InitialDialogue>Error! Could not set up custom dialogue.</InitialDialogue>
+
+  <!-- Spawn information -->
+  <!-- The SceneToSpawn corresponds to the scene builds names (listed on Wiki) -->
+  <SceneToSpawn>Hallowed_Dungeon4_Interior</SceneToSpawn>
+  
+  <!-- Get SpawnPosition with SL Menu Tools tab, or F2 Debug Mode "Debug Position" -->
+  <SpawnPosition>
+    <x>-138.3397</x>
+    <y>58.99699</y>
+    <z>-102.4192</z>
+  </SpawnPosition>
+  
+  <SpawnRotation>
+    <x>0.0</x>
+    <y>0.0</y>
+    <z>0.0</z>
+  </SpawnRotation>
+
+  <!-- Generally use either "NONE", "Players" or "Bandits", there are other options too (Character.Factions) -->
+  <Faction>NONE</Faction>
+  
+  <!-- Human character visual data. Corresponds to Character Creation options. -->
+  <CharacterVisualsData>
+    <Gender>Male</Gender>
+    <SkinIndex>0</SkinIndex>
+    <HeadVariationIndex>0</HeadVariationIndex>
+    <HairColorIndex>0</HairColorIndex>
+    <HairStyleIndex>0</HairStyleIndex>
+  </CharacterVisualsData>
+
+  <!-- Choose the gear item IDs here -->
+  <!-- <Weapon_ID>2000010</Weapon_ID> -->
+  <!--<Shield_ID></Shield_ID>-->
+  <Chest_ID>3200040</Chest_ID>
+  <Helmet_ID>3200041</Helmet_ID>
+  <Boots_ID>3200042</Boots_ID>
+  <!--<Backpack_ID></Backpack_ID>-->
+  
+  <SkillTree>
+      <!-- Skill Tree UID -->
+      <UID>com.sinai.necromancer</UID>
+      
+      <!-- Skill Tree Name -->
+      <Name>Necromancer</Name>
+
+    <!-- The file name of the PNG file in your 
+         SLPack\Texture2D\Local\ folder for the sigil
+         sprite, without ".png". -->
+    <SigilIconName></SigilIconName>
+    <!-- eg, <SigilIconName>MyTreeSigil</SigilIconName> -->
+      
+      <!-- The rows of your skill tree -->
+      <SkillRows>
+      
+        <!-- First row. -->
+        <SL_SkillRow>
+          <!-- Row Index can be 1 through 5, and 3 is always breakthrough -->
+          <RowIndex>1</RowIndex>
+          
+          <!-- Each row can have up to 3 slots. -->
+          <Slots>
+          
+            <!-- Each slot is an SL_BaseSkillSlot, with type SL_SkillSlot or SL_SkillSlotFork -->
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>2</ColumnIndex>
+              <SkillID>8890103</SkillID>
+              <SilverCost>50</SilverCost>
+            </SL_BaseSkillSlot>
+            
+            <!-- Another skill, just on the right side of the first row. -->
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>3</ColumnIndex>
+              <SkillID>8890101</SkillID>
+              <SilverCost>50</SilverCost>
+            </SL_BaseSkillSlot>
+            
+          </Slots>
+          
+        </SL_SkillRow>
+        
+        <!-- Second row -->
+        <SL_SkillRow>
+          <RowIndex>2</RowIndex>
+          <Slots>
+          
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>2</ColumnIndex>
+              <!-- Requires row 1, column 2 -->
+              <RequiredSkillSlot>
+                <x>1</x>
+                <y>2</y>
+              </RequiredSkillSlot>
+              <SkillID>8890105</SkillID>
+              <SilverCost>100</SilverCost>
+            </SL_BaseSkillSlot>
+            
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>3</ColumnIndex>
+              <!-- Requires row 1, column 3 -->
+              <RequiredSkillSlot>
+                <x>1</x>
+                <y>3</y>
+              </RequiredSkillSlot>
+              <SkillID>8890100</SkillID>
+              <SilverCost>100</SilverCost>
+            </SL_BaseSkillSlot>
+            
+          </Slots>
+        </SL_SkillRow>
+        
+        <!-- Third row (Breakthrough) -->
+        <SL_SkillRow>
+          <RowIndex>3</RowIndex>
+          <Slots>
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>2</ColumnIndex>
+              <RequiredSkillSlot>
+                <x>2</x>
+                <y>2</y>
+              </RequiredSkillSlot>
+              <SkillID>8890104</SkillID>
+              <SilverCost>500</SilverCost>
+              <!-- You don't HAVE to make this a breakthrough, so if it is a breakthrough make sure to set this to true. -->
+              <Breakthrough>true</Breakthrough>
+            </SL_BaseSkillSlot>
+          </Slots>
+        </SL_SkillRow>
+        
+        <!-- Fourth row -->
+        <SL_SkillRow>
+          <RowIndex>4</RowIndex>
+          <Slots>
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlot">
+              <ColumnIndex>2</ColumnIndex>
+              <RequiredSkillSlot>
+                <x>3</x>
+                <y>2</y>
+              </RequiredSkillSlot>
+              <SkillID>8890106</SkillID>
+              <SilverCost>600</SilverCost>
+            </SL_BaseSkillSlot>
+          </Slots>
+        </SL_SkillRow>
+        
+        <!-- Fifth row (Fork) -->
+        <SL_SkillRow>
+          <RowIndex>5</RowIndex>
+          <Slots>
+            <!-- Using type SL_SkillSlotFork -->
+            <SL_BaseSkillSlot xsi:type="SL_SkillSlotFork">
+              <ColumnIndex>2</ColumnIndex>
+              <!-- The fork itself requires row 4, column 2 -->
+              <RequiredSkillSlot>
+                <x>4</x>
+                <y>2</y>
+              </RequiredSkillSlot>
+              <!-- First choice of the fork (SL_SkillSlot) -->
+              <Choice1>
+                <ColumnIndex>2</ColumnIndex>
+                <RequiredSkillSlot>
+                  <x>4</x>
+                  <y>2</y>
+                </RequiredSkillSlot>
+                <SkillID>8890107</SkillID>
+                <SilverCost>600</SilverCost>
+              </Choice1>
+              <!-- Second choice of the fork -->
+              <Choice2>
+                <ColumnIndex>2</ColumnIndex>
+                <RequiredSkillSlot>
+                  <x>4</x>
+                  <y>2</y>
+                </RequiredSkillSlot>
+                <SkillID>8890108</SkillID>
+                <SilverCost>600</SilverCost>
+              </Choice2>
+            </SL_BaseSkillSlot>
+          </Slots>
+        </SL_SkillRow>
+      </SkillRows>
+  </SkillTree>
+  
+</SL_CharacterTrainer>

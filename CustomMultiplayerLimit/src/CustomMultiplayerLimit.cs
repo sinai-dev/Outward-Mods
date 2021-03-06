@@ -88,7 +88,7 @@ namespace CustomMultiplayerLimit
         [HarmonyPatch(typeof(PauseMenu), "Update")]
         public class PauseMenu_Update
         {
-            internal static MethodInfo s_Panel_Update = typeof(Panel).GetMethod("Update");
+            internal static MethodInfo s_Panel_Update = typeof(Panel).GetMethod("Update", s_flags);
 
             [HarmonyPrefix]
             public static bool Prefix(PauseMenu __instance, Button ___m_btnSplit, ref bool ___m_suicide, Button ___m_btnDie)

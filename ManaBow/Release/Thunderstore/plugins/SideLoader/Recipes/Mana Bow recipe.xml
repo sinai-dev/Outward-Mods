@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SL_Recipe xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <UID>com.sinai.manabow.manabowrecipe</UID>
+  <StationType>Survival</StationType> 
+  <Ingredients>
+    <Ingredient>
+      <Type>AddSpecificIngredient</Type>
+      <Ingredient_ItemID>2200000</Ingredient_ItemID> <!-- simple bow -->
+    </Ingredient>
+    <Ingredient>
+      <Type>AddSpecificIngredient</Type>
+      <Ingredient_ItemID>6400130</Ingredient_ItemID> <!-- mana stone -->
+    </Ingredient>
+    <Ingredient>
+      <Type>AddSpecificIngredient</Type>
+      <Ingredient_ItemID>6200130</Ingredient_ItemID> <!-- hackmanite -->
+    </Ingredient>
+    <Ingredient>
+      <Type>AddSpecificIngredient</Type>
+      <Ingredient_ItemID>4400060</Ingredient_ItemID> <!-- spiritual varnish -->
+    </Ingredient>
+  </Ingredients>
+  <Results>
+    <ItemQty>
+      <ItemID>2800900</ItemID> 
+      <Quantity>1</Quantity>
+    </ItemQty>
+  </Results>
+</SL_Recipe>

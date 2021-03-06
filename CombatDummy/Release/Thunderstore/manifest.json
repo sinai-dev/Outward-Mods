@@ -1,0 +1,10 @@
+{
+    "name": "Combat_Dummy",
+    "version_number": "1.1.1",
+    "website_url": "https://github.com/sinai-dev/Outward-Mods",
+    "description": "Allows you to spawn customizable Combat Dummies for testing or practice.",
+    "dependencies": [
+		"sinai-dev-SideLoader-3.3.6",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}

@@ -1,0 +1,10 @@
+{
+    "name": "Mixed_Grip",
+    "version_number": "3.4.0",
+    "website_url": "https://github.com/sinai-dev/Outward-Mods",
+    "description": "Allows you to toggle Melee Weapons between one-handed and two-handed, similar to Dark Souls.",
+    "dependencies": [
+		"sinai-dev-SideLoader-3.3.6",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}

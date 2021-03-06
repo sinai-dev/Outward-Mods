@@ -13,6 +13,7 @@ Sinai's mods for Outward.
 - [Multiple Quickslot Bars](#multiple-quickslot-bars)
 - [Necromancer](#necromancer)
 - [PvP](#pvp)
+- [Shared Quest Rewards](#shared-quest-rewards)
 - [Speedrun Timer](#speedrun-timer)
 
 ## CombatHUD
@@ -92,10 +93,39 @@ The trainer can be found at Dark Ziggurat (at the top entrance), right by the el
 
 Online and split-screen are supported, provided all players have this mod installed.
 
-### Balancing
-You can balance the mod yourself through two methods:
-* Some things can be adjusted through the SL Menu. See [here](https://sinai-dev.github.io/OSLDocs/#/Basics/SLMenu) for more details.
-* For everything else, edit the file here: `BepInEx\config\NecromancerSkills.xml` (generated after first launch).
+### Can I Balance This Myself?
+Yes, you can adjust the balancing of the skills yourself through two methods:
+
+* The XML Config File at `config\NecromancySkills.xml` can be used to adjust damages and other details on the balancing. If you use r2modman this will be inside your profile appdata folder, otherwise it will be in the Outward\BepInEx folder.
+* SL XML files can be edited from `plugins\Necromancy\SideLoader\`, or you can use the SL Menu to adjust these as well.
+
+Please note: in online play, everyone should use the same settings for best results. This mod does not sync settings.
+
+Finding the Trainer
+The trainer is a spectral ghost found at Dark Ziggurat, by the elevator at the top entrance.
+
+If you just want to test the skills, they're available from the F3 debug menu. (Must have "DEBUG.txt" in "Outward/Outward_Data/" folder).
+
+### Skills
+There's a total of 8 new skills, which is standard for a skill tree in Outward. There are 5 actives and 3 passives.
+
+#### Tier 1: (50-100 silver, universal)
+- Summon: Sacrifice 10% of your max health to summon an undead ally to fight alongside you.
+- Life Ritual: Heal your summon and buff them.
+- Vital Attunement: +20 max health and stamina
+- Noxious Tendrils: Low cooldown projectile spell, if you have a summon they will also cast this. Heals you a small amount for every hit.
+
+#### Breakthrough:
+- Transcendence: Gain 2.5% bonus non-physical damage for every mana point you channel at the Ley line.
+- note: unlike other breakthroughs, this actually requires Summon and Life Ritual, because of how integral they are to this tree.
+- note 2: a "Mana Point" refers to sacrificing 5 Health and Stamina for 20 Mana. Not each literal mana value.
+
+#### Tier 3: (600 silver, post-breakthrough)
+- Death Ritual: Detonate your current summon for a big AoE explosion
+
+Choose one:
+- Plague Aura: A sigil that follows you around and periodically damages enemies with an AoE ground attack. Enables spell combos with Necro skills.
+- Army of Death: max summon limit increased to 3 from 1. 
 
 ## PvP
 The PvP mod allows for easy PvP between friends, and also has some extra modes like Deathmatch and a Battle Royale.
@@ -135,6 +165,14 @@ There are quite a few unique mechanics in the Battle Royale mode, some of which 
 * Supply chests become more valuable over time.
 * At around 4 minutes the Butcher of Men will spawn, he drops a powerful weapon and strong skills. 
 * You can take other players items when they are defeated.
+
+## Shared Quest Rewards
+
+This mod attempts to share all quest rewards (skills and items).
+
+**Note:** by default, the "aggressive sharing" mode is disabled. If you want you can enable the aggressive sharing in the config, it will try to share absolutely everything but this may lead to sharing some unexpected things (eg, buying a skill from a side-trainer may be shared, etc).
+
+The config can be managed with the [Config Manager](https://outward.thunderstore.io/package/Mefino/Outward_Config_Manager/), or by editing the file at "BepInEx\config\com.sinai.sharedquestrewards.cfg".
 
 ## Speedrun Timer
 A simple in-game speedrun timer which pauses for loading screens, to get an accurate time.
