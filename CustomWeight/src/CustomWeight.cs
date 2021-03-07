@@ -4,25 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using SharedModConfig;
 using BepInEx;
 using HarmonyLib;
 using SideLoader;
+using BepInEx.Configuration;
 
 namespace CustomWeight
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInDependency("com.sinai.SharedModConfig", BepInDependency.DependencyFlags.HardDependency)]
     public class CustomWeight : BaseUnityPlugin
     {
         const string GUID = "com.sinai.customweight";
         const string NAME = "Custom Weight";
-        const string VERSION = "2.2";
+        const string VERSION = "2.3";
 
         public static CustomWeight Instance;
-        public ModConfig config;
 
         public float m_timeOfLastUpdate;
+
+        internal const string CTG_GENERAL = "Core Settings";
+        public static ConfigEntry<bool> NO_CONTAINER_LIMIT;
+        public static ConfigEntry<bool> DISABLE_ALL_BURDENS;
+
+        internal const string CTG_BONUSES = "Extra Bonus Settings";
+        public static ConfigEntry<float> EXTRA_POUCH_CAPACITY;
+        public static ConfigEntry<float> EXTRA_BAG_CAPACITY_FLAT;
+        public static ConfigEntry<float> EXTRA_BAG_CAPACITY_MULTIPLIER;
 
         // original capacities on bags (ID : Capacity)
         public Dictionary<int, float> OrigCapacities = new Dictionary<int, float>();
@@ -34,15 +41,26 @@ namespace CustomWeight
             var harmony = new Harmony(GUID);
             harmony.PatchAll();
 
-            // set up and load settings
-            config = SetupConfig();
-            config.Register();
+            NO_CONTAINER_LIMIT = Config.Bind(CTG_GENERAL, "No limits on all containers", false, "Disables capacity limits for Pouch and Backpacks");
+            NO_CONTAINER_LIMIT.SettingChanged += SettingChanged;
 
-            config.OnSettingsSaved += Config_OnSettingsSaved;
+            DISABLE_ALL_BURDENS = Config.Bind(CTG_GENERAL, "Disable all weight burdens", false, "Disables all burdens on the player related to Weight");
+            DISABLE_ALL_BURDENS.SettingChanged += SettingChanged;
+
+            EXTRA_POUCH_CAPACITY = Config.Bind(CTG_BONUSES, "Extra Pouch Capacity (flat)", 0f, 
+                new ConfigDescription("Extra capacity (flat) added to player's Pouch", new AcceptableValueRange<float>(0f, 1000f)));
+            EXTRA_POUCH_CAPACITY.SettingChanged += SettingChanged;
+
+            EXTRA_BAG_CAPACITY_FLAT = Config.Bind(CTG_BONUSES, "Extra Bag Capacity (flat)", 0f,
+                new ConfigDescription("Extra capacity (flat) added to player's Bag", new AcceptableValueRange<float>(0f, 1000f)));
+            EXTRA_BAG_CAPACITY_FLAT.SettingChanged += SettingChanged;
+
+            EXTRA_BAG_CAPACITY_MULTIPLIER = Config.Bind(CTG_BONUSES, "Bag Capacity multiplier", 1.0f,
+                new ConfigDescription("Multiplier applied to player's Bag capacity", new AcceptableValueRange<float>(0f, 10f)));
+            EXTRA_BAG_CAPACITY_MULTIPLIER.SettingChanged += SettingChanged;
         }
 
-        // hook for updating container weights on settings save
-        private void Config_OnSettingsSaved()
+        private void SettingChanged(object _, EventArgs __)
         {
             UpdateAllPlayers();
         }
@@ -54,9 +72,7 @@ namespace CustomWeight
                 m_timeOfLastUpdate = Time.time;
 
                 if (Global.Lobby.PlayersInLobbyCount > 0 && !NetworkLevelLoader.Instance.IsGameplayPaused)
-                {
                     UpdateAllPlayers();
-                }
             }
         }
 
@@ -66,7 +82,8 @@ namespace CustomWeight
             {
                 if (player.ControlledCharacter)
                 {
-                    if (!player) { continue; }
+                    if (!player) 
+                        continue;
 
                     UpdatePlayer(player.ControlledCharacter);
                 }
@@ -75,22 +92,15 @@ namespace CustomWeight
 
         private void UpdatePlayer(Character player)
         {
-            float newValue = (bool)config.GetValue(Settings.NoContainerLimit) ? -1 : 10.0f + (float)config.GetValue(Settings.PouchBonus);
+            float newValue = NO_CONTAINER_LIMIT.Value 
+                                ? -1 
+                                : 10.0f + EXTRA_POUCH_CAPACITY.Value;
 
             if ((float)At.GetField(player.Inventory.Pouch, "m_baseContainerCapacity") != newValue)
-            {
                 At.SetField(player.Inventory.Pouch, "m_baseContainerCapacity", newValue);
-            }
 
             if (player.Inventory.EquippedBag)
-            {
                 UpdateBag(player.Inventory.EquippedBag);
-            }
-
-            //foreach (var container in player.GetComponentsInChildren<ItemContainer>())
-            //{
-            //    container.UpdateVersion();
-            //}
         }
 
         private void UpdateBag(Bag bag)
@@ -100,9 +110,7 @@ namespace CustomWeight
             if (At.GetField(bag, "m_container") is ItemContainerStatic container)
             {
                 if (OrigCapacities.ContainsKey(bag.ItemID))
-                {
                     cap = OrigCapacities[bag.ItemID];
-                }
                 else
                 {
                     cap = (float)At.GetField(container as ItemContainer, "m_baseContainerCapacity");
@@ -110,14 +118,12 @@ namespace CustomWeight
                 }
 
                 // set new limit based on settings
-                if ((bool)config.GetValue(Settings.NoContainerLimit)) 
-                { 
+                if (NO_CONTAINER_LIMIT.Value) 
                     cap = -1; 
-                }
                 else
                 {
-                    cap *= (float)config.GetValue(Settings.BagBonusMulti);
-                    cap += (float)config.GetValue(Settings.BagBonusFlat);
+                    cap *= EXTRA_BAG_CAPACITY_MULTIPLIER.Value;
+                    cap += EXTRA_BAG_CAPACITY_FLAT.Value;
                 }
 
                 At.SetField(container as ItemContainer, "m_baseContainerCapacity", cap);
@@ -144,8 +150,8 @@ namespace CustomWeight
                 var m_staminaUseModifiers = (Stat)At.GetField(self, "m_staminaUseModifiers");
 
                 // get config
-                var nolimits = (bool)Instance.config.GetValue(Settings.NoContainerLimit);
-                var removeAllBurden = (bool)Instance.config.GetValue(Settings.DisableAllBurdens) || m_character.Cheats.NotAffectedByWeightPenalties;
+                var nolimits = NO_CONTAINER_LIMIT.Value;
+                var removeAllBurden = DISABLE_ALL_BURDENS.Value || m_character.Cheats.NotAffectedByWeightPenalties;
 
                 float totalWeight = removeAllBurden ? 0f : m_character.Inventory.TotalWeight;
 
@@ -154,18 +160,18 @@ namespace CustomWeight
                 {
                     At.SetField(self, "m_generalBurdenPenaltyActive", true);
 
-                    float num = totalWeight / 30f;
+                    float weightRatio = totalWeight / 30f;
 
                     float m_generalBurdenRatio = (float)At.GetField(self, "m_generalBurdenRatio");
 
-                    if (num != m_generalBurdenRatio)
+                    if (weightRatio != m_generalBurdenRatio)
                     {
-                        At.SetField(self, "m_generalBurdenRatio", num);
+                        At.SetField(self, "m_generalBurdenRatio", weightRatio);
 
-                        m_movementSpeed.AddMultiplierStack("Burden", num * -0.02f);
-                        m_staminaRegen.AddMultiplierStack("Burden", num * -0.05f);
-                        m_staminaUseModifiers.AddMultiplierStack("Burden_Dodge", num * 0.05f, TagSourceManager.Dodge);
-                        m_staminaUseModifiers.AddMultiplierStack("Burden_Sprint", num * 0.05f, TagSourceManager.Sprint);
+                        m_movementSpeed.AddMultiplierStack("Burden", weightRatio * -0.02f);
+                        m_staminaRegen.AddMultiplierStack("Burden", weightRatio * -0.05f);
+                        m_staminaUseModifiers.AddMultiplierStack("Burden_Dodge", weightRatio * 0.05f, TagSourceManager.Dodge);
+                        m_staminaUseModifiers.AddMultiplierStack("Burden_Sprint", weightRatio * 0.05f, TagSourceManager.Sprint);
                     }
                 }
                 else if (m_generalBurdenPenaltyActive)
@@ -180,7 +186,10 @@ namespace CustomWeight
                 }
 
                 // update pouch burden
-                float pouchWeightCapacityRatio = (removeAllBurden || nolimits) ? -1f : m_character.Inventory.PouchWeightCapacityRatio;
+                float pouchWeightCapacityRatio = (removeAllBurden || nolimits) 
+                                                    ? -1f 
+                                                    : m_character.Inventory.PouchWeightCapacityRatio;
+
                 float m_pouchBurdenRatio = (float)At.GetField(self, "m_pouchBurdenRatio");
 
                 if (pouchWeightCapacityRatio != m_pouchBurdenRatio)
@@ -191,9 +200,7 @@ namespace CustomWeight
                     var m_pouchBurdenThreshold = (StatThreshold)At.GetField(self, "m_pouchBurdenThreshold");
 
                     if (m_pouchBurdenThreshold)
-                    {
                         m_pouchBurdenThreshold.UpdateThresholds(Mathf.Clamp01(pouchWeightCapacityRatio - 1f), 1f, true);
-                    }
 
                     if (m_pouchBurdenRatio > 1f)
                     {
@@ -203,10 +210,9 @@ namespace CustomWeight
                         float value = m_pouchBurdenPenaltyCurve.Evaluate(m_pouchBurdenRatio - 1f);
 
                         m_movementSpeed.AddMultiplierStack("PouchBurden", value);
+                        
                         if (m_character.CharacterUI)
-                        {
                             m_character.CharacterUI.ShowInfoNotification(LocalizationManager.Instance.GetLoc("Notification_Inventory_PouchOverweight"));
-                        }
                     }
                     else if (m_pouchBurdenPenaltyActive)
                     {
@@ -216,7 +222,10 @@ namespace CustomWeight
                 }
 
                 // update bag burden
-                float bagWeightCapacityRatio = (removeAllBurden || nolimits) ? -1f : m_character.Inventory.BagWeightCapacityRatio;
+                float bagWeightCapacityRatio = (removeAllBurden || nolimits) 
+                                                ? -1f 
+                                                : m_character.Inventory.BagWeightCapacityRatio;
+
                 float m_bagBurdenRatio = (float)At.GetField(self, "m_bagBurdenRatio");
 
                 if (bagWeightCapacityRatio != m_bagBurdenRatio)
@@ -228,9 +237,8 @@ namespace CustomWeight
                     var m_bagBurdenThreshold = (StatThreshold)At.GetField(self, "m_bagBurdenThreshold");
 
                     if (m_bagBurdenThreshold)
-                    {
                         m_bagBurdenThreshold.UpdateThresholds(Mathf.Clamp01(bagWeightCapacityRatio - 1f), 1f, true);
-                    }
+                    
                     if (m_bagBurdenRatio > 1f)
                     {
                         At.SetField(self, "m_backBurdenPenaltyActive", true);
@@ -239,10 +247,9 @@ namespace CustomWeight
 
                         float value2 = m_bagBurdenPenaltyCurve.Evaluate(m_bagBurdenRatio - 1f);
                         m_movementSpeed.AddMultiplierStack("BagBurden", value2);
+                       
                         if (m_character.CharacterUI)
-                        {
                             m_character.CharacterUI.ShowInfoNotification(LocalizationManager.Instance.GetLoc("Notification_Inventory_BagOverweight"));
-                        }
                     }
                     else if (m_backBurdenPenaltyActive)
                     {
@@ -256,70 +263,5 @@ namespace CustomWeight
                 return false;
             }
         }
-
-        private ModConfig SetupConfig()
-        {
-            var newConfig = new ModConfig
-            {
-                ModName = "Custom Weight",
-                SettingsVersion = 1.0,
-                Settings = new List<BBSetting>
-                {
-                    new BoolSetting
-                    {
-                        Name = Settings.NoContainerLimit,
-                        Description = "Disable limits on all containers",
-                        DefaultValue = false,
-                    },
-                    new BoolSetting
-                    {
-                        Name = Settings.DisableAllBurdens,
-                        Description = "Disable all burdens from weight",
-                        DefaultValue = false,
-                    },
-                    new FloatSetting
-                    {
-                        Name = Settings.PouchBonus,
-                        Description = "Extra Pouch capacity",
-                        MinValue = 0f,
-                        MaxValue = 1000f,
-                        DefaultValue = 0f,
-                        RoundTo = 0,
-                        ShowPercent = false,
-                    },
-                    new FloatSetting
-                    {
-                        Name = Settings.BagBonusFlat,
-                        Description = "Extra Bag capacity (flat bonus)",
-                        MinValue = 0f,
-                        MaxValue = 1000f,
-                        DefaultValue = 0f,
-                        RoundTo = 0,
-                        ShowPercent = false,
-                    },
-                    new FloatSetting
-                    {
-                        Name = Settings.BagBonusMulti,
-                        Description = "Extra Bag capacity (multiplier)",
-                        MinValue = 0f,
-                        MaxValue = 10f,
-                        DefaultValue = 1.0f,
-                        RoundTo = 2,
-                        ShowPercent = false,
-                    },
-                }
-            };
-
-            return newConfig;
-        }
-    }
-
-    public static class Settings
-    {
-        public static string NoContainerLimit = "NoContainerLimit";
-        public static string DisableAllBurdens = "DisableAllBurdens";
-        public static string PouchBonus = "PouchBonus";
-        public static string BagBonusFlat = "BagBonusFlat";
-        public static string BagBonusMulti = "BagBonusMulti";
     }
 }

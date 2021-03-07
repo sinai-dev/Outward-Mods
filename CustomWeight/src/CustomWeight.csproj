@@ -18,7 +18,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Release\BepInEx\plugins\</OutputPath>
+    <OutputPath>..\Release\BepInEx\plugins\sinai-dev Custom Weight\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>C:\Users\Nic\AppData\Roaming\r2modmanPlus-local\Outward\profiles\Default\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -48,7 +48,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>C:\Users\Nic\AppData\Roaming\r2modmanPlus-local\Outward\profiles\Default\BepInEx\core\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
@@ -63,12 +63,8 @@
       <HintPath>..\..\..\..\..\..\..\Steam\steamapps\common\Outward\Outward_Data\Managed\Rewired_Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharedModConfig">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SharedModConfig\SharedModConfig.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SideLoader">
-      <HintPath>..\..\..\..\..\..\Steam\steamapps\common\Outward\BepInEx\plugins\SideLoader.dll</HintPath>
+      <HintPath>C:\Users\Nic\AppData\Roaming\r2modmanPlus-local\Outward\profiles\Default\BepInEx\plugins\sinai-dev-SideLoader\SideLoader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">

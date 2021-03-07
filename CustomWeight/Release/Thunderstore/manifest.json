@@ -1,0 +1,10 @@
+{
+    "name": "Custom_Weight",
+    "version_number": "2.3.0",
+    "website_url": "https://github.com/sinai-dev/Outward-Mods",
+    "description": "Set custom Pouch and Bag Weight Limits, or remove Limits and Burdens all-together.",
+    "dependencies": [
+		"sinai-dev-SideLoader-3.3.6",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}

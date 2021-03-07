@@ -6,7 +6,7 @@ Sinai's mods for Outward.
 - [CombatHUD](#combathud)
 - [Combat Dummy](#combat-dummy)
 - [Combat Tweaks](#combat-tweaks)
-- [Custom Multiplayer Limit](#custom-multiplayer-limit)
+- [Custom Weight](#custom-weight)
 - [Mana Bow](#mana-bow)
 - [Minimap](#minimap)
 - [Mixed Grip](#mixed-grip)
@@ -43,12 +43,16 @@ Previously known as Combat and Dodge Overhaul, this is a 'lite' version with onl
 
 The config can be managed through the [Configuration Manager](https://github.com/Mefino/BepInEx.ConfigurationManager), or by editing the file at `BepInEx\config\com.sinai.combattweaks.cfg`.
 
-## Custom Multiplayer Limit
-Allows you to set a custom multiplayer limit for online play when you are the host.
+## Custom Weight
 
-The config can be managed through the [Configuration Manager](https://github.com/Mefino/BepInEx.ConfigurationManager), or by editing the file at `BepInEx\config\com.sinai.custommultiplayerlimit.cfg`.
+The Custom Weight mod allows you to:
 
-This mod makes no changes to game mechanics or balancing, the only thing it does is raise the player cap and attempts to fix some bugs.
+* Set custom Pouch Bonus (flat value)
+* Set custom Bag Bonus (flat AND multiplier values)
+* Set No Limits on all containers
+* Remove all Weight Burdens
+
+The config can be managed through the [Config Manager](https://outward.thunderstore.io/package/Mefino/Outward_Config_Manager/), or the r2modman Config Editor, or by editing the file at `BepInEx\config\com.sinai.customweight.cfg`.
 
 ## Mana Bow
 The Mana Bow mod adds the items `Mana Bow`, `Horror Mana Bow` and `Mana Arrow` to the game.
@@ -195,3 +199,9 @@ The config can be managed through the [Configuration Manager](https://github.com
 
 You **cannot** use this mod with any other mods enabled (other than Configuration Manager), or if Debug Mode is enabled.
 
+## Custom Multiplayer Limit [Deprecated]
+Allows you to set a custom multiplayer limit for online play when you are the host.
+
+The config can be managed through the [Configuration Manager](https://github.com/Mefino/BepInEx.ConfigurationManager), or by editing the file at `BepInEx\config\com.sinai.custommultiplayerlimit.cfg`.
+
+This mod makes no changes to game mechanics or balancing, the only thing it does is raise the player cap and attempts to fix some bugs.
