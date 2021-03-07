@@ -9,23 +9,23 @@ using BepInEx;
 using HarmonyLib;
 using UnityEngine.SceneManagement;
 using SideLoader;
+using System.IO;
 
 namespace Minimap
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInDependency(SharedModConfig.SharedModConfig.GUID, BepInDependency.DependencyFlags.HardDependency)]
     public class MinimapMod : BaseUnityPlugin
     {
         public const string GUID = "com.sinai.outward.minimap";
         public const string NAME = "Outward Minimap";
-        public const string VERSION = "1.4.0";
+        public const string VERSION = "1.5.0";
 
         internal static MinimapMod Instance;
 
         private static readonly FieldInfo currentAreaHasMap 
             = typeof(MapDisplay).GetField("m_currentAreaHasMap", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public const string ASSETBUNDLE_PATH = @"BepInEx\plugins\Minimap\shaderbundle";
+        public static string ASSETBUNDLE_PATH => Path.Combine(Path.GetDirectoryName(typeof(MinimapMod).Assembly.Location), "shaderbundle");
         public static Material AlwaysOnTopMaterial;
 
         private const string TOGGLE_KEY = "Toggle Minimap";
@@ -41,7 +41,7 @@ namespace Minimap
             new Harmony(GUID).PatchAll();
 
             // setup config
-            Settings.SetupConfig();
+            Settings.Init(Config);
 
             // global scene change event
             SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;

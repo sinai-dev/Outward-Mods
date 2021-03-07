@@ -22,7 +22,7 @@ namespace Minimap
         // state
         private static bool InOutdoorRegion => OutdoorRegions.Contains(SceneManagerHelper.ActiveSceneName);
         private static bool ShowingBigMap;
-        private static RenderingPath CameraRenderPath => (bool)Settings.Instance.GetValue(Settings.LOWPOLY_CAMERA)
+        private static RenderingPath CameraRenderPath => Settings.LOWPOLY_CAMERA.Value
                                                             ? RenderingPath.VertexLit
                                                             : RenderingPath.UsePlayerSettings;
 
@@ -179,13 +179,13 @@ namespace Minimap
         {
             if (m_splitID == 0)
             {
-                m_cameraOrthoSize = (float)Settings.Instance.GetValue(Settings.P1_ZOOM);
-                m_outdoorExtraSize = (float)Settings.Instance.GetValue(Settings.P1_OUTDOOREXTRA);
+                m_cameraOrthoSize = Settings.P1_ZOOM.Value;
+                m_outdoorExtraSize = Settings.P1_OUTDOOREXTRA.Value;
             }
             else
             {
-                m_cameraOrthoSize = (float)Settings.Instance.GetValue(Settings.P2_ZOOM);
-                m_outdoorExtraSize = (float)Settings.Instance.GetValue(Settings.P2_OUTDOOREXTRA);
+                m_cameraOrthoSize = Settings.P2_ZOOM.Value;
+                m_outdoorExtraSize = Settings.P2_OUTDOOREXTRA.Value;
             }
 
             m_minimapCamera.renderingPath = CameraRenderPath;
@@ -292,7 +292,7 @@ namespace Minimap
                 if (set)
                 {
                     ApplyOrthoSize();
-                    Settings.Instance.SetValue(Settings.P1_ZOOM, m_cameraOrthoSize);
+                    Settings.P1_ZOOM.Value = m_cameraOrthoSize;
                 }
             }
         }

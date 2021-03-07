@@ -20,7 +20,7 @@ namespace Necromancer
         public static NecromancerMod Instance;
         public const string GUID = "com.sinai.Necromancer";
         public const string NAME = "Necromancer Skills";
-        public const string VERSION = "3.0";
+        public const string VERSION = "3.1";
 
         public static Settings settings;
 
@@ -49,22 +49,6 @@ namespace Necromancer
 
         private void LoadSettings()
         {
-            // legacy settings check
-            string legacySettingsPath = @"Mods\NecromancerSkills.xml";
-            if (File.Exists(legacySettingsPath))
-            {
-                if (File.Exists(SAVE_PATH))
-                {
-                    File.Delete(legacySettingsPath);
-                    SL.Log($"[Necromancer] Deleted legacy settings because new settings exist. Deleted: '{legacySettingsPath}'");
-                }
-                else
-                {
-                    File.Move(legacySettingsPath, SAVE_PATH);
-                    SL.Log($"[Necromancer] Moved Necromancer settings from '{legacySettingsPath}' to '{SAVE_PATH}'");
-                }
-            }
-
             bool makeNew = true;
 
             try
@@ -96,6 +80,9 @@ namespace Necromancer
 
         private void SaveSettings()
         {
+            if (!Directory.Exists(@"BepInEx\config"))
+                Directory.CreateDirectory(@"BepInEx\config");
+
             if (File.Exists(SAVE_PATH))
                 File.Delete(SAVE_PATH);
 

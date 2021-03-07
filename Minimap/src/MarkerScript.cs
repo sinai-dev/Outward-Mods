@@ -31,10 +31,10 @@ namespace Minimap
 
         public static void ApplyConfigToInstances()
         {
-            playersEnabled = (bool)Settings.Instance.GetValue(Settings.PLAYER_MARKERS);
-            enemiesEnabled = (bool)Settings.Instance.GetValue(Settings.ENEMY_MARKERS);
-            lootEnabled = (bool)Settings.Instance.GetValue(Settings.LOOT_MARKERS);
-            npcEnabled = (bool)Settings.Instance.GetValue(Settings.NPC_MARKERS);
+            playersEnabled = Settings.PLAYER_MARKERS.Value;
+            enemiesEnabled = Settings.ENEMY_MARKERS.Value;
+            lootEnabled = Settings.LOOT_MARKERS.Value;
+            npcEnabled = Settings.NPC_MARKERS.Value;
 
             foreach (var marker in Instances)
             {

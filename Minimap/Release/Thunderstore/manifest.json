@@ -1,0 +1,10 @@
+{
+    "name": "Minimap",
+    "version_number": "1.5.0",
+    "website_url": "https://github.com/sinai-dev/Outward-Mods",
+    "description": "Gives you a minimap, and creates automatic maps for Dungeons.",
+    "dependencies": [
+		"sinai-dev-SideLoader-3.3.6",
+        "BepInEx-BepInExPack_Outward-5.4.8"
+    ]
+}
