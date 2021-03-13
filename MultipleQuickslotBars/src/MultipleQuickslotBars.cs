@@ -15,7 +15,7 @@ namespace MultipleQuickslotBars
     {
         const string GUID = "com.sinai.multiplequickslotbars";
         const string NAME = "Multiple Quickslot Bars";
-        const string VERSION = "1.0.0";
+        const string VERSION = "1.1.0";
 
         const string NextKeyToggle = "Next Quickslot Bar";
         const string PrevKeyToggle = "Previous Quickslot Bar";
@@ -86,7 +86,7 @@ namespace MultipleQuickslotBars
             int desired = ext.ActiveBarIndex + (cycleForward ? 1 : -1);
 
             if (desired < 0)
-                desired = max - 1;
+                desired = max;
             else if (desired > max)
                 desired = 0;
 

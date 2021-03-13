@@ -49,11 +49,13 @@ namespace MultipleQuickslotBars
 
                 var qs = qsMgr.GetQuickSlot(i);
 
-                int add = qs ? qs.ItemID : -1;
+                var dataToAdd = qs?.ActiveItem 
+                                ? qs.ActiveItem.UID 
+                                : "-1";
 
                 // Debug.Log("Quickslot " + i + " is " + add);
 
-                data += add.ToString();
+                data += dataToAdd;
             }
 
             // Debug.Log("Saving data as: " + data);
@@ -72,13 +74,13 @@ namespace MultipleQuickslotBars
             while (ext.ActiveBarIndex >= ext.QuickslotData.Count)
                 ext.QuickslotData.Add(null);
 
-            string data = ext.QuickslotData[ext.ActiveBarIndex];
-            int[] itemIDs = new int[qsMgr.QuickSlotCount];
+            var data = ext.QuickslotData[ext.ActiveBarIndex];
+            var itemUIDs = new string[qsMgr.QuickSlotCount];
 
             if (string.IsNullOrEmpty(data))
             {
                 for (int i = 0; i < qsMgr.QuickSlotCount; i++)
-                    itemIDs[i] = -1;
+                    itemUIDs[i] = "-1";
             }
             else
             {
@@ -86,16 +88,18 @@ namespace MultipleQuickslotBars
 
                 for (int i = 0; i < qsMgr.QuickSlotCount; i++)
                 {
-                    if (i >= idSplit.Length)
-                        itemIDs[i] = -1;
-                    else if (int.TryParse(idSplit[i], out int id))
-                        itemIDs[i] = id;
-                    else
-                        itemIDs[i] = -1;
+                    itemUIDs[i] = idSplit[i];
+
+                    //if (i >= idSplit.Length)
+                    //    itemUIDs[i] = -1;
+                    //else if (int.TryParse(idSplit[i], out int id))
+                    //    itemUIDs[i] = id;
+                    //else
+                    //    itemUIDs[i] = -1;
                 }
             }
 
-            for (int i = 0; i < itemIDs.Length; i++)
+            for (int i = 0; i < itemUIDs.Length; i++)
             {
                 try
                 {
@@ -103,12 +107,21 @@ namespace MultipleQuickslotBars
 
                     qsMgr.ClearQuickSlot(i);
 
-                    Item item = character.Inventory.SkillKnowledge.GetItemFromItemID(itemIDs[i]);
-                    if (!item)
-                        item = ResourcesPrefabManager.Instance.GetItemPrefab(itemIDs[i]);
+                    //Item item = character.Inventory.SkillKnowledge.GetItemFromItemID(itemUIDs[i]);
+                    //if (!item)
+                    //    item = character.Inventory.getitem
+
+                    string uid = itemUIDs[i];
+
+                    if (uid == "-1" || string.IsNullOrEmpty(uid))
+                        continue;
+
+                    Item item = ItemManager.Instance.GetItem(uid);
 
                     if (item)
-                        qsMgr.SetQuickSlot(i, item, true);
+                        qsMgr.SetQuickSlot(i, item, false);
+                    else
+                        SL.LogWarning($"Could not find character's quickslotted item by UID '{uid}'!");
                 }
                 catch (Exception ex)
                 {
