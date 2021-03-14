@@ -15,7 +15,7 @@ namespace CombatAndDodgeOverhaul
     {
         const string GUID = "com.sinai.combattweaks";
         const string NAME = "Combat Tweaks";
-        const string VERSION = "3.0";
+        const string VERSION = "3.1";
 
         public static CombatTweaksMod Instance;
 

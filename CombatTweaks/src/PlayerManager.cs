@@ -78,6 +78,8 @@ namespace CombatAndDodgeOverhaul
                 {
                     //SendDodge(__instance, __instance.DodgeStamCost, _direction);
 
+                    __instance.Stats.UseStamina(TagSourceManager.Dodge, __instance.DodgeStamCost);
+
                     ___m_dodgeAllowedInAction = 0;
 
                     if (__instance.CharacterCamera && __instance.CharacterCamera.InZoomMode)

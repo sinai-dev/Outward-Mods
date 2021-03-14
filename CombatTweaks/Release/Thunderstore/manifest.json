@@ -1,10 +1,10 @@
 {
     "name": "Combat_Tweaks",
-    "version_number": "3.0.0",
+    "version_number": "3.1.0",
     "website_url": "https://github.com/sinai-dev/Outward-Mods",
     "description": "Some tweaks to combat and dodging that I prefer to play with.",
     "dependencies": [
-		"sinai-dev-SideLoader-3.3.6",
+		"sinai-dev-SideLoader-3.3.9",
         "BepInEx-BepInExPack_Outward-5.4.8"
     ]
 }
