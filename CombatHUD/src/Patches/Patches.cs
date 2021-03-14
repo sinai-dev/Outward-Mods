@@ -52,7 +52,8 @@ namespace CombatHUD
                     {
                         DamageList damages = __instance.GetDamage(attackID).Clone();
 
-                        target.Stats.GetMitigatedDamage(null, ref damages, false);
+                        //target.Stats.GetMitigatedDamage(null, ref damages, false);
+                        At.Invoke(target, "ProcessDamageReduction", new object[] { __instance, damages, false });
 
                         DamageLabels.AddDamageLabel(damages, _hit.point, target);
                     }
@@ -79,7 +80,8 @@ namespace CombatHUD
                 if (!_blocked)
                 {
                     DamageList damages = __instance.GetDamage(0);
-                    _hitCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
+                    //_hitCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
+                    At.Invoke(_hitCharacter, "ProcessDamageReduction", new object[] { __instance, damages, false });
 
                     DamageLabels.AddDamageLabel(damages, _hitPos, _hitCharacter);
                 }
@@ -101,14 +103,15 @@ namespace CombatHUD
         {
             if (_targetCharacter.Alive)
             {
-                var damageList = At.GetField(__instance, "m_tempList") as DamageList;
-
                 bool ignoreBarrier = false;
                 if (__instance.ParentSynchronizer is StatusEffect status)
                     ignoreBarrier = status.IgnoreBarrier;
                 
-                DamageList damages = damageList.Clone();
-                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, ignoreBarrier);
+                DamageList damages = (At.GetField(__instance, "m_tempList") as DamageList).Clone();
+
+                At.Invoke(_targetCharacter, "ProcessDamageReduction", new object[] { __instance.ParentSynchronizer, damages, ignoreBarrier });
+
+                // _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, ignoreBarrier);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }
@@ -123,10 +126,13 @@ namespace CombatHUD
         {
             if (_targetCharacter.Alive)
             {
-                var damageList = At.GetField(__instance, "m_tempList") as DamageList;
+                DamageList damages = (At.GetField(__instance, "m_tempList") as DamageList).Clone();
 
-                DamageList damages = damageList.Clone();
-                _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
+                Weapon weapon = At.GetField(__instance, "m_weapon") as Weapon;
+
+                At.Invoke(_targetCharacter, "ProcessDamageReduction", new object[] { weapon, damages, false });
+
+                // _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }
