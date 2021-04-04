@@ -13,6 +13,9 @@ namespace MultipleQuickslotBars
     {
         public int ActiveBarIndex = 0;
         public List<string> QuickslotData = new List<string>(MultipleQuickslotBars.cfg_NumberOfExtraBars.Value);
+        public DateTime LastSwapTime;
+
+        public bool CanSwapQuickslotBar() => (DateTime.Now - LastSwapTime).TotalMilliseconds >= 100;
 
         public override void ApplyLoadedSave(Character character, bool isWorldHost)
         {
@@ -20,8 +23,9 @@ namespace MultipleQuickslotBars
 
             ext.ActiveBarIndex = this.ActiveBarIndex;
             ext.QuickslotData = this.QuickslotData;
+            ext.LastSwapTime = this.LastSwapTime;
 
-            ApplySaveToCharacter(character);
+            ApplyDataToCharacter(character);
         }
 
         public override void Save(Character character, bool isWorldHost)
@@ -30,6 +34,7 @@ namespace MultipleQuickslotBars
 
             this.ActiveBarIndex = ext.ActiveBarIndex;
             this.QuickslotData = ext.QuickslotData;
+            this.LastSwapTime = ext.LastSwapTime;
 
             SetDataFromCharacter(character);
         }
@@ -44,18 +49,13 @@ namespace MultipleQuickslotBars
             string data = "";
             for (int i = 0; i < qsMgr.QuickSlotCount; i++)
             {
-                if (data != "")
+                if (i > 0)
                     data += ",";
 
                 var qs = qsMgr.GetQuickSlot(i);
-
-                var dataToAdd = qs?.ActiveItem 
-                                ? qs.ActiveItem.UID 
-                                : "-1";
-
-                // Debug.Log("Quickslot " + i + " is " + add);
-
-                data += dataToAdd;
+                data += qs?.ActiveItem
+                            ? qs.ActiveItem.UID
+                            : "-1";
             }
 
             // Debug.Log("Saving data as: " + data);
@@ -63,7 +63,7 @@ namespace MultipleQuickslotBars
             QuickslotData[ActiveBarIndex] = data;
         }
 
-        public static void ApplySaveToCharacter(Character character)
+        public static void ApplyDataToCharacter(Character character)
         {
             //Debug.Log("Applying QS save to character");
 
@@ -87,16 +87,7 @@ namespace MultipleQuickslotBars
                 string[] idSplit = data.Split(',');
 
                 for (int i = 0; i < qsMgr.QuickSlotCount; i++)
-                {
                     itemUIDs[i] = idSplit[i];
-
-                    //if (i >= idSplit.Length)
-                    //    itemUIDs[i] = -1;
-                    //else if (int.TryParse(idSplit[i], out int id))
-                    //    itemUIDs[i] = id;
-                    //else
-                    //    itemUIDs[i] = -1;
-                }
             }
 
             for (int i = 0; i < itemUIDs.Length; i++)
@@ -107,18 +98,12 @@ namespace MultipleQuickslotBars
 
                     qsMgr.ClearQuickSlot(i);
 
-                    //Item item = character.Inventory.SkillKnowledge.GetItemFromItemID(itemUIDs[i]);
-                    //if (!item)
-                    //    item = character.Inventory.getitem
-
                     string uid = itemUIDs[i];
 
                     if (uid == "-1" || string.IsNullOrEmpty(uid))
                         continue;
 
-                    Item item = ItemManager.Instance.GetItem(uid);
-
-                    if (item)
+                    if (ItemManager.Instance.GetItem(uid) is Item item)
                         qsMgr.SetQuickSlot(i, item, false);
                     else
                         SL.LogWarning($"Could not find character's quickslotted item by UID '{uid}'!");

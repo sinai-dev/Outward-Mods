@@ -1,6 +1,6 @@
 {
     "name": "Multiple_Quickslot_Bars",
-    "version_number": "1.2.0",
+    "version_number": "1.3.0",
     "website_url": "https://github.com/sinai-dev/Outward-Mods",
     "description": "Adds a configurable amount of extra QuickSlot bars which you can toggle through.",
     "dependencies": [

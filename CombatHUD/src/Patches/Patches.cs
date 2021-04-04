@@ -109,7 +109,9 @@ namespace CombatHUD
                 
                 DamageList damages = (At.GetField(__instance, "m_tempList") as DamageList).Clone();
 
-                At.Invoke(_targetCharacter, "ProcessDamageReduction", new object[] { __instance.ParentSynchronizer, damages, ignoreBarrier });
+                Weapon weapon = __instance.ParentSynchronizer as Weapon;
+
+                At.Invoke(_targetCharacter, "ProcessDamageReduction", new object[] { weapon, damages, ignoreBarrier });
 
                 // _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, ignoreBarrier);
 
@@ -122,7 +124,7 @@ namespace CombatHUD
     public class WeaponDamage_DealHit
     {
         [HarmonyPostfix]
-        public static void Postfix(PunctualDamage __instance, Character _targetCharacter)
+        public static void Postfix(WeaponDamage __instance, Character _targetCharacter)
         {
             if (_targetCharacter.Alive)
             {
@@ -131,8 +133,6 @@ namespace CombatHUD
                 Weapon weapon = At.GetField(__instance, "m_weapon") as Weapon;
 
                 At.Invoke(_targetCharacter, "ProcessDamageReduction", new object[] { weapon, damages, false });
-
-                // _targetCharacter.Stats.GetMitigatedDamage(null, ref damages, false);
 
                 DamageLabels.AddDamageLabel(damages, _targetCharacter.CenterPosition, _targetCharacter);
             }

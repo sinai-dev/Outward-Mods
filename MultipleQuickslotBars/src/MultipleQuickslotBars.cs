@@ -15,7 +15,7 @@ namespace MultipleQuickslotBars
     {
         const string GUID = "com.sinai.multiplequickslotbars";
         const string NAME = "Multiple Quickslot Bars";
-        const string VERSION = "1.1.0";
+        const string VERSION = "1.2.0";
 
         const string NextKeyToggle = "Next Quickslot Bar";
         const string PrevKeyToggle = "Previous Quickslot Bar";
@@ -81,7 +81,14 @@ namespace MultipleQuickslotBars
 
             var ext = GetOrCreateSave(character.UID);
 
+            if (!ext.CanSwapQuickslotBar())
+            {
+                character.CharacterUI.ShowInfoNotification($"Cannot swap Quickslot Bars that quickly!");
+                return;
+            }
+
             ext.SetDataFromCharacter(character);
+            ext.LastSwapTime = DateTime.Now;
 
             int desired = ext.ActiveBarIndex + (cycleForward ? 1 : -1);
 
@@ -93,8 +100,7 @@ namespace MultipleQuickslotBars
             //Debug.Log("setting desired ActiveBarIndex: " + desired);
 
             ext.ActiveBarIndex = desired;
-
-            QuickslotSaveExtension.ApplySaveToCharacter(character);
+            QuickslotSaveExtension.ApplyDataToCharacter(character);
         }
     }
 }

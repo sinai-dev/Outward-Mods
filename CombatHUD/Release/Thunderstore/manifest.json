@@ -1,10 +1,10 @@
 {
     "name": "CombatHUD",
-    "version_number": "5.1.0",
+    "version_number": "5.2.0",
     "website_url": "https://github.com/sinai-dev/Outward-Mods",
     "description": "Adds extra combat-related HUD elements including status timers, floating damage indicators, etc.",
     "dependencies": [
-		"sinai-dev-SideLoader-3.3.6",
+		"sinai-dev-SideLoader-3.4.2",
         "BepInEx-BepInExPack_Outward-5.4.8"
     ]
 }
