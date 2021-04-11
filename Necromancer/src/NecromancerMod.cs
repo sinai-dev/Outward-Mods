@@ -20,7 +20,7 @@ namespace Necromancer
         public static NecromancerMod Instance;
         public const string GUID = "com.sinai.Necromancer";
         public const string NAME = "Necromancer Skills";
-        public const string VERSION = "3.1";
+        public const string VERSION = "3.2";
 
         public static Settings settings;
 

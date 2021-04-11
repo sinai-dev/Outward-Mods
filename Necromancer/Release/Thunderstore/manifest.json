@@ -1,6 +1,6 @@
 {
     "name": "Necromancer",
-    "version_number": "3.1.0",
+    "version_number": "3.2.0",
     "website_url": "https://github.com/sinai-dev/Outward-Mods",
     "description": "A custom skill tree revolving around summoning minion allies. Involves many new, unique mechanics.",
     "dependencies": [

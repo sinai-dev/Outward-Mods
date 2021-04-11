@@ -58,7 +58,10 @@ namespace Necromancer.Skills.Effects
                 while (toDestroy >= 0)
                 {
                     if (SummonManager.FindWeakestSummon(_affectedCharacter.UID) is Character summon)
+                    {
+                        CustomCharacters.DestroyCharacterRPC(summon);
                         SummonManager.OnSummonDeath(summon);
+                    }
 
                     toDestroy--;
                 }
