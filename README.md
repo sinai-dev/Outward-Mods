@@ -2,6 +2,8 @@
  
 Sinai's mods for Outward.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C1C14TRZG)
+
 ### Contents
 - [CombatHUD](#combathud)
 - [Combat Dummy](#combat-dummy)
