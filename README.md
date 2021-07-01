@@ -1,6 +1,6 @@
 # Sinai's Outward-Mods
  
-Sinai's mods for Outward.
+Sinai's mods for Outward. Please note that most of these mods are fairly old and are some of the first things I wrote in C#.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C1C14TRZG)
 
